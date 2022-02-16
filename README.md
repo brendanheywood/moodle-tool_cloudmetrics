@@ -10,8 +10,10 @@ In general a metric is any real time value that you might push to another servic
 
 ## Metrics
 
+The plan is to have different sources of metrics, possible
 
-## Services
+
+## Destination
 
 Metrics may be sent to one or more different services.
 
@@ -39,3 +41,12 @@ https://cloud.google.com/monitoring
 TBA
 
 https://docs.microsoft.com/en-us/azure/azure-monitor/overview
+
+
+### Prometheus
+
+TBA
+
+https://prometheus.io/
+https://prometheus.io/docs/introduction/overview/#what-are-metrics
+https://github.com/promphp/prometheus_client_php

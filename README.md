@@ -25,7 +25,7 @@ In general a metric is any real time value that you might push to another servic
 The plan is to have different sources of metrics, possible
 
 
-## Destination
+## Destinations
 
 Metrics may be sent to one or more different services.
 

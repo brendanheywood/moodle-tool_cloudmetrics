@@ -1,5 +1,15 @@
 # moodle-tool_cloudmetrics
 
+
+* [What is this?](#what-is-this)
+* [Branches](#branches)
+* [Metrics](#metrics)
+* [Destinations](#destinations)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Support](#support)
+* [Credits](#credits)
+
 ## What is this?
 
 This plugin is intended to be a generic admin tool for defining various realtime metrics of various sorts. 
@@ -7,6 +17,8 @@ This plugin is intended to be a generic admin tool for defining various realtime
 Metrics may be 'built in' ones such as the same metrics which are beaconed back to Moodle HQ when you register you site, or they may be custom ones specific to your site.
 
 In general a metric is any real time value that you might push to another service which monitors and tracks that metric over time such as a dataware house or a tool like AWS CloudWatch. Eventually this plugin may support publishing to many potential services.
+
+## Branches
 
 ## Metrics
 
@@ -50,3 +62,23 @@ TBA
 https://prometheus.io/
 https://prometheus.io/docs/introduction/overview/#what-are-metrics
 https://github.com/promphp/prometheus_client_php
+
+## Installation
+
+## Configuration
+
+
+## Support
+
+If you have issues please log them in
+[GitHub](https://github.com/catalyst/moodle-auth_saml2/issues).
+
+Please note our time is limited, so if you need urgent support or want to
+sponsor a new feature then please contact
+[Catalyst IT Australia](https://www.catalyst-au.net/contact-us).
+
+## Credits
+
+This plugin was developed by [Catalyst IT Australia](https://www.catalyst-au.net/).
+
+<img alt="Catalyst IT" src="https://cdn.rawgit.com/CatalystIT-AU/moodle-auth_saml2/MOODLE_39_STABLE/pix/catalyst-logo.svg" width="400">

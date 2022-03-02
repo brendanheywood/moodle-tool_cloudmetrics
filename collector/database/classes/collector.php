@@ -14,38 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace cwcltr_database;
+
 /**
- * Settings
+ * Collector class for the internal database cloudwatch service.
  *
- * @package   tool_cloudwatch
+ * @package   cwcltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+class collector extends \tool_cloudwatch\collector_base {
+    public function record_metric(string $name, int $time, $value) {
+        // TODO: This currently a stub.
+    }
 
-if ($hassiteconfig) {
-    $ADMIN->add('reports', new admin_category('tool_cloudwatch_reports', 'Cloudwatch'));
-
-    $settings = new admin_settingpage(
-        'tool_cloudwatch',
-        get_string('pluginname', 'tool_cloudwatch')
-    );
-
-    $ADMIN->add('tool_cloudwatch_reports', $settings);
-
-    if ($ADMIN->fulltree) {
-
-        $settings->add(
-            new admin_setting_configselect(
-                'tool_cloudwatch/destinaton',
-                get_string('setting:destination', 'tool_cloudwatch'),
-                get_string('setting:destination_desc', 'tool_cloudwatch'),
-                'database',
-                '\tool_cloudwatch\collector_base::get_collectors_for_settings'
-            )
-        );
+    public static function get_label(): string {
+        return get_string('label', 'cwcltr_database');
     }
 }
-

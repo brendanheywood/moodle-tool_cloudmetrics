@@ -14,8 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_cloudwatch\plugininfo;
+
 /**
- * Settings
+ * Subplugin class for collectors
  *
  * @package   tool_cloudwatch
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -23,29 +25,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
 
-if ($hassiteconfig) {
-    $ADMIN->add('reports', new admin_category('tool_cloudwatch_reports', 'Cloudwatch'));
-
-    $settings = new admin_settingpage(
-        'tool_cloudwatch',
-        get_string('pluginname', 'tool_cloudwatch')
-    );
-
-    $ADMIN->add('tool_cloudwatch_reports', $settings);
-
-    if ($ADMIN->fulltree) {
-
-        $settings->add(
-            new admin_setting_configselect(
-                'tool_cloudwatch/destinaton',
-                get_string('setting:destination', 'tool_cloudwatch'),
-                get_string('setting:destination_desc', 'tool_cloudwatch'),
-                'database',
-                '\tool_cloudwatch\collector_base::get_collectors_for_settings'
-            )
-        );
-    }
+class cwcltr extends \core\plugininfo\base {
 }
 

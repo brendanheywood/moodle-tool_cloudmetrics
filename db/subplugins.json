@@ -1,0 +1,5 @@
+{
+    "plugintypes": {
+        "cwcltr": "admin\/tool\/cloudwatch\/collector"
+    }
+}

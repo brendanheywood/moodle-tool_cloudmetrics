@@ -15,37 +15,21 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Settings
+ * Upgrade script for databases.
  *
- * @package   tool_cloudwatch
+ * @package   cwcltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+function xmldb_cwcltr_database_upgrade($oldversion) {
+    global $DB;
 
-if ($hassiteconfig) {
-    $ADMIN->add('reports', new admin_category('tool_cloudwatch_reports', 'Cloudwatch'));
+    $dbman = $DB->get_manager();
 
-    $settings = new admin_settingpage(
-        'tool_cloudwatch',
-        get_string('pluginname', 'tool_cloudwatch')
-    );
+    // Automatically generated Moodle v3.11.0 release upgrade line.
+    // Put any upgrade step following this.
 
-    $ADMIN->add('tool_cloudwatch_reports', $settings);
-
-    if ($ADMIN->fulltree) {
-
-        $settings->add(
-            new admin_setting_configselect(
-                'tool_cloudwatch/destinaton',
-                get_string('setting:destination', 'tool_cloudwatch'),
-                get_string('setting:destination_desc', 'tool_cloudwatch'),
-                'database',
-                '\tool_cloudwatch\collector_base::get_collectors_for_settings'
-            )
-        );
-    }
+    return true;
 }
-

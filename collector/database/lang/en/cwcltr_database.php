@@ -17,7 +17,7 @@
 /**
  * Language strings
  *
- * @package    tool_cloudwatch
+ * @package    cwcltr_database
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,21 +25,11 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Cloudwatch metrics tool';
+$string['pluginname'] = 'Cloudwatch database collector';
 
 // Privacy.
 $string['privacy:metadata'] = 'No personal information is stored';
 
-// Subplugins.
-$string['subplugintype_cwcltr'] = 'Collector for a cloudwatch service';
-$string['subplugintype_cwcltr_plural'] = 'Collectors for cloudwatch services';
-$string['subplugintype_cwmtc'] = 'Metric source';
-$string['subplugintype_cwmtc_plural'] = 'Metric sources';
 
-// Settings.
-$string['setting:destination'] = 'Destination';
-$string['setting:destination_desc'] = 'The cloudwatch destination to send metrics to.';
-
-$string[''] = '';
-$string[''] = '';
+$string['label'] = 'Internal';
 

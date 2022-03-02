@@ -8,6 +8,8 @@
   * [Collectors](#collectors)
 * [Installation](#installation)
 * [Configuration](#configuration)
+* [Alternatives](#alternatives)
+  * [report_stats](#report_stats)
 * [Support](#support)
 * [Credits](#credits)
 
@@ -83,6 +85,15 @@ https://github.com/promphp/prometheus_client_php
 
 ## Configuration
 
+## Alternatives
+
+### report_stats
+
+There is an optional report in Moodle core which when enabled provides some predefined statistics:
+
+/report/stats/index.php
+
+https://docs.moodle.org/en/Statistics
 
 ## Support
 

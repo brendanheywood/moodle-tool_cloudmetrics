@@ -3,8 +3,9 @@
 
 * [What is this?](#what-is-this)
 * [Branches](#branches)
-* [Metrics](#metrics)
-* [Destinations](#destinations)
+* [Architecture](#architecture)
+  * [Metrics](#metrics)
+  * [Collectors](#collectors)
 * [Installation](#installation)
 * [Configuration](#configuration)
 * [Support](#support)
@@ -20,42 +21,57 @@ In general a metric is any real time value that you might push to another servic
 
 ## Branches
 
-## Metrics
+## Architecture
+
+The key architecture here is decoupling the gathering of the metrics from where those metrics are sent.
+
+```mermaid
+  graph LR;
+      moodle-->metric_abc;
+      moodle-->metric_xyz;
+      metric_abc-->tool_cloudmetrics
+      metric_xyz-->tool_cloudmetrics
+      tool_cloudmetrics-->collr_database;
+      tool_cloudmetrics-->collr_cloudwatch;
+      collr_cloudwatch-->AWSCloudWatch;
+```
+
+### Metrics
 
 The plan is to have different sources of metrics, possible
 
 
-## Destinations
+### Collectors
 
-Metrics may be sent to one or more different services.
+Metrics may be sent to one or more different services which we call a Collector.
 
-### Build in admin report
+#### Build in admin report
 
 TBA
 
 We plan to have a very simple internal record of metrics with a limited data retention policy and basic graphing.
 
 
-### AWS CloudWatch
+#### AWS CloudWatch
 
 TBA
 
 https://aws.amazon.com/cloudwatch/
 
-### Google Cloud Monitoring
+#### Google Cloud Monitoring
 
 TBA
 
 https://cloud.google.com/monitoring
 
-### Azure Monitor
+#### Azure Monitor
 
 TBA
 
 https://docs.microsoft.com/en-us/azure/azure-monitor/overview
 
 
-### Prometheus
+#### Prometheus
 
 TBA
 

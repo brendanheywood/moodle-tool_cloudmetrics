@@ -17,13 +17,13 @@
 /**
  * Upgrade script for databases.
  *
- * @package   cwcltr_database
+ * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_cwcltr_database_upgrade($oldversion) {
+function xmldb_cltr_database_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();

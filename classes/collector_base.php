@@ -14,42 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudwatch;
+namespace tool_cloudmetrics;
 
 /**
  * Base class for collectors.
  *
- * @package   tool_cloudwatch
+ * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class collector_base {
-    public static function get_collector_classes() {
-        return \core_component::get_plugin_list_with_class('cwcltr', 'collector');
-    }
-
     /**
-     * Returns a list of available collectors for the settings.
+     * Get all the collector classes.
      *
      * @return array
      */
-    public static function get_collectors_for_settings(): array {
-        $choices = [];
-        $classes = self::get_collector_classes();
-        foreach ($classes as $class) {
-            $choices[$class] = $class::get_label();
-        }
-        return $choices;
-    }
-
-    const DEFAULT_COLLECTOR = '\cwcltr_database\collector';
-    public static function get_instance(): collector_base {
-        $class = get_config('tool_cloudwatch', 'setting:destination');
-        if ($class === false) {
-            $class = self::DEFAULT_COLLECTOR;
-        }
-        return new $class();
+    public static function get_collector_classes(): array {
+        return \core_component::get_plugin_list_with_class('cltr', 'collector');
     }
 
     /**
@@ -63,8 +45,9 @@ abstract class collector_base {
     abstract public function record_metric(string $name, int $time, $value);
 
     /**
-     * Returns the label describing the collector.
-     * @return string
+     * Returns true if the backend service is able to receive requests.
+     *
+     * @return bool
      */
-    abstract public static function get_label(): string;
+    abstract public function is_ready(): bool;
 }

@@ -14,23 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace cwcltr_database;
+namespace cltr_database;
 
 /**
- * Collector class for the internal database cloudwatch service.
+ * Collector class for the internal database.
  *
- * @package   cwcltr_database
+ * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class collector extends \tool_cloudwatch\collector_base {
+class collector extends \tool_cloudmetrics\collector_base {
     public function record_metric(string $name, int $time, $value) {
         // TODO: This currently a stub.
     }
 
-    public static function get_label(): string {
-        return get_string('label', 'cwcltr_database');
+    public function is_ready(): bool {
+        return true;
     }
 }

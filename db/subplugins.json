@@ -1,5 +1,5 @@
 {
     "plugintypes": {
-        "cwcltr": "admin\/tool\/cloudwatch\/collector"
+        "cltr": "admin\/tool\/cloudmetrics\/collector"
     }
 }

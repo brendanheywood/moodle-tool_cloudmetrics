@@ -17,7 +17,7 @@
 /**
  * Language strings
  *
- * @package    cwcltr_database
+ * @package    tool_cloudmetrics
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -25,11 +25,19 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Cloudwatch database collector';
+$string['pluginname'] = 'Cloudmetrics';
 
 // Privacy.
 $string['privacy:metadata'] = 'No personal information is stored';
 
+// Subplugins.
+$string['subplugintype_cltr'] = 'Collector for a cloud metric service';
+$string['subplugintype_cltr_plural'] = 'Collectors for cloud metric services';
+$string['subplugintype_metric'] = 'Metric source';
+$string['subplugintype_metric_plural'] = 'Metric sources';
 
-$string['label'] = 'Internal';
+$string['manage_collectors'] = 'Manage Collectors';
 
+
+// Error messages.
+$string['plugin_not_found'] = 'Plugin \'{$a}\' not found';

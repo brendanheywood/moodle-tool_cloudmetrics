@@ -14,18 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudwatch\plugininfo;
+namespace tool_cloudmetrics;
 
 /**
- * Subplugin class for collectors
- *
- * @package   tool_cloudwatch
- * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright 2022, Catalyst IT
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Basic test for collectors.
  */
+class tool_cloudmetrics_collector_base_test extends \advanced_testcase {
 
+    /**
+     * Tests ability to mock collector_base.
+     */
+    public function test_basic() {
+        $collectormock = $this->createMock(collector_base::class);
+        $collectormock->expects($this->once())
+            ->method('record_metric')
+            ->with('a', 2, 3);
 
-class cwcltr extends \core\plugininfo\base {
+        $collectormock->record_metric('a', 2, 3);
+    }
 }
-

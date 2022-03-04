@@ -17,13 +17,13 @@
 /**
  * Upgrade script for databases.
  *
- * @package   tool_cloudwatch
+ * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_tool_cloudwatch_upgrade($oldversion) {
+function xmldb_tool_cloudmetrics_upgrade($oldversion) {
     global $DB;
 
     $dbman = $DB->get_manager();

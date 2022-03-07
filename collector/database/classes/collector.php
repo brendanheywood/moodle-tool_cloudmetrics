@@ -14,19 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace cltr_database;
+
 /**
- * Language strings
+ * Collector class for the internal database.
  *
- * @package    tool_cloudwatch
- * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   cltr_database
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+class collector extends \tool_cloudmetrics\collector_base {
+    public function record_metric(string $name, int $time, $value) {
+        // TODO: This currently a stub.
+    }
 
-$string['pluginname'] = 'Cloudwatch metrics tool';
-
-// Privacy.
-$string['privacy:metadata'] = 'No personal information is stored';
-
+    public function is_ready(): bool {
+        return true;
+    }
+}

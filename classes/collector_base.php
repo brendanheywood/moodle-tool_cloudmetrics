@@ -14,22 +14,40 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_cloudmetrics;
+
 /**
- * Upgrade script for databases.
+ * Base class for collectors.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+abstract class collector_base {
+    /**
+     * Get all the collector classes.
+     *
+     * @return array
+     */
+    public static function get_collector_classes(): array {
+        return \core_component::get_plugin_list_with_class('cltr', 'collector');
+    }
 
-function xmldb_tool_cloudmetrics_upgrade($oldversion) {
-    global $DB;
+    /**
+     * Records a single value of a single metric.
+     * TODO: This function is expected to change a lot, but use a primitive interface for now.
+     *
+     * @param string $name The metric name
+     * @param int $time Time the metric was recorded.
+     * @param mixed $value The metric value
+     */
+    abstract public function record_metric(string $name, int $time, $value);
 
-    $dbman = $DB->get_manager();
-
-    // Automatically generated Moodle v3.11.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    return true;
+    /**
+     * Returns true if the backend service is able to receive requests.
+     *
+     * @return bool
+     */
+    abstract public function is_ready(): bool;
 }

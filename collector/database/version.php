@@ -15,21 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade script for databases.
+ * Version
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright 2022, Catalyst IT
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2022, Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_tool_cloudmetrics_upgrade($oldversion) {
-    global $DB;
+defined('MOODLE_INTERNAL') || die();
 
-    $dbman = $DB->get_manager();
+$plugin->version = 2022022500;
+$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
+$plugin->component = 'cltr_database';
 
-    // Automatically generated Moodle v3.11.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    return true;
-}

@@ -15,25 +15,29 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version
+ * Language strings
  *
- * @package   tool_cloudmetrics
- * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @package    tool_cloudmetrics
+ * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022022500;
-$plugin->release = 2022022500;
+$string['pluginname'] = 'Cloudmetrics';
 
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
+// Privacy.
+$string['privacy:metadata'] = 'No personal information is stored';
 
-// TODO $plugin->supported = ;     // Available as of Moodle 3.9.0 or later.
-// TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
+// Subplugins.
+$string['subplugintype_cltr'] = 'Collector for a cloud metric service';
+$string['subplugintype_cltr_plural'] = 'Collectors for cloud metric services';
+$string['subplugintype_metric'] = 'Metric source';
+$string['subplugintype_metric_plural'] = 'Metric sources';
 
-$plugin->component = 'tool_cloudmetrics';
-$plugin->maturity = MATURITY_ALPHA;
+$string['manage_collectors'] = 'Manage Collectors';
 
-$plugin->dependencies = [];
+
+// Error messages.
+$string['plugin_not_found'] = 'Plugin \'{$a}\' not found';

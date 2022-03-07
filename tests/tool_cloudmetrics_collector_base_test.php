@@ -14,22 +14,22 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_cloudmetrics;
+
 /**
- * Upgrade script for databases.
- *
- * @package   tool_cloudmetrics
- * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright 2022, Catalyst IT
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Basic test for collectors.
  */
+class tool_cloudmetrics_collector_base_test extends \advanced_testcase {
 
-function xmldb_tool_cloudmetrics_upgrade($oldversion) {
-    global $DB;
+    /**
+     * Tests ability to mock collector_base.
+     */
+    public function test_basic() {
+        $collectormock = $this->createMock(collector_base::class);
+        $collectormock->expects($this->once())
+            ->method('record_metric')
+            ->with('a', 2, 3);
 
-    $dbman = $DB->get_manager();
-
-    // Automatically generated Moodle v3.11.0 release upgrade line.
-    // Put any upgrade step following this.
-
-    return true;
+        $collectormock->record_metric('a', 2, 3);
+    }
 }

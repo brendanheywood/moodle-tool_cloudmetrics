@@ -17,12 +17,12 @@
 /**
  * Main file
  *
- * @package   tool_cloudwatch
+ * @package   tool_cloudmetrics
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function tool_cloudwatch_after_config() {
+function tool_cloudmetrics_after_config() {
 }
 

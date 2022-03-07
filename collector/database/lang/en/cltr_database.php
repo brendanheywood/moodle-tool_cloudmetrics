@@ -15,21 +15,20 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Upgrade script for databases.
+ * Language strings
  *
- * @package   tool_cloudmetrics
- * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright 2022, Catalyst IT
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    cltr_database
+ * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright  2022, Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function xmldb_tool_cloudmetrics_upgrade($oldversion) {
-    global $DB;
+defined('MOODLE_INTERNAL') || die();
 
-    $dbman = $DB->get_manager();
+$string['pluginname'] = 'Cloudmetrics database collector';
 
-    // Automatically generated Moodle v3.11.0 release upgrade line.
-    // Put any upgrade step following this.
+$string['label'] = 'Internal';
 
-    return true;
-}
+// Privacy.
+$string['privacy:metadata'] = 'No personal information is stored';
+

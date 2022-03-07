@@ -25,7 +25,7 @@ In general a metric is any real time value that you might push to another servic
 
 ## Architecture
 
-The key architecture here is decoupling the gathering of the metrics from where those metrics are sent.
+The key architecture here is decoupling the gathering of the metrics from where those metrics are sent. This makes it easy to send metrics to more than onen place, or to change cloud providers and keep consistent metrics, or if you have a fleet with various cloud providers.
 
 ```mermaid
   graph LR;

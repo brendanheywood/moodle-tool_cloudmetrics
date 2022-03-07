@@ -33,10 +33,10 @@ The key architecture here is decoupling the gathering of the metrics from where 
       moodle-->metric_xyz;
       metric_abc-->tool_cloudmetrics
       metric_xyz-->tool_cloudmetrics
-      tool_cloudmetrics-->collr_database;
-      tool_cloudmetrics-->collr_cloudwatch;
-      tool_cloudmetrics-->collr_prometheus;
-      collr_cloudwatch-->AWSCloudWatch;
+      tool_cloudmetrics-->cltr_database;
+      tool_cloudmetrics-->cltr_cloudwatch;
+      tool_cloudmetrics-->cltr_prometheus;
+      cltr_cloudwatch-->AWSCloudWatch;
 ```
 
 ### Metrics

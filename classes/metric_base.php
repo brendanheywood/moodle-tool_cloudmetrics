@@ -16,27 +16,18 @@
 
 namespace tool_cloudmetrics;
 
-defined('MOODLE_INTERNAL') || die();
-
-require_once(__DIR__ . "/metric_testcase.php"); // This is needed. File will not be automatically included.
-
 /**
- * Basic test for collectors.
+ * Base class for metrics.
+ *
+ * @package    tool_cloudmetrics
+ * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright  2022, Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class tool_cloudmetrics_collector_base_test extends metric_testcase {
+abstract class metric_base {
 
-    /**
-     * Tests ability to mock collector_base.
-     */
-    public function test_basic() {
-        $stub = $this->get_metric_stub([1]);
-        $item = $stub->get_metric_item();
+    abstract public function get_name(): string;
+    abstract public function get_label(): string;
 
-        $collectormock = $this->createMock(collector_base::class);
-        $collectormock->expects($this->once())
-            ->method('record_metric')
-            ->with($item);
-
-        $collectormock->record_metric($item);
-    }
+    abstract public function get_metric_item(): metric_item;
 }

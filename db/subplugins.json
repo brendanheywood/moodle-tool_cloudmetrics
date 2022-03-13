@@ -1,5 +1,6 @@
 {
     "plugintypes": {
-        "cltr": "admin\/tool\/cloudmetrics\/collector"
+        "cltr": "admin\/tool\/cloudmetrics\/collector",
+        "metric": "admin\/tool\/cloudmetrics\/metric"
     }
 }

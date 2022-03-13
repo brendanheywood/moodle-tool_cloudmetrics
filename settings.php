@@ -23,21 +23,37 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_cloudmetrics\plugininfo\cltr;
+
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $ADMIN->add('reports', new admin_category('tool_cloudmetrics_reports', get_string('pluginname', 'tool_cloudmetrics')));
+    $ADMIN->add('tools', new admin_category('tool_cloudmetrics_reports', get_string('pluginname', 'tool_cloudmetrics')));
 
     $settings = new admin_settingpage(
         'tool_cloudmetrics',
-        get_string('pluginname', 'tool_cloudmetrics')
+        get_string('generalsettings', 'admin')
     );
 
     $ADMIN->add('tool_cloudmetrics_reports', $settings);
 
     if ($ADMIN->fulltree) {
+        $settings->add(new admin_setting_heading('tool_cloudmetrics/collectors',
+            get_string('manage_collectors', 'tool_cloudmetrics'),
+            ''
+        ));
+
         $settings->add(
             new tool_cloudmetrics\admin_setting_manage_collectors()
+        );
+
+        $settings->add(new admin_setting_heading('tool_cloudmetrics/metrics',
+            get_string('manage_metrics', 'tool_cloudmetrics'),
+            ''
+        ));
+
+        $settings->add(
+            new tool_cloudmetrics\admin_setting_manage_metrics()
         );
     }
 }

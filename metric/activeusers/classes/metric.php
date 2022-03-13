@@ -14,31 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace metric_activeusers;
+
+use tool_cloudmetrics\metric_item;
+
 /**
- * Language strings
+ * Metric class for active users.
  *
- * @package    tool_cloudmetrics
+ * @package    metric_foobar
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class metric extends \tool_cloudmetrics\metric_base {
 
-defined('MOODLE_INTERNAL') || die();
+    public function get_name(): string {
+        return 'activeusers';
+    }
 
-$string['pluginname'] = 'Cloudmetrics';
+    public function get_label(): string {
+        return get_string('activeusers', 'metric_activeusers');
+    }
 
-// Privacy.
-$string['privacy:metadata'] = 'No personal information is stored';
-
-// Subplugins.
-$string['subplugintype_cltr'] = 'Collector for a cloud metric service';
-$string['subplugintype_cltr_plural'] = 'Collectors for cloud metric services';
-$string['subplugintype_metric'] = 'Metric source';
-$string['subplugintype_metric_plural'] = 'Metric sources';
-
-// Settings.
-$string['manage_collectors'] = 'Manage Collectors';
-$string['manage_metrics'] = 'Manage Metrics';
-
-// Error messages.
-$string['plugin_not_found'] = 'Plugin \'{$a}\' not found';
+    public function get_metric_item(): metric_item {
+        // TODO: Currently a stub, will get fleshed out.
+        return new metric_item($this->get_name(), 100, 200, $this);
+    }
+}

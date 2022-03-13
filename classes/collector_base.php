@@ -16,6 +16,8 @@
 
 namespace tool_cloudmetrics;
 
+use tool_cloudmetrics\plugininfo\cltr;
+
 /**
  * Base class for collectors.
  *
@@ -35,14 +37,27 @@ abstract class collector_base {
     }
 
     /**
-     * Records a single value of a single metric.
-     * TODO: This function is expected to change a lot, but use a primitive interface for now.
+     * Sends a metric to all enabled collectors to be recorded.
      *
-     * @param string $name The metric name
-     * @param int $time Time the metric was recorded.
-     * @param mixed $value The metric value
+     * @param metric_item $metric_item
      */
-    abstract public function record_metric(string $name, int $time, $value);
+    public static function send_metric(metric_item $metricitem) {
+        $plugins = cltr::get_enabled_plugins();
+        foreach ($plugins as $plugin) {
+            $collector = $plugin->get_collector();
+            if ($collector->is_ready()) {
+                $collector->record_metric($metricitem);
+            }
+        }
+    }
+
+    /**
+     * Records a single metric.
+     *
+     * @param metric_item $metric
+     * @return mixed
+     */
+    abstract public function record_metric(metric_item $metric);
 
     /**
      * Returns true if the backend service is able to receive requests.

@@ -23,20 +23,25 @@ require_once(__DIR__ . "/metric_testcase.php"); // This is needed. File will not
 /**
  * Basic test for collectors.
  */
-class tool_cloudmetrics_collector_base_test extends metric_testcase {
+class tool_cloudmetrics_metric_stub_test extends metric_testcase {
 
-    /**
-     * Tests ability to mock collector_base.
-     */
-    public function test_basic() {
-        $stub = $this->get_metric_stub([1]);
-        $item = $stub->get_metric_item();
+    public function test_get_stub() {
+        $stub = $this->get_metric_stub([1, 2, 3]);
 
-        $collectormock = $this->createMock(collector_base::class);
-        $collectormock->expects($this->once())
-            ->method('record_metric')
-            ->with($item);
+        $i = $stub->get_metric_item();
+        $this->assertEquals(1, $i->value);
+        $this->assertEquals(1, $i->time);
 
-        $collectormock->record_metric($item);
+        $i = $stub->get_metric_item();
+        $this->assertEquals(2, $i->value);
+        $this->assertEquals(2, $i->time);
+
+        $i = $stub->get_metric_item();
+        $this->assertEquals(3, $i->value);
+        $this->assertEquals(3, $i->time);
+
+        $i = $stub->get_metric_item();
+        $this->assertEquals(1, $i->value);
+        $this->assertEquals(4, $i->time);
     }
 }

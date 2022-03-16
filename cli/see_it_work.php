@@ -14,18 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-/**
- * Version
- *
- * @package   cltr_database
- * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+namespace tool_cloudmetrics;
+
+/*
+ * A test script to demonstrate basic metric->collector functionality.
  */
 
-defined('MOODLE_INTERNAL') || die();
+define('CLI_SCRIPT', true);
 
-$plugin->version = 2022031600;
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
-$plugin->component = 'cltr_database';
+require_once(__DIR__ . '/../../../../config.php');
 
+$collector = new test_collector();
+$metric = new test_metric();
+for ($x = 0; $x <= 100; ++$x) {
+    $collector->record_metric($metric->get_metric_item());
+}

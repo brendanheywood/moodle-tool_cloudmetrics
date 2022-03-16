@@ -14,30 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace cltr_database;
-
-use tool_cloudmetrics\metric_item;
+namespace tool_cloudmetrics;
 
 /**
- * Collector class for the internal database.
+ * Test metric that generates a random trail of data.
  *
- * @package   cltr_database
+ * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class test_metric extends metric_base {
 
-class collector extends \tool_cloudmetrics\collector_base {
-    public function record_metric(metric_item $item) {
-        global $DB;
+    public $value = 100;
+    public $variance = 10;
 
-        $DB->insert_record(
-            'cltr_database_metrics',
-            ['name' => $item->name, 'value' => $item->value, 'time' => $item->time]
-        );
+    public $starttime = 1640955600; // Midnight, 1st Jan 2022.
+    public $interval = 86400; // 1 day.
+
+    public $name = 'foobar';
+
+    public function get_name(): string {
+        return $this->name;
     }
 
-    public function is_ready(): bool {
-        return true;
+    public function get_label(): string {
+        return 'Test metric'; // Don't use get_string as this is for testing only.
+    }
+
+    public function get_metric_item(): metric_item {
+        $this->value += rand(-$this->variance, $this->variance);
+        return new metric_item($this->get_name(), $this->starttime += $this->interval, $this->value, $this);
     }
 }
+

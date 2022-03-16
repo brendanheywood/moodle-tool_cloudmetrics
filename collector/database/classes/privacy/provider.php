@@ -14,18 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace cltr_database\privacy;
+
 /**
- * Version
+ * Currently reports no privatge data being kept. This may need to change.
  *
  * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+class provider implements \core_privacy\local\metadata\null_provider {
 
-$plugin->version = 2022031600;
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
-$plugin->component = 'cltr_database';
-
+    /**
+     * Why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}

@@ -32,11 +32,11 @@ $string['label'] = 'Internal';
 $string['privacy:metadata'] = 'No personal information is stored';
 
 // Settings.
-$string['metric_expiry'] = 'Time to keep data (days)';
+$string['metric_expiry'] = 'Time to keep data';
 $string['metric_expiry_desc'] = 'Length of time to keep data before deleting.';
 
 // Chart display.
 $string['select_metric_for_display'] = 'Select metric for display.';
 
 // Scheduled tasks.
-$string['task_expire_metrics'] = 'Expire metrics task';
+$string['metrics_cleanup_task'] = 'Cleanup metrics task';

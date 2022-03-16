@@ -25,15 +25,16 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+use cltr_database\output\admin_setting_days_configduration;
+
 if ($hassiteconfig) {
     if ($ADMIN->fulltree) {
         $settings->add(
-            new admin_setting_configtext(
+            new admin_setting_configduration(
                 'cltr_database/metric_expiry',
                 get_string('metric_expiry', 'cltr_database'),
                 get_string('metric_expiry_desc', 'cltr_database'),
-                '30',
-                PARAM_INT
+                30 * \cltr_database\lib::SECS_IN_DAY
             )
         );
     }

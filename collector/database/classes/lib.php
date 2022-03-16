@@ -37,17 +37,13 @@ class lib {
     const SECS_IN_DAY = 86400;
 
     /**
-     * Returns the expiry time for metric data in seconds. Enforces a minimum of one day.
+     * Returns the expiry time for metric data in seconds.
      *
      * @return int
      * @throws \dml_exception
      */
     public static function get_metric_expiry(): int {
-        $expiry = (int)get_config('cltr_database', 'metric_expiry') * self::SECS_IN_DAY;
-        if ($expiry <= self::SECS_IN_DAY) {
-            return self::SECS_IN_DAY;
-        }
-        return $expiry;
+        return (int) get_config('cltr_database', 'metric_expiry'); // Value is stored as seconds.
     }
 }
 

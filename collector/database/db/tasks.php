@@ -28,7 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 // List of tasks.
 $tasks = [
     [
-        'classname' => 'cltr_database\task\expire_metrics',
+        'classname' => 'cltr_database\task\metrics_cleanup_task',
         'blocking' => 0,
         'minute' => '0',
         'hour' => '0',

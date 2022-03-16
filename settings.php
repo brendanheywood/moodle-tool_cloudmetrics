@@ -43,21 +43,17 @@ if ($hassiteconfig) {
             ''
         ));
 
-        $settings->add(
-            new tool_cloudmetrics\admin_setting_manage_collectors()
-        );
+        $settings->add(new tool_cloudmetrics\admin_setting_manage_collectors());
 
         $settings->add(new admin_setting_heading('tool_cloudmetrics/metrics',
             get_string('manage_metrics', 'tool_cloudmetrics'),
             ''
         ));
 
-        $settings->add(
-            new tool_cloudmetrics\admin_setting_manage_metrics()
-        );
+        $settings->add(new tool_cloudmetrics\admin_setting_manage_metrics());
     }
 
-    foreach (cltr::get_enabled_plugins() as $plugin) {
+    foreach (core_plugin_manager::instance()->get_plugins_of_type('cltr') as $plugin) {
         $plugin->load_settings($ADMIN, 'tool_cloudmetrics_reports', $hassiteconfig);
     }
 }

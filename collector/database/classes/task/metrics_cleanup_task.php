@@ -27,10 +27,10 @@ namespace cltr_database\task;
 
 use cltr_database\lib;
 
-class expire_metrics extends \core\task\scheduled_task {
+class metrics_cleanup_task extends \core\task\scheduled_task {
 
     public function get_name() {
-        return get_string('task_expire_metrics', 'cltr_database');
+        return get_string('metrics_cleanup_task', 'cltr_database');
     }
 
     public function execute() {

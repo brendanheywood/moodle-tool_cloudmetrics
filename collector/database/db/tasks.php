@@ -15,25 +15,25 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version
+ * Define tasks run by cltr_database.
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022031401;
-$plugin->release = 2022031400;
-
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
-
-// TODO $plugin->supported = ;     // Available as of Moodle 3.9.0 or later.
-// TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
-
-$plugin->component = 'tool_cloudmetrics';
-$plugin->maturity = MATURITY_ALPHA;
-
-$plugin->dependencies = [];
+// List of tasks.
+$tasks = [
+    [
+        'classname' => 'cltr_database\task\expire_metrics',
+        'blocking' => 0,
+        'minute' => '0',
+        'hour' => '0',
+        'day' => '*',
+        'month' => '*',
+        'dayofweek' => '*',
+    ],
+];

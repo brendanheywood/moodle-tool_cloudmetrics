@@ -56,4 +56,8 @@ if ($hassiteconfig) {
             new tool_cloudmetrics\admin_setting_manage_metrics()
         );
     }
+
+    foreach (cltr::get_enabled_plugins() as $plugin) {
+        $plugin->load_settings($ADMIN, 'tool_cloudmetrics_reports', $hassiteconfig);
+    }
 }

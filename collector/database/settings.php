@@ -15,25 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version
+ * Cloudmetrics - Database collector settings.
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022031401;
-$plugin->release = 2022031400;
-
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
-
-// TODO $plugin->supported = ;     // Available as of Moodle 3.9.0 or later.
-// TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
-
-$plugin->component = 'tool_cloudmetrics';
-$plugin->maturity = MATURITY_ALPHA;
-
-$plugin->dependencies = [];
+if ($hassiteconfig) {
+    if ($ADMIN->fulltree) {
+        $settings->add(
+            new admin_setting_configtext(
+                'cltr_database/metric_expiry',
+                get_string('metric_expiry', 'cltr_database'),
+                get_string('metric_expiry_desc', 'cltr_database'),
+                '30',
+                PARAM_INT
+            )
+        );
+    }
+}

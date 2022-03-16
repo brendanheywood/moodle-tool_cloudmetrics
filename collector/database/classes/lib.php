@@ -16,28 +16,38 @@
 
 namespace cltr_database;
 
-use tool_cloudmetrics\metric_item;
-
 /**
- * Collector class for the internal database.
+ * General functions used by plugin
  *
  * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class lib {
 
-class collector extends \tool_cloudmetrics\collector_base {
-    public function record_metric(metric_item $item) {
-        global $DB;
+    // TODO: Is there a better way to get this?
+    /** @var string Root directory of the plugin. */
+    const PLUGIN_DIR = '/admin/tool/cloudmetrics/collector/database/';
 
-        $DB->insert_record(
-            lib::TABLE,
-            ['name' => $item->name, 'value' => $item->value, 'time' => $item->time]
-        );
-    }
+    /** @var string Name of database table. */
+    const TABLE = 'cltr_database_metrics';
 
-    public function is_ready(): bool {
-        return true;
+    /** @var int Number of seconds in one day. */
+    const SECS_IN_DAY = 86400;
+
+    /**
+     * Returns the expiry time for metric data in seconds. Enforces a minimum of one day.
+     *
+     * @return int
+     * @throws \dml_exception
+     */
+    public static function get_metric_expiry(): int {
+        $expiry = (int)get_config('cltr_database', 'metric_expiry') * self::SECS_IN_DAY;
+        if ($expiry <= self::SECS_IN_DAY) {
+            return self::SECS_IN_DAY;
+        }
+        return $expiry;
     }
 }
+

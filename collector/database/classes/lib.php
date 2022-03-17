@@ -14,26 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace cltr_database;
+
 /**
- * Version
+ * General functions used by plugin
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+class lib {
+    /** @var string Name of database table. */
+    const TABLE = 'cltr_database_metrics';
 
-defined('MOODLE_INTERNAL') || die();
+    /**
+     * Returns the expiry time for metric data in seconds.
+     *
+     * @return int
+     * @throws \dml_exception
+     */
+    public static function get_metric_expiry(): int {
+        return (int) get_config('cltr_database', 'metric_expiry'); // Value is stored as seconds.
+    }
+}
 
-$plugin->version = 2022031401;
-$plugin->release = 2022031400;
-
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
-
-// TODO $plugin->supported = ;     // Available as of Moodle 3.9.0 or later.
-// TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
-
-$plugin->component = 'tool_cloudmetrics';
-$plugin->maturity = MATURITY_ALPHA;
-
-$plugin->dependencies = [];

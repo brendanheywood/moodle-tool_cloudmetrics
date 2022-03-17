@@ -28,6 +28,7 @@ require_once($CFG->libdir.'/adminlib.php');
 
 $action = required_param('action', PARAM_ALPHANUMEXT);
 $name   = required_param('name', PARAM_PLUGIN);
+$returnurl = optional_param('returnurl', get_local_referer(false), PARAM_LOCALURL);
 
 $syscontext = context_system::instance();
 $PAGE->set_url('/admin/tool/cloudmetrics/metrics.php');
@@ -36,7 +37,7 @@ $PAGE->set_context($syscontext);
 require_admin();
 require_sesskey();
 
-$return = new moodle_url('/admin/settings.php', array('section' => 'tool_cloudmetrics'));
+$return = new moodle_url($returnurl);
 
 $plugins = core_plugin_manager::instance()->get_plugins_of_type('metric');
 

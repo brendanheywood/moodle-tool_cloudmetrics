@@ -32,7 +32,7 @@ class collector extends \tool_cloudmetrics\collector_base {
         global $DB;
 
         $DB->insert_record(
-            'cltr_database_metrics',
+            lib::TABLE,
             ['name' => $item->name, 'value' => $item->value, 'time' => $item->time]
         );
     }

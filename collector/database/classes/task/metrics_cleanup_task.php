@@ -15,25 +15,34 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version
+ * Delete metrics that have expired
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+namespace cltr_database\task;
 
-$plugin->version = 2022031401;
-$plugin->release = 2022031400;
+use cltr_database\lib;
 
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
+class metrics_cleanup_task extends \core\task\scheduled_task {
 
-// TODO $plugin->supported = ;     // Available as of Moodle 3.9.0 or later.
-// TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
+    public function get_name() {
+        return get_string('metrics_cleanup_task', 'cltr_database');
+    }
 
-$plugin->component = 'tool_cloudmetrics';
-$plugin->maturity = MATURITY_ALPHA;
+    public function execute() {
+        global $DB;
 
-$plugin->dependencies = [];
+        $cutoff = time() - lib::get_metric_expiry();
+
+        // Purge the metrics older than this time.
+        $DB->delete_records_select(
+            lib::TABLE,
+            'time < :cutoff',
+            ['cutoff' => $cutoff]
+        );
+    }
+}

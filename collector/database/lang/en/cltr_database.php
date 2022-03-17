@@ -26,9 +26,17 @@
 defined('MOODLE_INTERNAL') || die();
 
 $string['pluginname'] = 'Cloudmetrics database collector';
-
 $string['label'] = 'Internal';
 
 // Privacy.
 $string['privacy:metadata'] = 'No personal information is stored';
 
+// Settings.
+$string['metric_expiry'] = 'Time to keep data';
+$string['metric_expiry_desc'] = 'Length of time to keep data before deleting.';
+
+// Chart display.
+$string['select_metric_for_display'] = 'Select metric for display.';
+
+// Scheduled tasks.
+$string['metrics_cleanup_task'] = 'Cleanup metrics task';

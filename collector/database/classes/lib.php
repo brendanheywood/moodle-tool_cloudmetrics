@@ -25,16 +25,8 @@ namespace cltr_database;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class lib {
-
-    // TODO: Is there a better way to get this?
-    /** @var string Root directory of the plugin. */
-    const PLUGIN_DIR = '/admin/tool/cloudmetrics/collector/database/';
-
     /** @var string Name of database table. */
     const TABLE = 'cltr_database_metrics';
-
-    /** @var int Number of seconds in one day. */
-    const SECS_IN_DAY = 86400;
 
     /**
      * Returns the expiry time for metric data in seconds.

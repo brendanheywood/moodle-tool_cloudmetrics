@@ -81,8 +81,8 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
     public function test_expiry() {
         global $DB;
 
-        $timeago = time() - (int)(19.5 * lib::SECS_IN_DAY); // 19.5 days ago.
-        $stub = $this->get_metric_stub([1, 2, 3], $timeago, lib::SECS_IN_DAY);
+        $timeago = time() - (int)(19.5 * DAYSECS); // 19.5 days ago.
+        $stub = $this->get_metric_stub([1, 2, 3], $timeago, DAYSECS);
         $collector = new collector();
 
         for ($i = 0; $i < 20; ++$i) {
@@ -94,7 +94,7 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $this->assertEquals(20, $count);
 
         // We want to remove all data recorded as more than 10 days old.
-        set_config('metric_expiry', 10 * lib::SECS_IN_DAY, 'cltr_database');
+        set_config('metric_expiry', 10 * DAYSECS, 'cltr_database');
 
         $task = new \cltr_database\task\metrics_cleanup_task();
         $task->execute();

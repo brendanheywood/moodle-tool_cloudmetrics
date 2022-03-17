@@ -29,3 +29,8 @@ $string['pluginname'] = 'Active users metric';
 
 // Privacy.
 $string['privacy:metadata'] = 'No personal information is stored';
+
+// Settings.
+
+$string['time_to_show_users'] = 'Timeframe';
+$string['time_to_show_users_desc'] = 'Time to collect online users';

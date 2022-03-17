@@ -14,26 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace metric_activeusers;
+
+define('CLI_SCRIPT', true);
+
 /**
- * Cloudmetrics - Database collector settings.
- *
- * @package   cltr_database
- * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright 2022, Catalyst IT
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Test script to fill the database collector with data.
  */
 
-defined('MOODLE_INTERNAL') || die();
+require_once(__DIR__ . '/../../../../../../config.php');
 
-if ($hassiteconfig) {
-    if ($ADMIN->fulltree) {
-        $settings->add(
-            new admin_setting_configduration(
-                'cltr_database/metric_expiry',
-                get_string('metric_expiry', 'cltr_database'),
-                get_string('metric_expiry_desc', 'cltr_database'),
-                30 * DAYSECS
-            )
-        );
-    }
+$collector = new \tool_cloudmetrics\test_collector();
+$metric = new metric();
+
+for ($x = 0; $x <= 100; ++$x) {
+    sleep(10);
+    $collector->record_metric($metric->get_metric_item());
 }

@@ -15,25 +15,24 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Delete logs that have expired
+ * A task to obtain the active users.
  *
  * @package   metric_activeusers
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright 2021, Catalyst IT
+ * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace metric_activeusers\task;
 
 
-class get_metric extends \core\task\scheduled_task {
+class get_metric_task extends \core\task\scheduled_task {
 
     public function get_name() {
         return get_string('pluginname', 'metric_activeusers');
     }
 
     public function execute() {
-
         $metric = new \metric_activeusers\metric();
         \tool_cloudmetrics\collector_base::send_metric($metric->get_metric_item());
     }

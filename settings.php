@@ -56,4 +56,8 @@ if ($hassiteconfig) {
     foreach (core_plugin_manager::instance()->get_plugins_of_type('cltr') as $plugin) {
         $plugin->load_settings($ADMIN, 'tool_cloudmetrics_reports', $hassiteconfig);
     }
+
+    foreach (core_plugin_manager::instance()->get_plugins_of_type('metric') as $plugin) {
+        $plugin->load_settings($ADMIN, 'tool_cloudmetrics_reports', $hassiteconfig);
+    }
 }

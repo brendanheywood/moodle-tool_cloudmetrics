@@ -15,9 +15,9 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Cloudmetrics - Database collector settings.
+ * Cloudmetrics - Active users metric settings.
  *
- * @package   cltr_database
+ * @package   metric_activeusers
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -29,10 +29,11 @@ if ($hassiteconfig) {
     if ($ADMIN->fulltree) {
         $settings->add(
             new admin_setting_configduration(
-                'cltr_database/metric_expiry',
-                get_string('metric_expiry', 'cltr_database'),
-                get_string('metric_expiry_desc', 'cltr_database'),
-                30 * DAYSECS
+                'metric_activeusers/time_to_show_users',
+                get_string('time_to_show_users', 'metric_activeusers'),
+                get_string('time_to_show_users_desc', 'metric_activeusers'),
+                5 * MINSECS,
+                MINSECS
             )
         );
     }

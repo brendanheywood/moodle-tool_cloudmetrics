@@ -18,10 +18,12 @@ namespace metric_activeusers;
 
 use tool_cloudmetrics\metric_item;
 
+use block_online_users\fetcher;
+
 /**
  * Metric class for active users.
  *
- * @package    metric_foobar
+ * @package    metric_activeusers
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -33,11 +35,27 @@ class metric extends \tool_cloudmetrics\metric_base {
     }
 
     public function get_label(): string {
-        return get_string('activeusers', 'metric_activeusers');
+        return get_string('pluginname', 'metric_activeusers');
     }
 
     public function get_metric_item(): metric_item {
-        // TODO: Currently a stub, will get fleshed out.
-        return new metric_item($this->get_name(), 100, 200, $this);
+        $currentgroup = null;
+        $now = time();
+        $context = \context_system::instance();
+        $timetoshowusers = $this->get_time_to_show_users();
+        $activeusers = new fetcher($currentgroup, $now, $timetoshowusers, $context);
+
+        return new metric_item($this->get_name(), $now, $activeusers->count_users(), $this);
+    }
+
+    /**
+     * @return int Time as seconds.
+     */
+    public function get_time_to_show_users(): int {
+        $value = (int) get_config('metric_activeusers', 'time_to_show_users');
+        if ($value < 100) {
+            $value = 100; // Fetcher will round to nearest 100.
+        }
+        return $value;
     }
 }

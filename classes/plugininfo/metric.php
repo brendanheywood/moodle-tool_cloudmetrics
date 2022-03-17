@@ -46,6 +46,16 @@ class metric extends \core\plugininfo\base {
         return $plugins;
     }
 
+    public static function get_plugin($name) {
+        // TODO: is there a better way to get a specific plugin?
+        $plugins = \core_plugin_manager::instance()->get_plugins_of_type('metric');
+        if (isset($plugins[$name])) {
+            return $plugins[$name];
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Returns the information about plugin availability
      *
@@ -93,5 +103,27 @@ class metric extends \core\plugininfo\base {
 
     public function is_uninstall_allowed() {
         return !in_array($this->name, self::BUILTIN_PLUGINS);
+    }
+
+    public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
+        global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
+        $ADMIN = $adminroot; // May be used in settings.php.
+        $plugininfo = $this; // Also can be used inside settings.php.
+
+        if (!$this->is_installed_and_upgraded()) {
+            return;
+        }
+
+        if (!$hassiteconfig or !file_exists($this->full_path('settings.php'))) {
+            return;
+        }
+
+        $section = $this->get_settings_section_name();
+        $settings = new \admin_settingpage($section, $this->displayname, 'moodle/site:config');
+        include($this->full_path('settings.php')); // This may also set $settings to null.
+
+        if ($settings) {
+            $ADMIN->add($parentnodename, $settings);
+        }
     }
 }

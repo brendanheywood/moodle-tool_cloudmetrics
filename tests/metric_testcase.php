@@ -16,6 +16,9 @@
 
 namespace tool_cloudmetrics;
 
+use tool_cloudmetrics\metric\base;
+use tool_cloudmetrics\metric\metric_item;
+
 /**
  * Intermediary class to provide metric stubs for use in testing.
  *
@@ -41,7 +44,7 @@ class metric_testcase extends \advanced_testcase {
 
         $time = $starttime;
 
-        $stub = $this->getMockBuilder(metric_base::class)
+        $stub = $this->getMockBuilder(base::class)
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics;
+namespace tool_cloudmetrics\metric;
 
 /**
  * Test metric that generates a random trail of data.
@@ -24,7 +24,7 @@ namespace tool_cloudmetrics;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class test_metric extends metric_base {
+class test_metric extends base {
 
     public $value = 100;
     public $variance = 10;
@@ -34,14 +34,67 @@ class test_metric extends metric_base {
 
     public $name = 'foobar';
 
+    public $enabled = false;
+
+    /**
+     * The metric's name.
+     *
+     * @return string
+     */
     public function get_name(): string {
         return $this->name;
     }
 
+    /**
+     * The metric's display name.
+     *
+     * @return string
+     */
     public function get_label(): string {
         return 'Test metric'; // Don't use get_string as this is for testing only.
     }
 
+    /**
+     * The frequency of the metric's sampling.
+     *
+     * @return int
+     */
+    public function get_frequency(): int {
+        return manager::FREQ_MIN;
+    }
+
+    /**
+     * The metric type.
+     *
+     * @return int
+     */
+    public function get_type(): int {
+        return manager::TYPE_GAUGE;
+    }
+
+    /**
+     * Is the metric switched on?
+     *
+     * @return bool
+     */
+    public function is_enabled(): bool {
+        return $this->enabled;
+    }
+
+    /**
+     * Sets the enabled status.
+     *
+     * @param bool $enabled
+     */
+    public function set_enabled(bool $enabled) {
+        $this->enabled = $enabled;
+    }
+
+    /**
+     * Retrieves the metric.
+     *
+     * @return metric_item
+     */
     public function get_metric_item(): metric_item {
         $this->value += rand(-$this->variance, $this->variance);
         return new metric_item($this->get_name(), $this->starttime += $this->interval, $this->value, $this);

@@ -16,7 +16,8 @@
 
 namespace cltr_database;
 
-use tool_cloudmetrics\metric_item;
+use tool_cloudmetrics\metric\metric_item;
+use tool_cloudmetrics\collector\base;
 
 /**
  * Collector class for the internal database.
@@ -27,7 +28,7 @@ use tool_cloudmetrics\metric_item;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-class collector extends \tool_cloudmetrics\collector_base {
+class collector extends base {
     public function record_metric(metric_item $item) {
         global $DB;
 

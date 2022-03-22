@@ -14,31 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics;
+namespace tool_cloudmetrics\collector;
+
+use tool_cloudmetrics\metric\metric_item;
 
 /**
- * Data class for metric values.
+ * Test collector that reflects input to stdout.
  *
- * @package    tool_cloudmetrics
- * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   tool_cloudmetrics
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class metric_item {
+class test_collector extends base {
+    public function record_metric(metric_item $item) {
+        echo "metric: $item->name, $item->time, $item->value\n";
+    }
 
-    /** @var string */
-    public $name;
-    /** @var int */
-    public $time;
-    /** @var mixed */
-    public $value;
-    /** @var metric_base */
-    public $metric;
-
-    public function __construct(string $name, int $time, $value, metric_base $item) {
-        $this->name = $name;
-        $this->time = $time;
-        $this->value = $value;
-        $this->metric = $item;
+    public function is_ready(): bool {
+        return true;
     }
 }
+

@@ -14,30 +14,45 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace metric_activeusers;
-
-use tool_cloudmetrics\metric_item;
+namespace tool_cloudmetrics\metric;
 
 /**
- * Metric class for active users.
+ * Metric class for online users.
  *
  * @package    metric_foobar
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class metric extends \tool_cloudmetrics\metric_base {
-
+class online_users_metric extends builtin {
+    /**
+     * The metric's name.
+     *
+     * @return string
+     */
     public function get_name(): string {
-        return 'activeusers';
+        return 'onlineusers';
     }
 
-    public function get_label(): string {
-        return get_string('activeusers', 'metric_activeusers');
+    /**
+     * The metric type.
+     *
+     * @return int
+     */
+    public function get_type(): int {
+        return manager::TYPE_GAUGE;
     }
 
+    /**
+     * Retrieves the metric.
+     *
+     * @return metric_item
+     */
     public function get_metric_item(): metric_item {
-        // TODO: Currently a stub, will get fleshed out.
-        return new metric_item($this->get_name(), 100, 200, $this);
+        global $DB;
+        $now = time();
+        // Don't use fetcher because this is faster.
+        $users = $DB->count_records_select('user', 'deleted = ? AND lastaccess > ?', [0, $now - $this->get_time_window()]);
+        return new metric_item($this->get_name(), $now, $users, $this);
     }
 }

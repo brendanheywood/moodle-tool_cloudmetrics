@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use tool_cloudmetrics\metric\manager;
+
 /**
  * Sumbission for metric plugin management.
  *
@@ -39,18 +41,19 @@ require_sesskey();
 
 $return = new moodle_url($returnurl);
 
-$plugins = core_plugin_manager::instance()->get_plugins_of_type('metric');
+$metrics = manager::get_metrics();
 
-if (!isset($plugins[$name])) {
-    throw new moodle_exception(get_string('plugin_not_found', 'tool_cloudmetrics', $name), 'tool_cloudmetrics');
+if (!isset($metrics[$name])) {
+    throw new moodle_exception(get_string('metric_not_found', 'tool_cloudmetrics', $name), 'tool_cloudmetrics');
 }
 
 switch ($action) {
     case 'disable':
-        $plugins[$name]->set_enabled(false);
+        $metrics[$name]->set_enabled(false);
         break;
     case 'enable':
-        $plugins[$name]->set_enabled(true);
+        $metrics[$name]->set_enabled(true);
         break;
 }
+
 redirect($return);

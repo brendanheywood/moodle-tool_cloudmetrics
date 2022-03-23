@@ -38,4 +38,3 @@ class lib {
         return (int) get_config('cltr_database', 'metric_expiry'); // Value is stored as seconds.
     }
 }
-

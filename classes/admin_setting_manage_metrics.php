@@ -16,10 +16,17 @@
 
 namespace tool_cloudmetrics;
 
+use tool_cloudmetrics\metric\manager;
+
 /**
- * A table to manage collector plugins.
- * TODO: This is largely copied from lib/adminlib.php:admin_setting_managedataplugins.
+ * Admin setting object for managing metrics
+ *
+ * @package   tool_cloudmetrics
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 class admin_setting_manage_metrics extends \admin_setting {
 
     /**
@@ -59,25 +66,7 @@ class admin_setting_manage_metrics extends \admin_setting {
         return '';
     }
 
-    /**
-     * Search to find if Query is related to plugin.
-     *
-     * @param string $query The string to search for
-     * @return bool true for related false for not
-     */
-    public function is_related($query) {
-        if (parent::is_related($query)) {
-            return true;
-        }
-        $plugins = \core_plugin_manager::instance()->get_plugins_of_type('metric');
-        foreach ($plugins as $plugin) {
-            if (strpos($plugin->component, $query) !== false ||
-                strpos(\core_text::strtolower($plugin->displayname), $query) !== false) {
-                return true;
-            }
-        }
-        return false;
-    }
+    // TODO is_related().
 
     /**
      * Return XHTML to display control
@@ -88,60 +77,40 @@ class admin_setting_manage_metrics extends \admin_setting {
      */
     public function output_html($data, $query='') {
         global $OUTPUT;
-        $return = '';
 
-        $plugins = \core_plugin_manager::instance()->get_plugins_of_type('metric');
+        $metrics = manager::get_metrics();
 
         $txt = get_strings(array('settings', 'name', 'enable', 'disable', 'default'));
-        $txt->uninstall = get_string('uninstallplugin', 'core_admin');
 
         $table = new \html_table();
-        $table->head  = array($txt->name, $txt->enable, $txt->uninstall, $txt->settings);
-        $table->align = array('left', 'center', 'center', 'center', 'center');
-        $table->attributes['class'] = 'manageplugintable generaltable admintable';
+        $table->head  = array($txt->name, $txt->enable, $txt->settings);
+        $table->align = array('left', 'center', 'center');
+        $table->attributes['class'] = 'manageformattable generaltable admintable';
         $table->data  = array();
 
-        foreach ($plugins as $plugin) {
-            $status = $plugin->get_status();
+        foreach ($metrics as $metric) {
             $url = new \moodle_url('/admin/tool/cloudmetrics/metrics.php',
-                array('sesskey' => sesskey(), 'name' => $plugin->name));
-
-            $class = '';
-            if ($plugin->is_enabled()) {
-                $strpluginname = $plugin->displayname;
+                array('sesskey' => sesskey(), 'name' => $metric->get_name()));
+            $displayname = $metric->get_label();
+            if ($metric->is_enabled()) {
+                $class = '';
                 $hideshow = \html_writer::link($url->out(false, array('action' => 'disable')),
                     $OUTPUT->pix_icon('t/hide', $txt->disable, 'moodle', array('class' => 'iconsmall')));
             } else {
                 $class = 'dimmed_text';
-                $strpluginname = $plugin->displayname;
                 $hideshow = \html_writer::link($url->out(false, array('action' => 'enable')),
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', array('class' => 'iconsmall')));
             }
 
-            $uninstall = '';
-            if ($plugin->is_uninstall_allowed()) {
-                if ($status === \core_plugin_manager::PLUGIN_STATUS_MISSING) {
-                    $uninstall = get_string('status_missing', 'core_plugin');
-                } else if ($status === \core_plugin_manager::PLUGIN_STATUS_NEW) {
-                    $uninstall = get_string('status_new', 'core_plugin');
-                } else if ($uninstallurl =
-                    \core_plugin_manager::instance()->get_uninstall_url('metric_' . $plugin->name, 'tool_cloudmetrics')) {
-                    $uninstall = \html_writer::link($uninstallurl, $txt->uninstall);
-                }
-            }
+            // TODO: settings link.
 
-            $settings = '';
-            if ($plugin->get_settings_url()) {
-                $settings = \html_writer::link($plugin->get_settings_url(), $txt->settings);
-            }
-
-            $row = new \html_table_row(array($strpluginname, $hideshow, $uninstall, $settings));
+            $row = new \html_table_row([$displayname, $hideshow, '']);
             if ($class) {
                 $row->attributes['class'] = $class;
             }
             $table->data[] = $row;
         }
-        $return .= \html_writer::table($table);
+        $return = \html_writer::table($table);
         return highlight($query, $return);
     }
 }

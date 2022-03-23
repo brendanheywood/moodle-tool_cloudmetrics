@@ -14,20 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics;
+namespace tool_cloudmetrics\collector;
+
+use tool_cloudmetrics\metric\metric_item;
 
 /**
- * Base class for metrics.
+ * Base class for collectors.
  *
- * @package    tool_cloudmetrics
- * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   tool_cloudmetrics
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class metric_base {
+abstract class base {
 
-    abstract public function get_name(): string;
-    abstract public function get_label(): string;
+    /**
+     * Records a single metric.
+     *
+     * @param metric_item $metric
+     * @return mixed
+     */
+    abstract public function record_metric(metric_item $metric);
 
-    abstract public function get_metric_item(): metric_item;
+    /**
+     * Returns true if the backend service is able to receive requests.
+     *
+     * @return bool
+     */
+    abstract public function is_ready(): bool;
 }

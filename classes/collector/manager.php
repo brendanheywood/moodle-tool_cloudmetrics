@@ -14,19 +14,20 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics;
+namespace tool_cloudmetrics\collector;
 
+use tool_cloudmetrics\metric\metric_item;
 use tool_cloudmetrics\plugininfo\cltr;
 
 /**
- * Base class for collectors.
+ * Manager class for collectors.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class collector_base {
+class manager {
     /**
      * Get all the collector classes.
      *
@@ -50,19 +51,4 @@ abstract class collector_base {
             }
         }
     }
-
-    /**
-     * Records a single metric.
-     *
-     * @param metric_item $metric
-     * @return mixed
-     */
-    abstract public function record_metric(metric_item $metric);
-
-    /**
-     * Returns true if the backend service is able to receive requests.
-     *
-     * @return bool
-     */
-    abstract public function is_ready(): bool;
 }

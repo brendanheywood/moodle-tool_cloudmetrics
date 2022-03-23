@@ -23,7 +23,9 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use tool_cloudmetrics\plugininfo\cltr;
+use tool_cloudmetrics\admin_setting_manage_collectors;
+use tool_cloudmetrics\admin_setting_manage_metrics;
+use tool_cloudmetrics\metric\manager;
 
 defined('MOODLE_INTERNAL') || die();
 
@@ -40,17 +42,70 @@ if ($hassiteconfig) {
     if ($ADMIN->fulltree) {
         $settings->add(new admin_setting_heading('tool_cloudmetrics/collectors',
             get_string('manage_collectors', 'tool_cloudmetrics'),
-            ''
+            get_string('enable_disable_collectors', 'tool_cloudmetrics'),
         ));
 
-        $settings->add(new tool_cloudmetrics\admin_setting_manage_collectors());
+        $settings->add(new admin_setting_manage_collectors());
 
         $settings->add(new admin_setting_heading('tool_cloudmetrics/metrics',
             get_string('manage_metrics', 'tool_cloudmetrics'),
-            ''
+            get_string('enable_disable_metrics', 'tool_cloudmetrics'),
         ));
 
-        $settings->add(new tool_cloudmetrics\admin_setting_manage_metrics());
+        $settings->add(new admin_setting_manage_metrics());
+
+        $settings->add(new admin_setting_heading('tool_cloudmetrics/builtin_metrics',
+            get_string('builtin_metrics_settings', 'tool_cloudmetrics'),
+            '',
+        ));
+
+        $settings->add(new admin_setting_configselect(
+            'tool_cloudmetrics/activeusers_frequency',
+            get_string('activeusers_frequency', 'tool_cloudmetrics'),
+            get_string('activeusers_frequency_desc', 'tool_cloudmetrics'),
+            manager::FREQ_5MIN,
+            manager::get_frequency_labels()
+        ));
+
+        $settings->add(new admin_setting_configduration(
+            'tool_cloudmetrics/activeusers_time_window',
+            get_string('activeusers_time_window', 'tool_cloudmetrics'),
+            get_string('activeusers_time_window_desc', 'tool_cloudmetrics'),
+            30 * DAYSECS,
+            DAYSECS
+        ));
+
+        $settings->add(new admin_setting_configselect(
+            'tool_cloudmetrics/onlineusers_frequency',
+            get_string('onlineusers_frequency', 'tool_cloudmetrics'),
+            get_string('onlineusers_frequency_desc', 'tool_cloudmetrics'),
+            manager::FREQ_5MIN,
+            manager::get_frequency_labels()
+        ));
+
+        $settings->add(new admin_setting_configduration(
+            'tool_cloudmetrics/onlineusers_time_window',
+            get_string('onlineusers_time_window', 'tool_cloudmetrics'),
+            get_string('onlineusers_time_window_desc', 'tool_cloudmetrics'),
+            5 * MINSECS,
+            MINSECS
+        ));
+
+        $settings->add(new admin_setting_configselect(
+            'tool_cloudmetrics/newusers_frequency',
+            get_string('newusers_frequency', 'tool_cloudmetrics'),
+            get_string('newusers_frequency_desc', 'tool_cloudmetrics'),
+            manager::FREQ_5MIN,
+            manager::get_frequency_labels()
+        ));
+
+         $settings->add(new admin_setting_configduration(
+             'tool_cloudmetrics/newusers_time_window',
+             get_string('newusers_time_window', 'tool_cloudmetrics'),
+             get_string('newusers_time_window_desc', 'tool_cloudmetrics'),
+             30 * DAYSECS,
+             DAYSECS
+         ));
     }
 
     foreach (core_plugin_manager::instance()->get_plugins_of_type('cltr') as $plugin) {

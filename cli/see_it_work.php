@@ -16,6 +16,9 @@
 
 namespace tool_cloudmetrics;
 
+use tool_cloudmetrics\metric\test_metric;
+use tool_cloudmetrics\collector\test_collector;
+
 /*
  * A test script to demonstrate basic metric->collector functionality.
  */

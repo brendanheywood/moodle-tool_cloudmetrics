@@ -16,6 +16,8 @@
 
 namespace tool_cloudmetrics;
 
+use tool_cloudmetrics\collector\base;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . "/metric_testcase.php"); // This is needed. File will not be automatically included.
@@ -32,7 +34,7 @@ class tool_cloudmetrics_collector_base_test extends metric_testcase {
         $stub = $this->get_metric_stub([1]);
         $item = $stub->get_metric_item();
 
-        $collectormock = $this->createMock(collector_base::class);
+        $collectormock = $this->createMock(base::class);
         $collectormock->expects($this->once())
             ->method('record_metric')
             ->with($item);

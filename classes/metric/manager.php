@@ -91,7 +91,7 @@ class manager {
             'newusers' => new new_users_metric(),
         ];
 
-        // Find metrics from plugins
+        // Find metrics from plugins.
         $more = get_plugins_with_function('_metrics', 'lib.php');
         foreach ($more as $plugins) {
             foreach ($plugins as $pluginfunction) {

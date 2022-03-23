@@ -39,7 +39,7 @@ if ($hassiteconfig) {
 
     $ADMIN->add('tool_cloudmetrics_reports', $settings);
 
-     if ($ADMIN->fulltree) {
+    if ($ADMIN->fulltree) {
         $settings->add(new admin_setting_heading('tool_cloudmetrics/collectors',
             get_string('manage_collectors', 'tool_cloudmetrics'),
             get_string('enable_disable_collectors', 'tool_cloudmetrics'),

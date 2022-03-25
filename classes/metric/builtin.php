@@ -47,7 +47,7 @@ abstract class builtin extends base {
      * @return int
      */
     public function get_frequency(): int {
-        return (int) get_config('tool_cloudmetrics', 'newusers_frequency');
+        return (int) get_config('tool_cloudmetrics', $this->get_name() . '_frequency');
     }
 
     /**

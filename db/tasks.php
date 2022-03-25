@@ -26,5 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 // List of tasks.
-$tasks = array(
-);
+$tasks = [
+    'classname' => 'tool_cloudmetrics\task\collect_metrics_task',
+    'blocking' => 0,
+    'minute' => '*',
+    'hour' => '*',
+    'day' => '*',
+    'month' => '*',
+    'dayofweek' => '*'
+];

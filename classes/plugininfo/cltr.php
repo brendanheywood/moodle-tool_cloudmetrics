@@ -16,7 +16,7 @@
 
 namespace tool_cloudmetrics\plugininfo;
 
-use tool_cloudmetrics\collector_base;
+use tool_cloudmetrics\collector\base;
 
 /**
  * Pluginino class for collectors.
@@ -75,9 +75,9 @@ class cltr extends \core\plugininfo\base {
     /**
      * Get the collector class for this plugin.
      *
-     * @return collector_base
+     * @return base
      */
-    public function get_collector(): collector_base {
+    public function get_collector(): base {
         $classname = '\\cltr_' . $this->name . '\collector';
         return new $classname();
     }

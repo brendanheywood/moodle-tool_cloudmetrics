@@ -81,8 +81,14 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
     public function test_expiry() {
         global $DB;
 
-        $timeago = time() - (int)(19.5 * DAYSECS); // 19.5 days ago.
-        $stub = $this->get_metric_stub([1, 2, 3], $timeago, DAYSECS);
+        $tz = \core_date::get_server_timezone_object();
+
+        // Represents 10am, 20 days ago.
+        $datestr = '-20 days midnight +10 hours';
+
+        $time = date_create_immutable($datestr, $tz)->getTimestamp();
+
+        $stub = $this->get_metric_stub([1, 2, 3], $time, DAYSECS);
         $collector = new collector();
 
         for ($i = 0; $i < 20; ++$i) {

@@ -36,6 +36,7 @@ $string['metric_expiry'] = 'Time to keep data';
 $string['metric_expiry_desc'] = 'Length of time to keep data before deleting.';
 
 // Chart display.
+$string['metric_display'] = 'Metric Display';
 $string['select_metric_for_display'] = 'Select metric for display.';
 
 // Scheduled tasks.

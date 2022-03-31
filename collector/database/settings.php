@@ -26,6 +26,18 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
+    $ADMIN->add('reports', new admin_category('cltr_database_reports', get_string('pluginname', 'cltr_database')));
+
+    $ADMIN->add(
+        'cltr_database_reports',
+        new admin_externalpage(
+            'cltr_database_chart',
+            get_string('metric_display', 'cltr_database'),
+            new moodle_url('/admin/tool/cloudmetrics/collector/database/chart.php'),
+            'moodle/site:config'
+        )
+    );
+
     if ($ADMIN->fulltree) {
         $settings->add(
             new admin_setting_configduration(

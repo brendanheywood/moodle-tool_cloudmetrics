@@ -16,32 +16,49 @@
 
 namespace tool_cloudmetrics;
 
-use tool_cloudmetrics\metric\active_users_metric;
-use tool_cloudmetrics\metric\online_users_metric;
-use tool_cloudmetrics\metric\new_users_metric;
 use tool_cloudmetrics\metric\manager;
 use tool_cloudmetrics\task\collect_metrics_task;
-
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once(__DIR__ . "/metric_testcase.php"); // This is needed. File will not be automatically included.
 
 /**
- * Helper class to test collect_metrics_task.
+ * A class to help test the collect metrics task. This class is mocked to be able to
+ * test against the names of the metrics that have been selected for measurement.
  */
-class mock_collect_metrics_task extends collect_metrics_task {
-    public function __construct($mock) {
-        $this->mock = $mock;
-    }
-
-    public function send_metrics(array $items) {
-        $this->mock->send_metrics($items);
+class mock_receiver {
+    public function receive(array $names) {
     }
 }
 
 /**
- * Basic test for collectors.
+ * A class to help test the collect metrics task. This class overrides collect_metrics_task
+ * so that instead of sending th emetric items to the colletors, it passes it to a
+ * mock receiver class instead.
+ */
+class helper_collect_metrics_task extends collect_metrics_task {
+    public function __construct(mock_receiver $mock) {
+        $this->mock = $mock;
+    }
+
+    /**
+     * In this test, we are not interested in the times or values of the items, only the names. So we take out
+     * the names and pass them on the mock class which checks them.
+     *
+     * @param array $items
+     */
+    public function send_metrics(array $items) {
+        $names = [];
+        foreach ($items as $item) {
+            $names[] = $item->name;
+        }
+        $this->mock->receive($names);
+    }
+}
+
+/**
+ * Test for collect_metrics_task.
  */
 class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
 
@@ -88,51 +105,66 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
     }
 
     /**
-     * Test the execute method
+     * Test the execute method.
      *
-     * @param int $minutesaftermidnight
+     * @dataProvider execute_provider
+     * @param int $time
      * @param array $expected
      * @throws \Exception
      */
-    public function test_execute() {
-        set_config('activeusers_frequency', manager::FREQ_5MIN, 'tool_cloudmetrics');
-        set_config('onlineusers_frequency', manager::FREQ_15MIN, 'tool_cloudmetrics');
-        set_config('newusers_frequency', manager::FREQ_HOUR, 'tool_cloudmetrics');
+    public function test_execute($timestr, $freqs, $expected) {
+        set_config('onlineusers_frequency', $freqs[0], 'tool_cloudmetrics');
+        set_config('activeusers_frequency', $freqs[1], 'tool_cloudmetrics');
+        set_config('newusers_frequency', $freqs[2], 'tool_cloudmetrics');
         set_config('activeusers_enabled', 1, 'tool_cloudmetrics');
         set_config('onlineusers_enabled', 1, 'tool_cloudmetrics');
         set_config('newusers_enabled', 1, 'tool_cloudmetrics');
 
         $tz = \core_date::get_server_timezone_object();
-        $time = (new \DateTime("midnight +75 minutes", $tz))->getTimestamp();
+        $time = (new \DateTime($timestr, $tz))->getTimestamp();
 
-        $list = [
-            (new online_users_metric())->get_metric_item(),
-            (new active_users_metric())->get_metric_item(),
-        ];
-
-        $mock = $this->createMock(collect_metrics_task::class);
+        $mock = $this->createMock(mock_receiver::class);
         $mock->expects($this->once())
-            ->method('send_metrics')
-            ->with($list);
-        $task = new mock_collect_metrics_task($mock);
+            ->method('receive')
+            ->with($expected);
+        $task = new helper_collect_metrics_task($mock);
         $task->set_time($time);
         $task->execute();
+    }
 
-        $time = (new \DateTime("midnight +60 minutes", $tz))->getTimestamp();
-
-        $list = [
-            (new online_users_metric())->get_metric_item(),
-            (new active_users_metric())->get_metric_item(),
-            (new new_users_metric())->get_metric_item(),
+    /**
+     * Provider function for test_execute.
+     *
+     * @return array[] Each element contains a time string, a list of frequency settings,
+     *                 and a list of metrics that should be measured.
+     */
+    public function execute_provider(): array {
+        return [
+            [
+                'midnight +75 minutes',
+                [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
+                ['onlineusers', 'activeusers']
+            ],
+            [
+                'midnight +60 minutes',
+                [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
+                ['onlineusers', 'activeusers', 'newusers']
+            ],
+            [
+                'midnight this month',
+                [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
+                ['onlineusers', 'activeusers', 'newusers']
+            ],
+            [
+                'midnight this month -10 seconds',
+                [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
+                ['onlineusers', 'activeusers', 'newusers']
+            ],
+            [
+                'midnight this month +15 minutes',
+                [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
+                ['activeusers']
+            ],
         ];
-
-        $mock = $this->createMock(collect_metrics_task::class);
-        $mock->expects($this->once())
-            ->method('send_metrics')
-            ->with($list);
-
-        $task = new mock_collect_metrics_task($mock);
-        $task->set_time($time);
-        $task->execute();
     }
 }

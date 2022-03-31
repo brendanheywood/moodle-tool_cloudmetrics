@@ -20,8 +20,19 @@ use tool_cloudmetrics\metric;
 use tool_cloudmetrics\collector;
 
 /**
- * Controls the running of metrics within a single task. Derive from scheduled_task to enable running from
- * the moodle task system, but it is  intendend to be run separately.
+ * Controls the running of metrics within a single task.
+ *
+ * Metrics are measured at specific time determined by their frequency. For example, a metric set to FREQ_30MIN
+ * is supposed to be measured every thirty minutes.
+ *
+ * The metrics are required to measured in sync with each other. For example, all FREQ_30MIN are required to
+ * be measured at the same time, and those of FREQ_15MIN will also be measured at this time. And so on.
+ *
+ * This is done by taking a suitable reference time, and measuring the number of minutes that have passed since
+ * then, and determining if a whole number of intervals have passed since then.
+ *
+ * For example if 75 minutes have passed since 'midnight last Sunday', then FREQ_15MIN metrics will be measured,
+ * but FREQ_30MIN metrics will not.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -71,12 +82,18 @@ class collect_metrics_task extends \core\task\scheduled_task {
     }
 
     /**
-     * Determine which level of frequency is desired for the metrics.
+     * Determine the highest level of frequency to be used.
      *
-     * @param $timediff
+     * Returns the highest frequency for which a whole number of time intervals fits in the value given.
+     *
+     * Each interval (except monthly) is a whole number of the next smallest interval.
+     * So if (for example), it is determined that all 3 hour metrics are to be measured, all
+     * metrics for smaller intervals will also be measured.
+     *
+     * @param int $timediff The number of minutes since the reference time.
      * @return int
      */
-    public function get_frequency_cutoff($timediff): int {
+    public function get_frequency_cutoff(int $timediff): int {
         if ($timediff % self::ONEWEEK == 0) {
             return metric\manager::FREQ_WEEK;
         } else if ($timediff % self::ONEDAY == 0) {
@@ -106,18 +123,28 @@ class collect_metrics_task extends \core\task\scheduled_task {
     public function execute() {
         // This algorithm is performance important. Any opportunity to optimize should be welcome.
 
+        // Use the server's timezone for determining times from strings.
         $tz = \core_date::get_server_timezone_object();
-        $time = $this->time ?? time();
-        $reftime = (new \DateTime("midnight last Sunday", $tz))->getTimestamp();
-        $timediff = (int) round(($time - $reftime) / 60); // Nearest minute since ref time.
 
+        // Get the time reference. The time string is in the server's timezone.
+        // It is then converted to a timestamp, which is UTC.
+        $reftime = (new \DateTime('midnight last Sunday', $tz))->getTimestamp();
+
+        // We don't need to use $tz here because timestamps are always UTC.
+        $time = $this->time ?? time();
+
+        // Get the number of minutes (rounded) that have passed since the ref time.
+        $timediff = (int) round(($time - $reftime) / 60);
+
+        // Get the highest metric frequency to be record.
         $cutoff = $this->get_frequency_cutoff($timediff);
 
+        // We need to determine the monthly metrics separately, since a month is not a whole number of weeks.
         $ismonth = 0;
         if ($cutoff >= metric\manager::FREQ_DAY) {
-            $reftime = (new \DateTime("midnight this month", $tz))->getTimestamp();
-            // Separate check to see if it is start of a new month, +/- 30sec.
-            if (abs($time - $reftime) < 30) {
+            $reftime = (new \DateTime('midnight this month -30 seconds', $tz))->getTimestamp();
+            // Time difference should be zero if we are indeed at monthly boundary, but we allow for up to +/-30 seconds.
+            if (($time - $reftime) < 60) {
                 $ismonth = metric\manager::FREQ_MONTH;
             }
         }

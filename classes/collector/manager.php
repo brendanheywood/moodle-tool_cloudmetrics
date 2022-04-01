@@ -38,15 +38,6 @@ class manager {
     }
 
     /**
-     * Sends a metric to all enabled collectors to be recorded.
-     *
-     * @param metric_item $item
-     */
-    public static function send_metric(metric_item $item) {
-        self::send_metrics([$item]);
-    }
-
-    /**
      * Sends an array of metrics to all enabled collectors.
      *
      * @param array $items

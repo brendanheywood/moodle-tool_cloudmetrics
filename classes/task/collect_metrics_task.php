@@ -134,17 +134,18 @@ class collect_metrics_task extends \core\task\scheduled_task {
         $time = $this->time ?? time();
 
         // Get the number of minutes (rounded) that have passed since the ref time.
-        $timediff = (int) round(($time - $reftime) / 60);
+        $timediff = (int) round(($time - $reftime) / MINSECS);
 
         // Get the highest metric frequency to be record.
         $cutoff = $this->get_frequency_cutoff($timediff);
 
         // We need to determine the monthly metrics separately, since a month is not a whole number of weeks.
+        $halfmin = MINSECS / 2;
         $ismonth = 0;
         if ($cutoff >= metric\manager::FREQ_DAY) {
-            $reftime = (new \DateTime('midnight this month -30 seconds', $tz))->getTimestamp();
+            $reftime = (new \DateTime('midnight this month -'. $halfmin .' seconds', $tz))->getTimestamp();
             // Time difference should be zero if we are indeed at monthly boundary, but we allow for up to +/-30 seconds.
-            if (($time - $reftime) < 60) {
+            if (($time - $reftime) < MINSECS) {
                 $ismonth = metric\manager::FREQ_MONTH;
             }
         }

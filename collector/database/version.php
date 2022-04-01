@@ -26,6 +26,6 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version = 2022031601;
-$plugin->requires = 2019052006;    // Our lowest supported Moodle (3.7.6).
+$plugin->requires = 2017051500;    // Our lowest supported Moodle (3.3.0).
 $plugin->component = 'cltr_database';
 

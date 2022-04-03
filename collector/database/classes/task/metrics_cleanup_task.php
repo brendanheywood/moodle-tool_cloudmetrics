@@ -40,13 +40,11 @@ class metrics_cleanup_task extends \core\task\scheduled_task {
         // We want to use the server's timezone when determining 'midnight'.
         $tz = \core_date::get_server_timezone_object();
 
-        // Adding 12 hours ensures that we round to the nearest midnight.
-        $secondsago = lib::get_metric_expiry() + (HOURSECS * 12);
+        $datestr = '-' . lib::get_metric_expiry() . ' seconds';
 
-        // Using 'midnight' sets the time to 00:00:00.
-        $datestr = '-' . $secondsago . ' seconds midnight';
-
-        $cutoff = date_create_immutable($datestr, $tz)->getTimestamp();
+        // We desire the cutoff to be at midnight, we always move further backwards in time, so we
+        // always have at least the expiry value in time's worth of data.
+        $cutoff = lib::get_midnight_of($datestr, $tz)->getTimestamp();
 
         // Purge the metrics older than this time.
         $DB->delete_records_select(

@@ -37,4 +37,22 @@ class lib {
     public static function get_metric_expiry(): int {
         return (int) get_config('cltr_database', 'metric_expiry'); // Value is stored as seconds.
     }
+
+    /**
+     * Returns the midnight time of whatever date string is porvided.
+     *
+     * In PHP, when processing a date string, the 'midnight' clause is processed before any =/- relative amounts.
+     * So the string '+5hour midnight' is the same as 'midnight +5hours'.
+     *
+     * Use this function to ensure that the datetime is rounded to midnight after any other date string processing.
+     *
+     * @param string $datestr The datetime string to be passed to the DateTime constructor.
+     * @param \DateTimeZone $timezone The timezone to work in.
+     * @return \DateTime The datetime object rounded downwards to midnight.
+     * @throws \Exception
+     */
+    public static function get_midnight_of(string $datestr, \DateTimeZone $timezone): \DateTime {
+        $dt = new \DateTimeImmutable($datestr, $timezone);
+        return new \DateTime($dt->format('Y-m-d\T00:00:00'), $timezone);
+    }
 }

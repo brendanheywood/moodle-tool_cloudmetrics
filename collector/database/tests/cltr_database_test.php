@@ -31,12 +31,47 @@ require_once(__DIR__ . "/../../../tests/metric_testcase.php"); // This is needed
  */
 class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
 
+    const DAYHOURS = 24;
+
     /**
      * Set up before each test
      */
     protected function setUp(): void {
         parent::setUp();
         $this->resetAfterTest();
+    }
+
+    /**
+     * Test get_midnight_of.
+     *
+     * @dataProvider midnight_provider
+     */
+    public function test_midnight($datestr, $expected) {
+        $tz = \core_date::get_server_timezone_object();
+        $time = lib::get_midnight_of($datestr, $tz);
+        $expecteddate = new \DateTimeImmutable($expected, $tz);
+        $this->assertEquals($expecteddate->format(\DateTimeInterface::ISO8601), $time->format(\DateTimeInterface::ISO8601));
+    }
+
+    /**
+     * Data for test_midnight.
+     * The first value is the date string that will be converted to midnight.
+     * The second value is what's expected, either today, tomorrow or yesterday.
+     *
+     * @return \string[][]
+     */
+    public function midnight_provider(): array {
+        return [
+            ['today -5 hours', 'yesterday'],
+            ['today +20 hours', 'today'],
+            ['today', 'today'],
+            ['tomorrow +5 seconds', 'tomorrow'],
+            ['tomorrow -3 seconds', 'today'],
+            ['today +26 hours', 'tomorrow'],
+            ['tomorrow -26 hours', 'yesterday'],
+            ['midnight +5 hours', 'today'],
+            ['-1 second midnight', 'yesterday' ],
+        ];
     }
 
     public function test_collector() {
@@ -78,35 +113,62 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $this->assertEquals('1', $rec[3]->value);
     }
 
-    public function test_expiry() {
+    /**
+     * @dataProvider expiry_provider
+     * @param int $daysago
+     * @param int $houradjustment
+     * @param int $expiry
+     * @param int $numrecords
+     * @param int $numexpected
+     * @throws \dml_exception
+     */
+    public function test_expiry(int $daysago, int $houradjustment, int $expiry, int $numrecords, int $numexpected) {
         global $DB;
 
         $tz = \core_date::get_server_timezone_object();
 
-        // Represents 10am, 20 days ago.
-        $datestr = '-20 days midnight +10 hours';
+        // Get the starting time. The number of days ago, adjusted to midnight, then adjusted again by the
+        // hour adjustment.
+        $datestr = '-' . $daysago . ' days';
+        $time = lib::get_midnight_of($datestr, $tz);
+        if ($houradjustment >= 0) {
+            $time->add(new \DateInterval('PT' . $houradjustment . 'H'));
+            $expectedhour = sprintf('%02d:00:00', $houradjustment);
+        } else {
+            $time->sub(new \DateInterval('PT' . abs($houradjustment) . 'H'));
+            $expectedhour = sprintf('%02d:00:00', (self::DAYHOURS - abs($houradjustment)));
+        }
+        $this->assertEquals($expectedhour, $time->format('H:i:s')); // Sanity check.
 
-        $time = date_create_immutable($datestr, $tz)->getTimestamp();
+        $time = $time->getTimestamp();
 
         $stub = $this->get_metric_stub([1, 2, 3], $time, DAYSECS);
         $collector = new collector();
 
-        for ($i = 0; $i < 20; ++$i) {
+        for ($i = 0; $i < $numrecords; ++$i) {
             $collector->record_metric($stub->get_metric_item());
         }
 
-        // There should be 20 items in the database.
+        // Sanity check. There should be $numrecords items in the database.
         $count = $DB->count_records(lib::TABLE);
-        $this->assertEquals(20, $count);
+        $this->assertEquals($numrecords, $count);
 
-        // We want to remove all data recorded as more than 10 days old.
-        set_config('metric_expiry', 10 * DAYSECS, 'cltr_database');
+        // We want to remove data recorded as more than expiry seconds old.
+        set_config('metric_expiry', $expiry, 'cltr_database');
 
         $task = new \cltr_database\task\metrics_cleanup_task();
         $task->execute();
 
-        // There should now be only 10 items in the database.
+        // There should now be only $numexpected items in the database.
         $count = $DB->count_records(lib::TABLE);
-        $this->assertEquals(10, $count);
+        $this->assertEquals($numexpected, $count);
+    }
+
+    public function expiry_provider() {
+        return [
+            [20, 10, 10 * DAYSECS, 20, 10],
+            [20, -2, 10 * DAYSECS, 20, 9],
+            [10, 0, 8 * DAYSECS, 5, 3],
+        ];
     }
 }

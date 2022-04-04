@@ -50,7 +50,7 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $tz = \core_date::get_server_timezone_object();
         $time = lib::get_midnight_of($datestr, $tz);
         $expecteddate = new \DateTimeImmutable($expected, $tz);
-        $this->assertEquals($expecteddate->format(\DateTimeInterface::ISO8601), $time->format(\DateTimeInterface::ISO8601));
+        $this->assertEquals($expecteddate->format(\DateTime::ATOM), $time->format(\DateTime::ATOM));
     }
 
     /**

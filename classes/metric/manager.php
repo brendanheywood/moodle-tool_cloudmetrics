@@ -79,7 +79,7 @@ class manager {
      *
      * @return array An associative array of name => metric.
      */
-    public static function get_metrics(bool $enabledonly = false): array {
+    public static function get_metrics(bool $enabledonly = true): array {
         // Builtin metrics.
         $metrics = [
             'onlineusers' => new online_users_metric(),

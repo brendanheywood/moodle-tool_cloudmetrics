@@ -41,7 +41,7 @@ require_sesskey();
 
 $return = new moodle_url($returnurl);
 
-$metrics = manager::get_metrics();
+$metrics = manager::get_metrics(false);
 
 if (!isset($metrics[$name])) {
     throw new moodle_exception(get_string('metric_not_found', 'tool_cloudmetrics', $name), 'tool_cloudmetrics');

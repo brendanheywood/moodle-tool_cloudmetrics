@@ -42,56 +42,6 @@ abstract class builtin extends base {
     }
 
     /**
-     * The frequency of the metric's sampling.
-     *
-     * @return int
-     */
-    public function get_frequency(): int {
-        return (int) get_config('tool_cloudmetrics', $this->get_name() . '_frequency');
-    }
-
-    /**
-     * The frequency of the metric's sampling.
-     *
-     * @return int
-     */
-    public function set_frequency(int $freq) {
-        set_config($this->get_name() . '_frequency', $freq, 'tool_cloudmetrics');
-    }
-
-    /**
-     * The metric type.
-     *
-     * @return int
-     */
-    abstract public function get_type(): int;
-
-    /**
-     * Is the metric switched on?
-     *
-     * @return bool
-     */
-    public function is_enabled(): bool {
-        return (bool) get_config('tool_cloudmetrics', $this->get_name() . '_enabled');
-    }
-
-    /**
-     * Sets the enabled status.
-     *
-     * @param bool $enabled
-     */
-    public function set_enabled(bool $enabled) {
-        set_config($this->get_name() . '_enabled', (int) $enabled, 'tool_cloudmetrics');
-    }
-
-    /**
-     * Retrieves the metric.
-     *
-     * @return metric_item
-     */
-    abstract public function get_metric_item(): metric_item;
-
-    /**
      * Time to show users config.
      *
      * @return int Time as seconds.

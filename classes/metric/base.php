@@ -44,7 +44,18 @@ abstract class base {
      *
      * @return int
      */
-    abstract public function get_frequency(): int;
+    public function get_frequency(): int {
+        return (int) get_config('tool_cloudmetrics', $this->get_name() . '_frequency');
+    }
+
+    /**
+     * Set frequency of the metric's sampling.
+     *
+     * @return int
+     */
+    public function set_frequency(int $freq) {
+        set_config($this->get_name() . '_frequency', $freq, 'tool_cloudmetrics');
+    }
 
     /**
      * The metric type.
@@ -58,14 +69,18 @@ abstract class base {
      *
      * @return bool
      */
-    abstract public function is_enabled(): bool;
+    public function is_enabled(): bool {
+        return (bool) get_config('tool_cloudmetrics', $this->get_name() . '_enabled');
+    }
 
     /**
      * Sets the enabled status.
      *
      * @param bool $enabled
      */
-    abstract public function set_enabled(bool $enabled);
+    public function set_enabled(bool $enabled) {
+        set_config($this->get_name() . '_enabled', (int) $enabled, 'tool_cloudmetrics');
+    }
 
     /**
      * Retrieves the metric.

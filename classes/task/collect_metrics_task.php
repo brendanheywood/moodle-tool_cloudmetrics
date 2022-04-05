@@ -94,24 +94,26 @@ class collect_metrics_task extends \core\task\scheduled_task {
      * @return int
      */
     public function get_frequency_cutoff(int $timediff): int {
-        if ($timediff % self::ONEWEEK == 0) {
-            return metric\manager::FREQ_WEEK;
-        } else if ($timediff % self::ONEDAY == 0) {
-            return metric\manager::FREQ_DAY;
-        } else if ($timediff % self::TWELVEHOURS == 0) {
-            return metric\manager::FREQ_12HOUR;
-        } else if ($timediff % self::THREEHOURS == 0) {
-            return metric\manager::FREQ_3HOUR;
-        } else if ($timediff % self::ONEHOUR == 0) {
-            return metric\manager::FREQ_HOUR;
-        } else if ($timediff % self::THIRTYMINUTES == 0) {
-            return metric\manager::FREQ_30MIN;
-        } else if ($timediff % self::FIFTEENMINUTES == 0) {
-            return metric\manager::FREQ_15MIN;
-        } else if ($timediff % self::FIVEMINUTES == 0) {
-            return metric\manager::FREQ_5MIN;
-        } else {
+        // We test until we don't get a clean division.
+        // After that, we know that we wont be measuring any longer interval.
+        if ($timediff % self::FIVEMINUTES != 0) {
             return metric\manager::FREQ_MIN;
+        } else if ($timediff % self::FIFTEENMINUTES != 0) {
+            return metric\manager::FREQ_5MIN;
+        } else if ($timediff % self::THIRTYMINUTES != 0) {
+            return metric\manager::FREQ_15MIN;
+        } else if ($timediff % self::ONEHOUR != 0) {
+            return metric\manager::FREQ_30MIN;
+        } else if ($timediff % self::THREEHOURS != 0) {
+            return metric\manager::FREQ_HOUR;
+        } else if ($timediff % self::TWELVEHOURS != 0) {
+            return metric\manager::FREQ_3HOUR;
+        } else if ($timediff % self::ONEDAY != 0) {
+            return metric\manager::FREQ_12HOUR;
+        } else if ($timediff % self::ONEWEEK != 0) {
+            return metric\manager::FREQ_DAY;
+        } else {
+            return metric\manager::FREQ_WEEK;
         }
     }
 

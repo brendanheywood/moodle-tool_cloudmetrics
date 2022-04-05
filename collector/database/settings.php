@@ -25,8 +25,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-use cltr_database\output\admin_setting_days_configduration;
-
 if ($hassiteconfig) {
     if ($ADMIN->fulltree) {
         $settings->add(

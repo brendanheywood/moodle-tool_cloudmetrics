@@ -38,16 +38,18 @@ class manager {
     }
 
     /**
-     * Sends a metric to all enabled collectors to be recorded.
+     * Sends an array of metrics to all enabled collectors.
      *
-     * @param metric_item $metric_item
+     * @param array $items
      */
-    public static function send_metric(metric_item $metricitem) {
+    public static function send_metrics(array $items) {
         $plugins = cltr::get_enabled_plugins();
         foreach ($plugins as $plugin) {
             $collector = $plugin->get_collector();
             if ($collector->is_ready()) {
-                $collector->record_metric($metricitem);
+                foreach ($items as $item) {
+                    $collector->record_metric($item);
+                }
             }
         }
     }

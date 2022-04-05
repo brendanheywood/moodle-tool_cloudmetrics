@@ -56,9 +56,6 @@ class manager {
     /** @var int Per week frequency. */
     const FREQ_WEEK = 1024;
 
-    /** @var int Per fortnight frequency. */
-    const FREQ_FORNTIGHT = 2048;
-
     /** @var int Per month frequency. */
     const FREQ_MONTH = 4096;
 
@@ -73,17 +70,16 @@ class manager {
             self::FREQ_12HOUR => get_string('twelve_hour', 'tool_cloudmetrics'),
             self::FREQ_DAY => get_string('one_day', 'tool_cloudmetrics'),
             self::FREQ_WEEK => get_string('one_week', 'tool_cloudmetrics'),
-            self::FREQ_FORNTIGHT => get_string('one_fortnight', 'tool_cloudmetrics'),
             self::FREQ_MONTH => get_string('one_month', 'tool_cloudmetrics'),
         ];
     }
 
     /**
-     * Gets all metrics installed on the system.Returns an associative array of all metrics installed.
+     * Gets all metrics installed on the system. Returns an associative array of all metrics installed.
      *
      * @return array An associative array of name => metric.
      */
-    public static function get_metrics(): array {
+    public static function get_metrics(bool $enabledonly = true): array {
         // Builtin metrics.
         $metrics = [
             'onlineusers' => new online_users_metric(),
@@ -101,6 +97,15 @@ class manager {
                 }
             }
         }
+
+        if ($enabledonly) {
+            foreach ($metrics as $name => $metric) {
+                if (!$metric->is_enabled()) {
+                    unset($metrics[$name]);
+                }
+            }
+        }
+
         return $metrics;
     }
 }

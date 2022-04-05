@@ -17,7 +17,7 @@
 namespace tool_cloudmetrics\metric;
 
 /**
- * Base class for metrics.
+ * Base class for builtin metrics.
  *
  * @package    tool_cloudmetrics
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -26,13 +26,6 @@ namespace tool_cloudmetrics\metric;
  */
 abstract class builtin extends base {
     /**
-     * The metric's name.
-     *
-     * @return string
-     */
-    abstract public function get_name(): string;
-
-    /**
      * The metric's display name.
      *
      * @return string
@@ -40,56 +33,6 @@ abstract class builtin extends base {
     public function get_label(): string {
         return get_string($this->get_name(), 'tool_cloudmetrics');
     }
-
-    /**
-     * The frequency of the metric's sampling.
-     *
-     * @return int
-     */
-    public function get_frequency(): int {
-        return (int) get_config('tool_cloudmetrics', 'newusers_frequency');
-    }
-
-    /**
-     * The frequency of the metric's sampling.
-     *
-     * @return int
-     */
-    public function set_frequency(int $freq) {
-        set_config($this->get_name() . '_frequency', $freq, 'tool_cloudmetrics');
-    }
-
-    /**
-     * The metric type.
-     *
-     * @return int
-     */
-    abstract public function get_type(): int;
-
-    /**
-     * Is the metric switched on?
-     *
-     * @return bool
-     */
-    public function is_enabled(): bool {
-        return (bool) get_config('tool_cloudmetrics', $this->get_name() . '_enabled');
-    }
-
-    /**
-     * Sets the enabled status.
-     *
-     * @param bool $enabled
-     */
-    public function set_enabled(bool $enabled) {
-        set_config($this->get_name() . '_enabled', (int) $enabled, 'tool_cloudmetrics');
-    }
-
-    /**
-     * Retrieves the metric.
-     *
-     * @return metric_item
-     */
-    abstract public function get_metric_item(): metric_item;
 
     /**
      * Time to show users config.

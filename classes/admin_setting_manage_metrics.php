@@ -78,7 +78,7 @@ class admin_setting_manage_metrics extends \admin_setting {
     public function output_html($data, $query='') {
         global $OUTPUT;
 
-        $metrics = manager::get_metrics();
+        $metrics = manager::get_metrics(false);
 
         $txt = get_strings(array('settings', 'name', 'enable', 'disable', 'default'));
 

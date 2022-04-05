@@ -17,7 +17,7 @@
 namespace tool_cloudmetrics\metric;
 
 /**
- * Base class for metrics.
+ * Base class for builtin metrics.
  *
  * @package    tool_cloudmetrics
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -25,13 +25,6 @@ namespace tool_cloudmetrics\metric;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 abstract class builtin extends base {
-    /**
-     * The metric's name.
-     *
-     * @return string
-     */
-    abstract public function get_name(): string;
-
     /**
      * The metric's display name.
      *

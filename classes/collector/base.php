@@ -42,4 +42,11 @@ abstract class base {
      * @return bool
      */
     abstract public function is_ready(): bool;
+
+    /**
+     * @param mixed $metrics The metrics to be retrieved. Either a single string, or an
+     *         array of strings. If null, then all available metrics will be retrieved.
+     * @return array|bool
+     */
+    abstract public function get_metrics($metrics = null);
 }

@@ -18,7 +18,13 @@ use tool_cloudmetrics\metric\test_metric;
 use tool_cloudmetrics\collector;
 
 /**
- * Generate mock metric data to send to collectors.
+ * This is a development tool to create mock data to send to collectors. This can be used where it is
+ * inconvenient to create real data, but you still want to see the collectors working.
+ *
+ * In order to use this script, you need to have $CFG->config_php_settings['tool_cloudmetrics_allow_add_metrics']
+ * set to a non empty value. This is to prevent running in a production environment.
+ *
+ * Use the --metric option to mimic an existing metric.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -31,14 +37,26 @@ define('CLI_SCRIPT', true);
 require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->libdir.'/clilib.php');
 
+// Simple check for a dev environment.
+// DO NOT add this setting to a production site config.
+if (empty($CFG->config_php_settings['tool_cloudmetrics_allow_add_metrics'])) {
+    echo "\$CFG->config_php_settings['tool_cloudmetrics_allow_add_metrics'] needs to be\n",
+            "explicitly set to allow this script to run\n";
+    die;
+}
+
 // Get cli options.
 list($options, $unrecognized) = cli_get_params(
     [
         'help' => false,
-        'name' => false,
+        'metric' => 'foobar',
+        'number' => 100,
+        'remove' => false,
     ], [
         'h' => 'help',
-        'n' => 'name',
+        'm' => 'metric',
+        'n' => 'number',
+        'r' => 'remove',
     ]
 );
 
@@ -56,22 +74,27 @@ Do not use with production environments.
 
 Options:
 -h, --help               Print out this help
--n, --name               The name of the metric being mocked.
+-m, --metric             The name of the metric being mocked.
+-n, --number             The number of data values to generate.
+-r, --remove             Remove the entries under the name, rather than add to them. (Only on database colelctor)
 
 Example:
-\$sudo -u www-data /usr/bin/php admin/tool/cloudmetrics/cli/add_metrics.php --name=activeusers
+\$sudo -u www-data /usr/bin/php admin/tool/cloudmetrics/cli/add_metrics.php --metric=activeusers
 ";
 
     echo $help;
     die;
 }
 
+if (!empty($options['remove'])) {
+    $DB->delete_records(cltr_database\lib::TABLE, ['name' => $options['metric']]);
+} else {
+    $metric = new test_metric();
+    $metric->name = $options['metric'];
+    $num = (int)$options['number'];
 
-
-$metric = new test_metric();
-$metric->name = $options['name'];
-
-for ($i = 0; $i < 100; ++$i) {
-    $item = $metric->get_metric_item();
-    collector\manager::send_metric($item);
+    for ($i = 0; $i < $num; ++$i) {
+        $item = $metric->get_metric_item();
+        collector\manager::send_metrics([$item]);
+    }
 }

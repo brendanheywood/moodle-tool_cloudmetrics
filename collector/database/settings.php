@@ -26,10 +26,8 @@
 defined('MOODLE_INTERNAL') || die();
 
 if ($hassiteconfig) {
-    $ADMIN->add('reports', new admin_category('cltr_database_reports', get_string('pluginname', 'cltr_database')));
-
     $ADMIN->add(
-        'cltr_database_reports',
+        'reports',
         new admin_externalpage(
             'cltr_database_chart',
             get_string('metric_display', 'cltr_database'),

@@ -26,7 +26,7 @@ use tool_cloudmetrics\metric;
  */
 
 require_once(__DIR__.'/../../../../../config.php');
-require_once($CFG->libdir.'/adminlib.php');
+require_once($CFG->libdir . '/adminlib.php');
 
 admin_externalpage_setup('cltr_database_chart');
 
@@ -39,7 +39,7 @@ $PAGE->set_url($url);
 
 $metricname = optional_param('metric', 'activeusers', PARAM_ALPHANUMEXT);
 
-$metrics = metric\manager::get_metrics();
+$metrics = metric\manager::get_metrics(true);
 $metriclabels = [];
 foreach ($metrics as $metric) {
     $metriclabels[$metric->get_name()] = $metric->get_label();
@@ -53,7 +53,8 @@ $select = new \single_select(
 );
 $select->set_label(get_string('select_metric_for_display', 'cltr_database'));
 
-$records = $DB->get_records('cltr_database_metrics', ['name' => $metricname], 'time asc', 'id, time, value');
+$collector = new \cltr_database\collector();
+$records = $collector->get_metrics($metricname);
 
 $values = [];
 $labels = [];
@@ -69,8 +70,7 @@ $chart = new \core\chart_line();
 $chart->add_series($chartseries);
 $chart->set_labels($labels);
 
-$output = $PAGE->get_renderer('core');
-echo $output->header();
-echo $output->render($select);
-echo $output->render($chart);
-echo $output->footer();
+echo $OUTPUT->header();
+echo $OUTPUT->render($select);
+echo $OUTPUT->render($chart);
+echo $OUTPUT->footer();

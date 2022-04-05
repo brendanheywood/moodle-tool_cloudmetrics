@@ -101,11 +101,17 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $this->assertEquals('mock', $rec[1]->name);
         $this->assertEquals('2', $rec[1]->value);
 
+        // Should get the same result with get_metrics().
+        $rec = array_values($collector->get_metrics('mock'));
+        $this->assertEquals(2, count($rec));
+        $this->assertEquals('1', $rec[0]->value);
+        $this->assertEquals('2', $rec[1]->value);
+
         $collector->record_metric($stub->get_metric_item());
         $collector->record_metric($stub->get_metric_item());
 
         // Should have four metrics of values 1, 2, 3 & 1.
-        $rec = array_values($DB->get_records(lib::TABLE, null, 'time ASC'));
+        $rec = array_values($collector->get_metrics('mock'));
         $this->assertEquals(4, count($rec));
         $this->assertEquals('1', $rec[0]->value);
         $this->assertEquals('2', $rec[1]->value);

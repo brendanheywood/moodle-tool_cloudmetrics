@@ -15,7 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Delete metrics that have expired
+ * Delete metrics that have expired. The cutoff time is rounded to the nearest 'midnight' based on the
+ * server's timezone.
  *
  * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -36,7 +37,14 @@ class metrics_cleanup_task extends \core\task\scheduled_task {
     public function execute() {
         global $DB;
 
-        $cutoff = time() - lib::get_metric_expiry();
+        // We want to use the server's timezone when determining 'midnight'.
+        $tz = \core_date::get_server_timezone_object();
+
+        $datestr = '-' . lib::get_metric_expiry() . ' seconds';
+
+        // We desire the cutoff to be at midnight, we always move further backwards in time, so we
+        // always have at least the expiry value in time's worth of data.
+        $cutoff = lib::get_midnight_of($datestr, $tz)->getTimestamp();
 
         // Purge the metrics older than this time.
         $DB->delete_records_select(

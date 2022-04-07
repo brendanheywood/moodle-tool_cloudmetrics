@@ -18,6 +18,7 @@ namespace cltr_database;
 
 use tool_cloudmetrics\metric\metric_item;
 use tool_cloudmetrics\collector\base;
+use tool_cloudmetrics\metric;
 
 /**
  * Collector class for the internal database.
@@ -40,5 +41,32 @@ class collector extends base {
 
     public function is_ready(): bool {
         return true;
+    }
+
+    /**
+     * Retrieve metric data from the collector.
+     *
+     * @param mixed $metrics The metrics to be retrieved. Either a single string, or an
+     *         array of strings. If null, then all available metrics will be retrieved.
+     * @return array|bool The metric records. Returns false if it cannot return metric data.
+     */
+    public function get_metrics($metricnames = null) {
+        global $DB;
+
+        if (is_null($metricnames)) {
+            $metricnames = [];
+            $metrics = metric\manager::get_metrics(true);
+            foreach ($metrics as $metric) {
+                $metricnames[] = $metric->get_name();
+            }
+        } else if (is_string($metricnames)) {
+            $metricnames = [$metricnames];
+        }
+        list ($clause, $params) = $DB->get_in_or_equal($metricnames);
+        $sql = "SELECT id, name, time, value
+                  FROM {cltr_database_metrics}
+                 WHERE name $clause
+               ORDER BY time asc";
+        return $DB->get_records_sql($sql, $params);
     }
 }

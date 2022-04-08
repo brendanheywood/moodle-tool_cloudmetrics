@@ -88,17 +88,16 @@ class admin_setting_manage_collectors extends \admin_setting {
      */
     public function output_html($data, $query='') {
         global $OUTPUT;
-        $return = '';
 
         $formats = \core_plugin_manager::instance()->get_plugins_of_type('cltr');
 
-        $txt = get_strings(array('settings', 'name', 'enable', 'disable', 'default'));
+        $txt = get_strings(array('settings', 'name', 'enable', 'disable', 'default', 'actions'));
         $txt->uninstall = get_string('uninstallplugin', 'core_admin');
 
         $table = new \html_table();
-        $table->head  = array($txt->name, $txt->enable, $txt->uninstall, $txt->settings);
+        $table->head  = array($txt->name, $txt->uninstall, $txt->actions);
         $table->align = array('left', 'center', 'center', 'center', 'center');
-        $table->attributes['class'] = 'manageformattable generaltable admintable w-auto';
+        $table->attributes['class'] = 'manageformattable generaltable admintable';
         $table->data  = array();
 
         foreach ($formats as $format) {
@@ -106,8 +105,9 @@ class admin_setting_manage_collectors extends \admin_setting {
             $url = new \moodle_url('/admin/tool/cloudmetrics/collectors.php',
                 array('sesskey' => sesskey(), 'name' => $format->name));
 
-            $class = '';
+            //  Enable/disable link.
             if ($format->is_enabled()) {
+                $class = '';
                 $strformatname = $format->displayname;
                 $hideshow = \html_writer::link($url->out(false, array('action' => 'disable')),
                     $OUTPUT->pix_icon('t/hide', $txt->disable, 'moodle', array('class' => 'iconsmall')));
@@ -118,6 +118,7 @@ class admin_setting_manage_collectors extends \admin_setting {
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', array('class' => 'iconsmall')));
             }
 
+            // Uninstall link.
             $uninstall = '';
             if ($format->is_uninstall_allowed()) {
                 if ($status === \core_plugin_manager::PLUGIN_STATUS_MISSING) {
@@ -130,18 +131,26 @@ class admin_setting_manage_collectors extends \admin_setting {
                 }
             }
 
-            $settings = '';
-            if ($format->get_settings_url()) {
-                $settings = \html_writer::link($format->get_settings_url(), $txt->settings);
+            // Settings link.
+            $settingsurl = $format->get_settings_url();
+            if (is_null($settingsurl)) {
+                $attributes = ['class' => 'invisible'];
+            } else {
+                $attributes = [];
             }
+            $settingslink = \html_writer::link(
+                $settingsurl,
+                $OUTPUT->pix_icon('a/setting', $txt->settings),
+                $attributes
+            );
 
-            $row = new \html_table_row(array($strformatname, $hideshow, $uninstall, $settings));
+            $row = new \html_table_row(array($strformatname, $uninstall, $hideshow . $settingslink));
             if ($class) {
                 $row->attributes['class'] = $class;
             }
             $table->data[] = $row;
         }
-        $return .= \html_writer::table($table);
+        $return = \html_writer::table($table);
         return highlight($query, $return);
     }
 }

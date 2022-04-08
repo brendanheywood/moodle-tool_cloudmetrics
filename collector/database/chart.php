@@ -41,8 +41,11 @@ $metricname = optional_param('metric', 'activeusers', PARAM_ALPHANUMEXT);
 
 $metrics = metric\manager::get_metrics(true);
 $metriclabels = [];
-foreach ($metrics as $metric) {
-    $metriclabels[$metric->get_name()] = $metric->get_label();
+foreach ($metrics as $m) {
+    $metriclabels[$m->get_name()] = $m->get_label();
+    if ($m->get_name() == $metricname) {
+        $metric = $m;
+    }
 }
 
 $select = new \single_select(
@@ -72,5 +75,7 @@ $chart->set_labels($labels);
 
 echo $OUTPUT->header();
 echo $OUTPUT->render($select);
+echo html_writer::tag('h3', $metric->get_label());
+echo html_writer::tag('p', $metric->get_description());
 echo $OUTPUT->render($chart);
 echo $OUTPUT->footer();

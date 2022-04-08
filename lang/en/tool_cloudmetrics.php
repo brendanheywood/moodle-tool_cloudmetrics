@@ -55,8 +55,11 @@ $string['newusers_frequency_desc'] = 'Frequency of taking the new users metric.'
 
 // Built in metrics.
 $string['activeusers'] = 'Active users';
+$string['activeusers_desc'] = 'Users that have been active in the recent past.';
 $string['onlineusers'] = 'Online users';
+$string['onlineusers_desc'] = 'Users that are currently online.';
 $string['newusers'] = 'New users';
+$string['newusers_desc'] = 'Users who have signed up recently.';
 
 // Frequency labels.
 $string['one_minute'] = '1 minute';

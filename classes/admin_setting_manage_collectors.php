@@ -105,7 +105,7 @@ class admin_setting_manage_collectors extends \admin_setting {
             $url = new \moodle_url('/admin/tool/cloudmetrics/collectors.php',
                 array('sesskey' => sesskey(), 'name' => $format->name));
 
-            //  Enable/disable link.
+            // Enable/disable link.
             if ($format->is_enabled()) {
                 $class = '';
                 $strformatname = $format->displayname;

@@ -85,7 +85,7 @@ class admin_setting_manage_metrics extends \admin_setting {
         $table = new \html_table();
         $table->head  = array($txt->name, $txt->description, $txt->actions);
         $table->align = array('left', 'left', 'left');
-        $table->attributes['class'] = 'manageformattable generaltable admintable';
+        $table->attributes['class'] = 'manageformattable generaltable admintable w-auto';
         $table->data  = array();
 
         foreach ($metrics as $metric) {

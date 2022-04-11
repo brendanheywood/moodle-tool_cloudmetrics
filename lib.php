@@ -40,7 +40,7 @@ use \core\output\inplace_editable;
  * @throws required_capability_exception
  * @throws restricted_context_exception
  */
-function tool_cloudmetrics_inplace_editable(string $itemtype, int $itemid, string $newvalue)  {
+function tool_cloudmetrics_inplace_editable(string $itemtype, int $itemid, string $newvalue) {
     if ($itemtype == 'metrics_freq') {
         \external_api::validate_context(\context_system::instance());
         require_capability('moodle/site:config', \context_system::instance());

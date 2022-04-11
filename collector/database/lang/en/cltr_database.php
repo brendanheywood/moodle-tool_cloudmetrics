@@ -41,3 +41,6 @@ $string['select_metric_for_display'] = 'Select metric for display.';
 
 // Scheduled tasks.
 $string['metrics_cleanup_task'] = 'Cleanup metrics task';
+
+// Time format.
+$string['strftimedatetime'] = '%d %h %Y, %H:%M';

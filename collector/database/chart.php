@@ -61,7 +61,7 @@ $labels = [];
 
 foreach ($records as $record) {
     $values[] = (float) $record->value;
-    $labels[] = userdate($record->time, get_string('strftimedatetimeshort'), $CFG->timezone);
+    $labels[] = userdate($record->time, get_string('strftimedatetime', 'cltr_database'), $CFG->timezone);
 }
 
 $chartseries = new \core\chart_series($metriclabels[$metricname], $values);

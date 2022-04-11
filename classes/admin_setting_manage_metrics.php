@@ -84,7 +84,6 @@ class admin_setting_manage_metrics extends \admin_setting {
         $txt = get_strings(array('plugin', 'settings', 'name', 'description', 'enable', 'disable', 'default', 'show', 'actions', 'report'));
         $txt->frequency = get_string('frequency', 'tool_cloudmetrics');
 
-
         $table = new \html_table();
         $table->head  = array($txt->plugin, $txt->name, $txt->description, $txt->frequency, $txt->actions);
         $table->align = array('left', 'left', 'left', 'left');

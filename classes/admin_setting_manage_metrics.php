@@ -80,11 +80,11 @@ class admin_setting_manage_metrics extends \admin_setting {
 
         $metrics = manager::get_metrics(false);
 
-        $txt = get_strings(array('settings', 'name', 'enable', 'disable', 'default'));
+        $txt = get_strings(array('settings', 'name', 'description', 'enable', 'disable', 'default', 'show', 'actions', 'report'));
 
         $table = new \html_table();
-        $table->head  = array($txt->name, $txt->enable, $txt->settings);
-        $table->align = array('left', 'center', 'center');
+        $table->head  = array($txt->name, $txt->description, $txt->actions);
+        $table->align = array('left', 'left', 'left');
         $table->attributes['class'] = 'manageformattable generaltable admintable w-auto';
         $table->data  = array();
 
@@ -92,6 +92,9 @@ class admin_setting_manage_metrics extends \admin_setting {
             $url = new \moodle_url('/admin/tool/cloudmetrics/metrics.php',
                 array('sesskey' => sesskey(), 'name' => $metric->get_name()));
             $displayname = $metric->get_label();
+            $description = $metric->get_description();
+
+            // Enable/disable link.
             if ($metric->is_enabled()) {
                 $class = '';
                 $hideshow = \html_writer::link($url->out(false, array('action' => 'disable')),
@@ -102,9 +105,33 @@ class admin_setting_manage_metrics extends \admin_setting {
                     $OUTPUT->pix_icon('t/show', $txt->enable, 'moodle', array('class' => 'iconsmall')));
             }
 
-            // TODO: settings link.
+            // Settings link.
+            $settingsurl = $metric->get_settings_url();
+            if (is_null($settingsurl)) {
+                $attributes = ['class' => 'invisible'];
+            } else {
+                $attributes = [];
+            }
+            $settingslink = \html_writer::link(
+                $settingsurl,
+                $OUTPUT->pix_icon('a/setting', $txt->settings),
+                $attributes
+            );
 
-            $row = new \html_table_row([$displayname, $hideshow, '']);
+            // Chart link.
+            $url = new \moodle_url('/admin/tool/cloudmetrics/collector/database/chart.php', ['metric' => $metric->get_name()]);
+            if (!$metric->is_enabled()) {
+                $attributes = ['class' => 'invisible'];
+            } else {
+                $attributes = [];
+            }
+            $chartlink = \html_writer::link(
+                $url,
+                $OUTPUT->pix_icon('i/report', $txt->report),
+                $attributes
+            );
+
+            $row = new \html_table_row([$displayname, $description, $hideshow . $settingslink . $chartlink]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }

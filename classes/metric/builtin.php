@@ -34,6 +34,10 @@ abstract class builtin extends base {
         return get_string($this->get_name(), 'tool_cloudmetrics');
     }
 
+    public function get_description(): string {
+        return get_string($this->get_name() . '_desc', 'tool_cloudmetrics');
+    }
+
     /**
      * Time to show users config.
      *

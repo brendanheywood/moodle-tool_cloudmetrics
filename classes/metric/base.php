@@ -40,6 +40,13 @@ abstract class base {
     abstract public function get_label(): string;
 
     /**
+     * A short description of the metric.
+     *
+     * @return string
+     */
+    abstract public function get_description(): string;
+
+    /**
      * The frequency of the metric's sampling.
      *
      * @return int
@@ -80,6 +87,15 @@ abstract class base {
      */
     public function set_enabled(bool $enabled) {
         set_config($this->get_name() . '_enabled', (int) $enabled, 'tool_cloudmetrics');
+    }
+
+    /**
+     * Returns the URL for the settings. Returns null if there is none.
+     *
+     * @return \moodle_url|null
+     */
+    public function get_settings_url() {
+        return null;
     }
 
     /**

@@ -39,6 +39,15 @@ abstract class builtin extends base {
     }
 
     /**
+     * The plugin that defines the metric.
+     *
+     * @return string
+     */
+    public function get_plugin_name(): string {
+        return 'tool_cloudmetrics';
+    }
+
+    /**
      * Time to show users config.
      *
      * @return int Time as seconds.

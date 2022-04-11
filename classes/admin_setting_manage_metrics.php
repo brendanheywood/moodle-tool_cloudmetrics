@@ -17,6 +17,7 @@
 namespace tool_cloudmetrics;
 
 use tool_cloudmetrics\metric\manager;
+use core\output\inplace_editable;
 
 /**
  * Admin setting object for managing metrics
@@ -80,11 +81,12 @@ class admin_setting_manage_metrics extends \admin_setting {
 
         $metrics = manager::get_metrics(false);
 
-        $txt = get_strings(array('settings', 'name', 'description', 'enable', 'disable', 'default', 'show', 'actions', 'report'));
+        $txt = get_strings(array('plugin', 'settings', 'name', 'description', 'enable', 'disable', 'default', 'show', 'actions', 'report'));
+        $txt->frequency = get_string('frequency', 'tool_cloudmetrics');
 
         $table = new \html_table();
-        $table->head  = array($txt->name, $txt->description, $txt->actions);
-        $table->align = array('left', 'left', 'left');
+        $table->head  = array($txt->plugin, $txt->name, $txt->description, $txt->frequency, $txt->actions);
+        $table->align = array('left', 'left', 'left', 'left');
         $table->attributes['class'] = 'manageformattable generaltable admintable w-auto';
         $table->data  = array();
 
@@ -131,7 +133,30 @@ class admin_setting_manage_metrics extends \admin_setting {
                 $attributes
             );
 
-            $row = new \html_table_row([$displayname, $description, $hideshow . $settingslink . $chartlink]);
+            // Inplace editables required an integer ID, whereas metrics are identified with strings.
+            // We use a hash function to convert to an integer, to future proof the code.
+            $intid = hexdec(substr(md5($metric->get_name()), 0, 8));
+
+            $options = manager::get_frequency_labels();
+            $editable = new inplace_editable(
+                'tool_cloudmetrics',
+                'metrics_freq',
+                $intid,
+                true,
+                null,
+                $metric->get_frequency(),
+                get_string('change_frequency', 'tool_cloudmetrics'),
+                $txt->frequency
+            );
+            $editable->set_type_select($options);
+
+            $row = new \html_table_row([
+                $metric->get_plugin_name(),
+                $displayname,
+                $description,
+                $OUTPUT->render($editable),
+                $hideshow . $settingslink . $chartlink
+            ]);
             if ($class) {
                 $row->attributes['class'] = $class;
             }

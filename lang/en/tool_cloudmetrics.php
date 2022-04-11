@@ -53,6 +53,9 @@ $string['newusers_time_window_desc'] = 'Metric will include users who first star
 $string['newusers_frequency'] = 'New users frequency';
 $string['newusers_frequency_desc'] = 'Frequency of taking the new users metric.';
 
+$string['frequency'] = 'Frequency';
+$string['change_frequency'] = 'Change frequency';
+
 // Built in metrics.
 $string['activeusers'] = 'Active users';
 $string['activeusers_desc'] = 'Users that have been active in the recent past.';

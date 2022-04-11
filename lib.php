@@ -14,6 +14,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use tool_cloudmetrics\metric\manager;
+use \core\output\inplace_editable;
+
 /**
  * Main file
  *
@@ -23,6 +26,51 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-function tool_cloudmetrics_after_config() {
-}
+/**
+ * Update the frequency config for metrics.
+ *
+ * @param string $itemtype
+ * @param int $itemid
+ * @param string $newvalue
+ * @return inplace_editable|void
+ * @throws coding_exception
+ * @throws dml_exception
+ * @throws invalid_parameter_exception
+ * @throws moodle_exception
+ * @throws required_capability_exception
+ * @throws restricted_context_exception
+ */
+function tool_cloudmetrics_inplace_editable(string $itemtype, int $itemid, string $newvalue) {
+    if ($itemtype == 'metrics_freq') {
+        \external_api::validate_context(\context_system::instance());
+        require_capability('moodle/site:config', \context_system::instance());
+        $metrics = manager::get_metrics(false);
+        $metric = null;
+        foreach ($metrics as $m) {
+            $intid = hexdec(substr(md5($m->get_name()), 0, 8));
+            if ($intid === $itemid) {
+                $metric = $m;
+                break;
+            }
+        }
+        if (is_null($metric)) {
+            throw new moodle_exception('Unknown metric ' . $itemid);
+        }
+        $newvalue = clean_param($newvalue, PARAM_INT);
+        $metric->set_frequency($newvalue);
 
+        $options = manager::get_frequency_labels();
+        $editable = new inplace_editable(
+            'tool_cloudmetrics',
+            'metrics_freq',
+            $itemid,
+            true,
+            null,
+            $newvalue,
+            get_string('change_frequency', 'tool_cloudmetrics'),
+            get_string('frequency', 'tool_cloudmetrics')
+        );
+        $editable->set_type_select($options);
+        return $editable;
+    }
+}

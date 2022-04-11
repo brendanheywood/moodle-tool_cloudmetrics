@@ -47,6 +47,13 @@ abstract class base {
     abstract public function get_description(): string;
 
     /**
+     * The plugin that defines the metric.
+     *
+     * @return string
+     */
+    abstract public function get_plugin_name(): string;
+
+    /**
      * The frequency of the metric's sampling.
      *
      * @return int

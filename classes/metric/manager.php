@@ -74,6 +74,13 @@ class manager {
         ];
     }
 
+    /** @var int[] Default settings for builtin metric frequencies. */
+    const FREQ_DEFAULTS = [
+        'activeusers' => self::FREQ_DAY,
+        'newusers' => self::FREQ_DAY,
+        'onlineusers' => self::FREQ_5MIN,
+    ];
+
     /**
      * Gets all metrics installed on the system. Returns an associative array of all metrics installed.
      *
@@ -82,9 +89,9 @@ class manager {
     public static function get_metrics(bool $enabledonly = true): array {
         // Builtin metrics.
         $metrics = [
-            'onlineusers' => new online_users_metric(),
             'activeusers' => new active_users_metric(),
             'newusers' => new new_users_metric(),
+            'onlineusers' => new online_users_metric(),
         ];
 
         // Find metrics from plugins.

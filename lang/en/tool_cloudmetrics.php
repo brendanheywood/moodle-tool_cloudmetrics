@@ -40,18 +40,21 @@ $string['manage_metrics'] = 'Manage Metrics';
 $string['enable_disable_collectors'] = 'Enable or disable collectors.';
 $string['enable_disable_metrics'] = 'Enable or disable metrics.';
 $string['builtin_metrics_settings'] = 'Built in metric settings';
+
 $string['activeusers_frequency'] = 'Active users frequency';
 $string['activeusers_frequency_desc'] = 'Frequency of taking the active users metric.';
+$string['activeusers_time_window'] = 'Active user time window';
+$string['activeusers_time_window_desc'] = 'Metric will include users who have been active in this time period.';
+
+$string['newusers_frequency'] = 'New users frequency';
+$string['newusers_frequency_desc'] = 'Frequency of taking the new users metric.';
+$string['newusers_time_window'] = 'New user time window';
+$string['newusers_time_window_desc'] = 'Metric will include users who first started in this time period.';
+
 $string['onlineusers_frequency'] = 'Online users frequency';
 $string['onlineusers_frequency_desc'] = 'Frequency of taking the online users metric.';
 $string['onlineusers_time_window'] = 'Online user time window';
 $string['onlineusers_time_window_desc'] = 'Metric will include users who were active in this time period.';
-$string['activeusers_time_window'] = 'Active user time window';
-$string['activeusers_time_window_desc'] = 'Metric will include users who have been active in this time period.';
-$string['newusers_time_window'] = 'Online user time window';
-$string['newusers_time_window_desc'] = 'Metric will include users who first started in this time period.';
-$string['newusers_frequency'] = 'New users frequency';
-$string['newusers_frequency_desc'] = 'Frequency of taking the new users metric.';
 
 $string['frequency'] = 'Frequency';
 $string['change_frequency'] = 'Change frequency';

@@ -68,19 +68,19 @@ if ($hassiteconfig) {
         ));
 
         $settings->add(new admin_setting_configduration(
-            'tool_cloudmetrics/onlineusers_time_window',
-            get_string('onlineusers_time_window', 'tool_cloudmetrics'),
-            get_string('onlineusers_time_window_desc', 'tool_cloudmetrics'),
-            5 * MINSECS,
-            MINSECS
-        ));
-
-        $settings->add(new admin_setting_configduration(
             'tool_cloudmetrics/newusers_time_window',
             get_string('newusers_time_window', 'tool_cloudmetrics'),
             get_string('newusers_time_window_desc', 'tool_cloudmetrics'),
             30 * DAYSECS,
             DAYSECS
+        ));
+
+        $settings->add(new admin_setting_configduration(
+            'tool_cloudmetrics/onlineusers_time_window',
+            get_string('onlineusers_time_window', 'tool_cloudmetrics'),
+            get_string('onlineusers_time_window_desc', 'tool_cloudmetrics'),
+            5 * MINSECS,
+            MINSECS
         ));
     }
 

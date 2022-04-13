@@ -47,6 +47,10 @@ abstract class builtin extends base {
         return 'tool_cloudmetrics';
     }
 
+    public function get_frequency_default(): int {
+        return manager::FREQ_DEFAULTS[$this->get_name()];
+    }
+
     /**
      * Time to show users config.
      *

@@ -17,9 +17,9 @@
 namespace cltr_cloudwatch\privacy;
 
 /**
- * Currently reports no privatge data being kept. This may need to change.
+ * Currently reports no private data being kept.
  *
- * @package   cltr_database
+ * @package   cltr_cloudwatch
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

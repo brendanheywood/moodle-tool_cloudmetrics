@@ -37,16 +37,11 @@ abstract class base {
     abstract public function record_metric(metric_item $metric);
 
     /**
-     * Returns true if the backend service is able to receive requests.
+     * Returns true if the backend service is able to receive submissions.
      *
      * @return bool
      */
-    abstract public function is_ready(): bool;
-
-    /**
-     * @param mixed $metrics The metrics to be retrieved. Either a single string, or an
-     *         array of strings. If null, then all available metrics will be retrieved.
-     * @return array|bool
-     */
-    abstract public function get_metrics($metrics = null);
+    public function is_ready(): bool {
+        return true;
+    }
 }

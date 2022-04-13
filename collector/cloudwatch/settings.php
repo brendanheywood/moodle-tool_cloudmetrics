@@ -37,22 +37,11 @@ if ($hassiteconfig) {
             get_string('awssettings_desc', 'cltr_cloudwatch')
         ));
 
-        $regionoptions = [
-            'ap-northeast-1' => 'ap-northeast-1',
-            'ap-northeast-2' => 'ap-northeast-2',
-            'ap-southeast-1' => 'ap-southeast-1',
-            'ap-southeast-2' => 'ap-southeast-2',
-            'eu-central-1'   => 'eu-central-1',
-            'eu-west-1'      => 'eu-west-1',
-            'us-east-1'      => 'us-east-1',
-            'us-east-2'      => 'us-east-2',
-            'us-west-1'      => 'us-west-1',
-            'us-west-2'      => 'us-west-2',
-        ];
-        $settings->add(new admin_setting_configselect('cltr_cloudwatch/awsregion',
+        $settings->add(new \local_aws\admin_settings_aws_region('cltr_cloudwatch/awsregion',
             get_string('awsregion', 'cltr_cloudwatch' ),
             get_string('awsregion_desc', 'cltr_cloudwatch'),
-            'ap-southeast-2', $regionoptions));
+            'ap-southeast-2'
+        ));
 
         $settings->add(new admin_setting_configselect('cltr_cloudwatch/awsversion',
             get_string('awsversion', 'cltr_cloudwatch' ),

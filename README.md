@@ -57,9 +57,7 @@ We plan to have a very simple internal record of metrics with a limited data ret
 
 #### AWS CloudWatch
 
-TBA
-
-https://aws.amazon.com/cloudwatch/
+See [Cloudwatch collector readme](collector/cloudwatch/readme.md)
 
 #### Google Cloud Monitoring
 

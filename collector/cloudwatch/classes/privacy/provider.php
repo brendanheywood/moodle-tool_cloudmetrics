@@ -14,31 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics\metric;
+namespace cltr_cloudwatch\privacy;
 
 /**
- * Data class for metric values.
+ * Currently reports no privatge data being kept. This may need to change.
  *
- * @package    tool_cloudmetrics
- * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package   cltr_database
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class metric_item {
 
-    /** @var string */
-    public $name;
-    /** @var int */
-    public $time;
-    /** @var mixed */
-    public $value;
-    /** @var base */
-    public $metric;
+class provider implements \core_privacy\local\metadata\null_provider {
 
-    public function __construct(string $name, int $time, $value, base $item) {
-        $this->name = $name;
-        $this->time = $time;
-        $this->value = $value;
-        $this->metric = $item;
+    /**
+     * Why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
     }
 }

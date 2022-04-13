@@ -14,31 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics\metric;
-
 /**
- * Data class for metric values.
+ * Version
  *
- * @package    tool_cloudmetrics
- * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @package   cltr_cloudwatch
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class metric_item {
 
-    /** @var string */
-    public $name;
-    /** @var int */
-    public $time;
-    /** @var mixed */
-    public $value;
-    /** @var base */
-    public $metric;
+defined('MOODLE_INTERNAL') || die();
 
-    public function __construct(string $name, int $time, $value, base $item) {
-        $this->name = $name;
-        $this->time = $time;
-        $this->value = $value;
-        $this->metric = $item;
-    }
-}
+$plugin->version = 2022041100;
+$plugin->requires = 2017051500;    // Our lowest supported Moodle (3.3.0).
+$plugin->component = 'cltr_cloudwatch';
+
+$plugin->dependencies = array(
+    'local_aws' => 2022033100
+);
+
+

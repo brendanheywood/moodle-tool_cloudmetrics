@@ -52,11 +52,13 @@ list($options, $unrecognized) = cli_get_params(
         'metric' => 'foobar',
         'number' => 100,
         'remove' => false,
+        'frequency' => 60,
     ], [
         'h' => 'help',
         'm' => 'metric',
         'n' => 'number',
         'r' => 'remove',
+        'f' => 'frequency'
     ]
 );
 
@@ -76,6 +78,7 @@ Options:
 -h, --help               Print out this help
 -m, --metric             The name of the metric being mocked.
 -n, --number             The number of data values to generate.
+-f, --frequency          Frequency of metric data, in seconds.
 -r, --remove             Remove the entries under the name, rather than add to them. (Only on database colelctor)
 
 Example:
@@ -92,9 +95,12 @@ if (!empty($options['remove'])) {
     $metric = new test_metric();
     $metric->name = $options['metric'];
     $num = (int)$options['number'];
+    $metric->starttime = strtotime('-' . ($num * $options['frequency']) . ' seconds - 5 min');
+    $metric->interval = $options['frequency'];
 
     for ($i = 0; $i < $num; ++$i) {
         $item = $metric->get_metric_item();
+        echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . "\n";
         collector\manager::send_metrics([$item]);
     }
 }

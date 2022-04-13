@@ -94,55 +94,6 @@ class collector extends base {
      * @return array|bool The metric records. Returns false if it cannot return metric data.
      */
     public function get_metrics($metricnames = null) {
-        $metriccandidates = metric\manager::get_metrics(true);
-        if (empty($metricnames)) {
-            $metrics = $metriccandidates;
-        } else {
-            $metrics = [];
-            if (is_string($metricnames)) {
-                $metricnames = [$metricnames];
-            }
-            foreach ($metriccandidates as $metric) {
-                if (in_array($metricnames, $metric->get_name())) {
-                    $metrics[] = $metric;
-                }
-            }
-        }
-
-        $dataqueries = [];
-        foreach ($metrics as $metric) {
-            $dataqueries[] = $this->get_metric_data_query($metric);
-        }
-        $parameters = [
-            'MetricDataQueries' => $dataqueries,
-            'StartTime' => strtotime('-5 days'),
-            'EndTime' => strtotime('today'),
-        ];
-        var_dump($parameters);
-        return self::$client->getMetricData($parameters);
-    }
-
-    private function get_metric_data_query(metric\base $metric) {
-        $namespace = self::$pluginconfig->namespace;
-        $environment = self::$pluginconfig->environment;
-        return [
-            'Id' => $metric->get_name(),
-            'MetricStat' => [
-                'Metric' => [
-                    'Dimensions' => [
-                        [
-                            'Name' => 'Environment',
-                            'Value' => $environment,
-                        ],
-                    ],
-                    'MetricName' => $metric->get_name(),
-                    'Namespace' => $namespace,
-                ],
-                'Period' => 30,
-                'Stat' => 'Average',
-                'Unit' => $metric->unit ?? 'Count',
-            ],
-            'ReturnData' => true
-        ];
+        return false;
     }
 }

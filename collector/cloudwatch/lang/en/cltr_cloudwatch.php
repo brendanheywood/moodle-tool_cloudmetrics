@@ -54,8 +54,3 @@ $string['awssecret_desc'] = 'The secret access key assigned to the IAM user.';
 $string['unsatisfied_requirements'] = 'Unsatisfied Requirements';
 $string['aws:installneeded'] = 'Plugin \'local_aws\' of version '. \cltr_cloudwatch\lib::LOCAL_AWS_VERSION . ' is required.';
 $string['aws:upgradeneeded'] = 'Plugin \'local_aws\' needs to be upgraded to version '. \cltr_cloudwatch\lib::LOCAL_AWS_VERSION . '.';
-
-$string['Dev'] = 'Dev';
-$string['Uat'] = 'Uat';
-$string['Qat'] = 'Qat';
-$string['Prod'] = 'Prod';

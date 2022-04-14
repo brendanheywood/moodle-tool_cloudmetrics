@@ -69,18 +69,11 @@ if ($hassiteconfig) {
                 get_string('namespace_desc', 'cltr_cloudwatch'),
                 '', PARAM_TEXT));
 
-            $envoptions = [
-                'Dev' => get_string('Dev', 'cltr_cloudwatch'),
-                'Uat' => get_string('Uat', 'cltr_cloudwatch'),
-                'Qat' => get_string('Qat', 'cltr_cloudwatch'),
-                'Prod' => get_string('Prod', 'cltr_cloudwatch'),
-            ];
-
             // Environment.
-            $settings->add(new admin_setting_configselect('cltr_cloudwatch/environment',
+            $settings->add(new admin_setting_configtext('cltr_cloudwatch/environment',
                 get_string('environment', 'cltr_cloudwatch'),
                 get_string('environment_desc', 'cltr_cloudwatch'),
-                'Dev', $envoptions));
+                'Dev', PARAM_TEXT));
         } else {
             $plugininfo = $plugins = \core_plugin_manager::instance()->get_plugin_info('local_aws');
             if (is_null($plugininfo)) {

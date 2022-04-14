@@ -60,7 +60,7 @@ abstract class base {
      */
     public function get_frequency(): int {
         $freq = (int) get_config('tool_cloudmetrics', $this->get_name() . '_frequency');
-        if ($freq == 0) {
+        if ($freq === 0) {
             $freq = $this->get_frequency_default();
         }
         return $freq;

@@ -74,7 +74,7 @@ class manager {
         ];
     }
 
-    /** @var int[] Default settings for builtin metric frequencies. */
+    /** @var int[string] Default settings for builtin metric frequencies. */
     const FREQ_DEFAULTS = [
         'activeusers' => self::FREQ_DAY,
         'newusers' => self::FREQ_DAY,

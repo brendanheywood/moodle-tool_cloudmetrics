@@ -57,9 +57,55 @@ We plan to have a very simple internal record of metrics with a limited data ret
 
 #### AWS CloudWatch
 
-TBA
+Sends metric data to [AWS Cloudwatch](https://docs.aws.amazon.com/cloudwatch/).
 
-https://aws.amazon.com/cloudwatch/
+##### Requires
+- [local/aws](https://github.com/catalyst/moodle-local_aws) plugin.
+- AWS account
+- IAM user.
+
+##### IAM Access
+
+You need to have an IAM user connected to your AWS account.
+This user will need permissions to submit cloudwatch data.
+
+This is the minimum user policy for access.
+
+    {
+        "Version": "2012-10-17",
+        "Statement": [{
+            "Effect": "Allow",
+            "Action": [
+                "cloudwatch:PutMetricData"
+            ],
+            "Resource": "*"
+        }]
+    }
+
+Or the user can be assigned the `CloudWatchFullAccess`
+predefined policy.
+
+Ideally, the execution environment will be configured with
+the IAM credentials. However, the AWS access key and secret can be set
+via the plugin settings page.
+
+It can also be set in the config file as depicted here.
+Substitute the value strings with your access keys.
+
+    $CFG->forced_plugin_settings['cltr_cloudwatch']['aws_key'] = '<Access key ID>';
+    $CFG->forced_plugin_settings['cltr_cloudwatch']['aws_secret'] = '<Secret access key>';
+
+Also see [Cloudwatch IAM policy docs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-identity-based-access-control-cw.html).
+
+##### Settings
+
+- awsregion - The region your AWS account is based in.
+- awsversion - The version of the API.
+- aws_key - The access key ID for the IAM user.
+- aws_secret - The secret access key for the IAM user.
+- namespace - Unique namespace for your installation. e.g. The sites's domain name.
+- environment - The deployment environment (prod, dev, uat or qat)
+
 
 #### Google Cloud Monitoring
 

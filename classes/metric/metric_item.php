@@ -32,7 +32,7 @@ class metric_item {
     public $time;
     /** @var mixed */
     public $value;
-    /** @var metric_base */
+    /** @var base */
     public $metric;
 
     public function __construct(string $name, int $time, $value, base $item) {

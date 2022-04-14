@@ -14,34 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics\collector;
-
-use tool_cloudmetrics\metric\metric_item;
-
 /**
- * Base class for collectors.
+ * Version
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_cloudwatch
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright 2022, Catalyst IT
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright  2022, Catalyst IT
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base {
 
-    /**
-     * Records a single metric.
-     *
-     * @param metric_item $metric
-     * @return mixed
-     */
-    abstract public function record_metric(metric_item $metric);
+defined('MOODLE_INTERNAL') || die();
 
-    /**
-     * Returns true if the backend service is able to receive submissions.
-     *
-     * @return bool
-     */
-    public function is_ready(): bool {
-        return true;
-    }
-}
+$plugin->version = 2022041401;
+$plugin->requires = 2017051500;    // Our lowest supported Moodle (3.3.0).
+$plugin->component = 'cltr_cloudwatch';
+
+

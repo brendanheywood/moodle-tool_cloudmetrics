@@ -14,34 +14,25 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics\collector;
-
-use tool_cloudmetrics\metric\metric_item;
+namespace cltr_cloudwatch\privacy;
 
 /**
- * Base class for collectors.
+ * Currently reports no private data being kept.
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_cloudwatch
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base {
+
+class provider implements \core_privacy\local\metadata\null_provider {
 
     /**
-     * Records a single metric.
+     * Why this plugin stores no data.
      *
-     * @param metric_item $metric
-     * @return mixed
+     * @return  string
      */
-    abstract public function record_metric(metric_item $metric);
-
-    /**
-     * Returns true if the backend service is able to receive submissions.
-     *
-     * @return bool
-     */
-    public function is_ready(): bool {
-        return true;
+    public static function get_reason() : string {
+        return 'privacy:metadata';
     }
 }

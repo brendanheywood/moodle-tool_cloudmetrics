@@ -39,18 +39,16 @@ class collector extends base {
         );
     }
 
-    public function is_ready(): bool {
-        return true;
-    }
-
     /**
-     * Retrieve metric data from the collector.
+     * Returns stored metrics for the collector.
      *
-     * @param mixed $metrics The metrics to be retrieved. Either a single string, or an
-     *         array of strings. If null, then all available metrics will be retrieved.
-     * @return array|bool The metric records. Returns false if it cannot return metric data.
+     * @param mixed $metricnames The metrics to be retrieved. Either a single string, or an
+     *         array of strings. If empty, then all available metrics will be retrieved.
+     * @return array
+     * @throws \coding_exception
+     * @throws \dml_exception
      */
-    public function get_metrics($metricnames = null) {
+    public function get_metrics($metricnames = null): array {
         global $DB;
 
         if (is_null($metricnames)) {

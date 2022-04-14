@@ -14,34 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace tool_cloudmetrics\collector;
-
-use tool_cloudmetrics\metric\metric_item;
+namespace cltr_cloudwatch;
 
 /**
- * Base class for collectors.
+ * lib class tests
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_cloudwatch
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class base {
 
-    /**
-     * Records a single metric.
-     *
-     * @param metric_item $metric
-     * @return mixed
-     */
-    abstract public function record_metric(metric_item $metric);
+class cltr_cloudwatch_lib_test extends \advanced_testcase {
 
-    /**
-     * Returns true if the backend service is able to receive submissions.
-     *
-     * @return bool
-     */
-    public function is_ready(): bool {
-        return true;
+    protected function setUp(): void {
+        parent::setUp();
+        $this->resetAfterTest();
+    }
+
+    public function test_namespace() {
+        global $CFG;
+
+        $wwwroot = $CFG->wwwroot;
+        if (strpos($wwwroot, 'https://') === 0) {
+            $wwwroot = substr($wwwroot, 8);
+        } else if (strpos($wwwroot, 'http://') === 0) {
+            $wwwroot = substr($wwwroot, 7);
+        }
+
+        unset_config('namespace', 'cltr_cloudwatch');
+        $namespace = lib::get_namespace();
+        $this->assertEquals($wwwroot, $namespace);
     }
 }

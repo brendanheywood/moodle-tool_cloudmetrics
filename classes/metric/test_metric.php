@@ -55,11 +55,33 @@ class test_metric extends base {
     }
 
     /**
+     * A short description of the metric.
+     *
+     * @return string
+     */
+    public function get_description(): string {
+        return 'Test metric';
+    }
+
+    /**
+     * The plugin that defines the metric.
+     *
+     * @return string
+     */
+    public function get_plugin_name(): string {
+        return 'tool_cloudmetrics';
+    }
+
+    /**
      * The frequency of the metric's sampling.
      *
      * @return int
      */
     public function get_frequency(): int {
+        return manager::FREQ_MIN;
+    }
+
+    public function get_frequency_default(): int {
         return manager::FREQ_MIN;
     }
 

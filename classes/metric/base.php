@@ -59,8 +59,19 @@ abstract class base {
      * @return int
      */
     public function get_frequency(): int {
-        return (int) get_config('tool_cloudmetrics', $this->get_name() . '_frequency');
+        $freq = (int) get_config('tool_cloudmetrics', $this->get_name() . '_frequency');
+        if ($freq === 0) {
+            $freq = $this->get_frequency_default();
+        }
+        return $freq;
     }
+
+    /**
+     * Return the default setting value for the metric frequency.
+     *
+     * @return int
+     */
+    abstract public function get_frequency_default(): int;
 
     /**
      * Set frequency of the metric's sampling.

@@ -44,3 +44,13 @@ $string['generalsettings'] = 'General settings';
 $string['generalsettings_desc'] = 'Settings for the general behaviour of the plugin';
 $string['namespace'] = 'Namespace';
 $string['namespace_desc'] = 'Unique namespace to store metrics under in Cloudwatch. If left empty, then $CFG->wwwroot will be used';
+
+// Missing requirements.
+$string['unsatisfied_requirements'] = 'Unsatisfied Requirements';
+$string['aws:installneeded'] = 'Plugin \'local_aws\' of version '. \cltr_cloudwatch\lib::LOCAL_AWS_VERSION . ' is required.';
+$string['aws:upgradeneeded'] = 'Plugin \'local_aws\' needs to be upgraded to version '. \cltr_cloudwatch\lib::LOCAL_AWS_VERSION . '.';
+
+$string['Dev'] = 'Dev';
+$string['Uat'] = 'Uat';
+$string['Qat'] = 'Qat';
+$string['Prod'] = 'Prod';

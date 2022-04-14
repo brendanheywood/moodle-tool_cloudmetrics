@@ -26,12 +26,15 @@ namespace cltr_cloudwatch;
  */
 
 class lib {
+    const AWS_VERSION = '2010-08-01';
+    const LOCAL_AWS_VERSION = 2022033100;
+
     /**
      * Returns if the plugin can be used.
      *
      * @return bool
      */
-    static public function is_plugin_usable() {
+    public static function is_plugin_usable() {
         return (class_exists('\local_aws\local\client_factory') &&
                 class_exists('\local_aws\admin_settings_aws_region'));
     }
@@ -43,11 +46,11 @@ class lib {
      * @return false|mixed|object|string
      * @throws \dml_exception
      */
-    static public function get_config() {
+    public static function get_config() {
         global $CFG;
         $config = get_config('cltr_cloudwatch');
         if (empty($config->namespace)) {
-            $config->namespace = $CFG->wwwroot;
+            $config->namespace = self::to_namespace($CFG->wwwroot);
         }
         return $config;
     }
@@ -58,12 +61,26 @@ class lib {
      * @return false|mixed|object|string
      * @throws \dml_exception
      */
-    static public function get_namespace() {
+    public static function get_namespace() {
         global $CFG;
         $namespace = get_config('cltr_cloudwatch', 'namespace');
         if (empty($namespace)) {
-            $namespace = $CFG->wwwroot;
+            $namespace = self::to_namespace($CFG->wwwroot);
         }
         return $namespace;
+    }
+
+    /**
+     * Makes a namespace for the parameter by stripping any HTTP schema prefix.
+     *
+     * @param $ns
+     * @return mixed|string
+     */
+    private static function to_namespace($ns) {
+        list($schema, $url) = explode('://', $ns, 2);
+        if (empty($url)) {
+            $url = $schema;
+        }
+        return $url;
     }
 }

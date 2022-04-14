@@ -46,11 +46,6 @@ if ($hassiteconfig) {
                 'ap-southeast-2'
             ));
 
-            $settings->add(new admin_setting_configselect('cltr_cloudwatch/awsversion',
-                get_string('awsversion', 'cltr_cloudwatch'),
-                get_string('awsversion_desc', 'cltr_cloudwatch'),
-                '2010-08-01', ['2010-08-01' => '2010-08-01', 'latest' => 'latest']));
-
             // General Settings.
             $settings->add(new admin_setting_heading('cltr_cloudwatch_general',
                 get_string('generalsettings', 'cltr_cloudwatch'),
@@ -64,18 +59,32 @@ if ($hassiteconfig) {
                 '', PARAM_TEXT));
 
             $envoptions = [
-                'dev' => 'dev',
-                'uat' => 'uat',
-                'qat' => 'qat',
-                'prod' => 'prod',
+                'Dev' => get_string('Dev', 'cltr_cloudwatch'),
+                'Uat' => get_string('Uat', 'cltr_cloudwatch'),
+                'Qat' => get_string('Qat', 'cltr_cloudwatch'),
+                'Prod' => get_string('Prod', 'cltr_cloudwatch'),
             ];
 
             // Environment.
             $settings->add(new admin_setting_configselect('cltr_cloudwatch/environment',
                 get_string('environment', 'cltr_cloudwatch'),
                 get_string('environment_desc', 'cltr_cloudwatch'),
-                'dev', $envoptions));
+                'Dev', $envoptions));
+        } else {
+            $plugininfo = $plugins = \core_plugin_manager::instance()->get_plugin_info('local_aws');
+            if (is_null($plugininfo)) {
+                $text = $OUTPUT->notification(get_string('aws:installneeded', 'cltr_cloudwatch'));
+                $settings->add(new \admin_setting_heading('cltr_cloudwatch_aws',
+                    get_string('unsatisfied_requirements', 'cltr_cloudwatch'),
+                    $text
+                ));
+            } else if ($plugininfo->versiondisk < \cltr_cloudwatch\lib::LOCAL_AWS_VERSION) {
+                $text = $OUTPUT->notification(get_string('aws:upgradeneeded', 'cltr_cloudwatch'));
+                $settings->add(new \admin_setting_heading('cltr_cloudwatch_aws',
+                    get_string('unsatisfied_requirements', 'cltr_cloudwatch'),
+                    $text
+                ));
+            }
         }
     }
 }
-

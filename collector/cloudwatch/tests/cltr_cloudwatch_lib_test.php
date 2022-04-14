@@ -14,19 +14,36 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace cltr_cloudwatch;
+
 /**
- * Version
+ * lib class tests
  *
  * @package   cltr_cloudwatch
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+class cltr_cloudwatch_lib_test extends \advanced_testcase {
 
-$plugin->version = 2022041401;
-$plugin->requires = 2017051500;    // Our lowest supported Moodle (3.3.0).
-$plugin->component = 'cltr_cloudwatch';
+    protected function setUp(): void {
+        parent::setUp();
+        $this->resetAfterTest();
+    }
 
+    public function test_namespace() {
+        global $CFG;
 
+        $wwwroot = $CFG->wwwroot;
+        if (strpos($wwwroot, 'https://') === 0) {
+            $wwwroot = substr($wwwroot, 8);
+        } else if (strpos($wwwroot, 'http://') === 0) {
+            $wwwroot = substr($wwwroot, 7);
+        }
+
+        unset_config('namespace', 'cltr_cloudwatch');
+        $namespace = lib::get_namespace();
+        $this->assertEquals($wwwroot, $namespace);
+    }
+}

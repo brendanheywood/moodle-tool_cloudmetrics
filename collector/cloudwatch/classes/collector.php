@@ -44,7 +44,7 @@ class collector extends base {
         if (is_null(self::$client)) {
             $clientconfig = [
                 'region' => get_config('cltr_cloudwatch', 'awsregion'),
-                'version' => get_config('cltr_cloudwatch', 'awsversion'),
+                'version' => lib::AWS_VERSION,
             ];
 
             // Add AWS credentials if specified in CFG. IAM role and environment would apply if they are not set.

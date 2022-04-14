@@ -36,7 +36,6 @@ require_once($CFG->dirroot . '/local/aws/sdk/aws-autoloader.php');
 
 class collector extends base {
     protected static $client = null;
-    protected static $clientconfig;
     protected static $pluginconfig;
 
     public function __construct() {
@@ -49,21 +48,18 @@ class collector extends base {
             ];
 
             // Add AWS credentials if specified in CFG. IAM role and environment would apply if they are not set.
-            if (isset($CFG->cltr_cloudwatch['credentials'])) {
-                $clientconfig['credentials'] = $CFG->cltr_cloudwatch['credentials'];
+            if (isset($CFG->forced_plugin_settings['cltr_cloudwatch']['credentials'])) {
+                $clientconfig['credentials'] = $CFG->forced_plugin_settings['cltr_cloudwatch']['credentials'];
             }
 
             self::$client = client_factory::get_client('Aws\CloudWatch\CloudWatchClient', $clientconfig);
-            self::$pluginconfig = get_config('cltr_cloudwatch');
+            self::$pluginconfig = lib::get_config();
         }
     }
 
     public function record_metric(metric_item $item) {
-        $namespace = self::$pluginconfig->namespace;
-        $environment = self::$pluginconfig->environment;
-
         self::$client->putMetricData([
-            'Namespace' => $namespace,
+            'Namespace' => self::$pluginconfig->namespace,
             'MetricData' => [
                 [
                     'MetricName' => $item->name,
@@ -73,7 +69,7 @@ class collector extends base {
                     'Dimensions' => [
                         [
                             'Name' => 'Environment',
-                            'Value' => $environment,
+                            'Value' => self::$pluginconfig->environment,
                         ],
                     ],
                 ],
@@ -82,6 +78,11 @@ class collector extends base {
     }
 
     public function is_ready(): bool {
-        return !is_null(self::$client);
+        $plugininfo = \core_plugin_manager::instance()->get_plugin_info('cltr_database');
+        if (!$plugininfo->is_enabled()) {
+            return false;
+        }
+
+        return lib::is_plugin_usable() && !is_null(self::$client);
     }
 }

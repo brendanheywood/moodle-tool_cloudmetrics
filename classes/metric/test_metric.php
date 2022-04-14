@@ -81,6 +81,10 @@ class test_metric extends base {
         return manager::FREQ_MIN;
     }
 
+    public function get_frequency_default(): int {
+        return manager::FREQ_MIN;
+    }
+
     /**
      * The metric type.
      *

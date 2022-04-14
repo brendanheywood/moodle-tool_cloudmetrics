@@ -25,12 +25,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2022041100;
+$plugin->version = 2022041140;
 $plugin->requires = 2017051500;    // Our lowest supported Moodle (3.3.0).
 $plugin->component = 'cltr_cloudwatch';
-
-$plugin->dependencies = array(
-    'local_aws' => 2022033100
-);
 
 

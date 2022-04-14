@@ -89,9 +89,10 @@ Ideally, the execution environent will be configured with
 the IAM credentials. However, the following config can
 also be used. Substitute the value strings with your access keys.
 
-    $CFG->cltr_cloudwatch['credentials']['key'] = '<Access key ID>';
-    $CFG->cltr_cloudwatch['credentials']['secret'] = '<Secret access key>';
-
+    $CFG->forced_plugin_settings['cltr_cloudwatch']['credentials'] = [
+        'key' => '<Access key ID>',
+        'secret' => '<Secret access key>',
+    ];
 
 Also see [Cloudwatch IAM policy docs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-identity-based-access-control-cw.html).
 

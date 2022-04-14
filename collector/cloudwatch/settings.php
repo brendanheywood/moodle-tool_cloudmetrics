@@ -28,50 +28,54 @@ defined('MOODLE_INTERNAL') || die();
 if ($hassiteconfig) {
 
     if ($ADMIN->fulltree) {
-        $settings->add(new admin_setting_heading('cltr_cloudwatch_settings', '',
-            get_string('pluginnamedesc', 'cltr_cloudwatch')));
 
-        // AWS settings.
-        $settings->add(new admin_setting_heading('cltr_cloudwatch_aws',
-            get_string('awssettings', 'cltr_cloudwatch'),
-            get_string('awssettings_desc', 'cltr_cloudwatch')
-        ));
+        // Some of the settings cannot be created if the plugin is not fully usable.
+        if (\cltr_cloudwatch\lib::is_plugin_usable()) {
+            $settings->add(new admin_setting_heading('cltr_cloudwatch_settings', '',
+                get_string('pluginnamedesc', 'cltr_cloudwatch')));
 
-        $settings->add(new \local_aws\admin_settings_aws_region('cltr_cloudwatch/awsregion',
-            get_string('awsregion', 'cltr_cloudwatch' ),
-            get_string('awsregion_desc', 'cltr_cloudwatch'),
-            'ap-southeast-2'
-        ));
+            // AWS settings.
+            $settings->add(new admin_setting_heading('cltr_cloudwatch_aws',
+                get_string('awssettings', 'cltr_cloudwatch'),
+                get_string('awssettings_desc', 'cltr_cloudwatch')
+            ));
 
-        $settings->add(new admin_setting_configselect('cltr_cloudwatch/awsversion',
-            get_string('awsversion', 'cltr_cloudwatch' ),
-            get_string('awsversion_desc', 'cltr_cloudwatch'),
-            '2010-08-01', ['2010-08-01' => '2010-08-01', 'latest' => 'latest']));
+            $settings->add(new \local_aws\admin_settings_aws_region('cltr_cloudwatch/awsregion',
+                get_string('awsregion', 'cltr_cloudwatch'),
+                get_string('awsregion_desc', 'cltr_cloudwatch'),
+                'ap-southeast-2'
+            ));
 
-        // General Settings.
-        $settings->add(new admin_setting_heading('cltr_cloudwatch_general',
-            get_string('generalsettings', 'cltr_cloudwatch'),
-            get_string('generalsettings_desc', 'cltr_cloudwatch')
-        ));
+            $settings->add(new admin_setting_configselect('cltr_cloudwatch/awsversion',
+                get_string('awsversion', 'cltr_cloudwatch'),
+                get_string('awsversion_desc', 'cltr_cloudwatch'),
+                '2010-08-01', ['2010-08-01' => '2010-08-01', 'latest' => 'latest']));
 
-        // Namespace.
-        $settings->add(new admin_setting_configtext('cltr_cloudwatch/namespace',
-            get_string('namespace', 'cltr_cloudwatch' ),
-            get_string('namespace_desc', 'cltr_cloudwatch'),
-            'Moodle', PARAM_TEXT));
+            // General Settings.
+            $settings->add(new admin_setting_heading('cltr_cloudwatch_general',
+                get_string('generalsettings', 'cltr_cloudwatch'),
+                get_string('generalsettings_desc', 'cltr_cloudwatch')
+            ));
 
-        $envoptions = [
-            'dev' => 'dev',
-            'uat' => 'uat',
-            'qat' => 'qat',
-            'prod' => 'prod',
-        ];
+            // Namespace.
+            $settings->add(new admin_setting_configtext('cltr_cloudwatch/namespace',
+                get_string('namespace', 'cltr_cloudwatch'),
+                get_string('namespace_desc', 'cltr_cloudwatch'),
+                '', PARAM_TEXT));
 
-        // Environment.
-        $settings->add(new admin_setting_configselect('cltr_cloudwatch/environment',
-            get_string('environment', 'cltr_cloudwatch' ),
-            get_string('environment_desc', 'cltr_cloudwatch'),
-            'dev', $envoptions));
+            $envoptions = [
+                'dev' => 'dev',
+                'uat' => 'uat',
+                'qat' => 'qat',
+                'prod' => 'prod',
+            ];
+
+            // Environment.
+            $settings->add(new admin_setting_configselect('cltr_cloudwatch/environment',
+                get_string('environment', 'cltr_cloudwatch'),
+                get_string('environment_desc', 'cltr_cloudwatch'),
+                'dev', $envoptions));
+        }
     }
 }
 

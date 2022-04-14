@@ -43,4 +43,4 @@ $string['environment_desc'] = 'Execution environment that will be presented as a
 $string['generalsettings'] = 'General settings';
 $string['generalsettings_desc'] = 'Settings for the general behaviour of the plugin';
 $string['namespace'] = 'Namespace';
-$string['namespace_desc'] = 'Unique namespace to store metrics under in Cloudwatch.';
+$string['namespace_desc'] = 'Unique namespace to store metrics under in Cloudwatch. If left empty, then $CFG->wwwroot will be used';

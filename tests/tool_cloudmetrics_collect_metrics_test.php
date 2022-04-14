@@ -113,12 +113,12 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
      * @throws \Exception
      */
     public function test_execute($timestr, $freqs, $expected) {
-        set_config('onlineusers_frequency', $freqs[0], 'tool_cloudmetrics');
-        set_config('activeusers_frequency', $freqs[1], 'tool_cloudmetrics');
-        set_config('newusers_frequency', $freqs[2], 'tool_cloudmetrics');
+        set_config('activeusers_frequency', $freqs[0], 'tool_cloudmetrics');
+        set_config('newusers_frequency', $freqs[1], 'tool_cloudmetrics');
+        set_config('onlineusers_frequency', $freqs[2], 'tool_cloudmetrics');
         set_config('activeusers_enabled', 1, 'tool_cloudmetrics');
-        set_config('onlineusers_enabled', 1, 'tool_cloudmetrics');
         set_config('newusers_enabled', 1, 'tool_cloudmetrics');
+        set_config('onlineusers_enabled', 1, 'tool_cloudmetrics');
 
         $tz = \core_date::get_server_timezone_object();
         $time = (new \DateTime($timestr, $tz))->getTimestamp();
@@ -143,27 +143,27 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
             [
                 'midnight +75 minutes',
                 [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
-                ['onlineusers', 'activeusers']
+                ['activeusers', 'newusers']
             ],
             [
                 'midnight +60 minutes',
                 [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
-                ['onlineusers', 'activeusers', 'newusers']
+                ['activeusers', 'newusers', 'onlineusers']
             ],
             [
                 'midnight this month',
                 [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['onlineusers', 'activeusers', 'newusers']
+                ['activeusers', 'newusers', 'onlineusers']
             ],
             [
                 'midnight this month -10 seconds',
                 [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['onlineusers', 'activeusers', 'newusers']
+                ['activeusers', 'newusers', 'onlineusers']
             ],
             [
                 'midnight this month +15 minutes',
                 [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['activeusers']
+                ['newusers']
             ],
         ];
     }

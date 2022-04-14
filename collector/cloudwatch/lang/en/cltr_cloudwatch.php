@@ -45,6 +45,11 @@ $string['generalsettings_desc'] = 'Settings for the general behaviour of the plu
 $string['namespace'] = 'Namespace';
 $string['namespace_desc'] = 'Unique namespace to store metrics under in Cloudwatch. If left empty, then $CFG->wwwroot will be used';
 
+$string['awskey'] = 'AWS access key';
+$string['awskey_desc'] = 'The access key ID assigned to the IAM user.';
+$string['awssecret'] = 'AWS access secret';
+$string['awssecret_desc'] = 'The secret access key assigned to the IAM user.';
+
 // Missing requirements.
 $string['unsatisfied_requirements'] = 'Unsatisfied Requirements';
 $string['aws:installneeded'] = 'Plugin \'local_aws\' of version '. \cltr_cloudwatch\lib::LOCAL_AWS_VERSION . ' is required.';

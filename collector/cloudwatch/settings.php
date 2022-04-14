@@ -46,6 +46,17 @@ if ($hassiteconfig) {
                 'ap-southeast-2'
             ));
 
+            $settings->add(new admin_setting_configtext('cltr_cloudwatch/aws_key',
+                get_string('awskey', 'cltr_cloudwatch'),
+                get_string('awskey_desc', 'cltr_cloudwatch'),
+                '', PARAM_TEXT));
+
+            $settings->add(new admin_setting_configpasswordunmask('cltr_cloudwatch/aws_secret',
+                get_string('awssecret', 'cltr_cloudwatch'),
+                get_string('awssecret_desc', 'cltr_cloudwatch'),
+                ''));
+
+
             // General Settings.
             $settings->add(new admin_setting_heading('cltr_cloudwatch_general',
                 get_string('generalsettings', 'cltr_cloudwatch'),

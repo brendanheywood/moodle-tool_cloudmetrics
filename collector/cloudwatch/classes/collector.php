@@ -48,8 +48,12 @@ class collector extends base {
             ];
 
             // Add AWS credentials if specified in CFG. IAM role and environment would apply if they are not set.
-            if (isset($CFG->forced_plugin_settings['cltr_cloudwatch']['credentials'])) {
-                $clientconfig['credentials'] = $CFG->forced_plugin_settings['cltr_cloudwatch']['credentials'];
+            $awskey = get_config('cltr_cloudwatch', 'aws_key');
+            if (!empty($awskey)) {
+                $clientconfig['credentials'] = [
+                    'key' => $awskey,
+                    'secret' => get_config('cltr_cloudwatch', 'aws_secret')
+                ];
             }
 
             self::$client = client_factory::get_client('Aws\CloudWatch\CloudWatchClient', $clientconfig);

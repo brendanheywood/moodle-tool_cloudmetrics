@@ -85,14 +85,15 @@ This is the minimum user policy for access.
 Or the user can be assigned the `CloudWatchFullAccess`
 predefined policy.
 
-Ideally, the execution environent will be configured with
-the IAM credentials. However, the following config can
-also be used. Substitute the value strings with your access keys.
+Ideally, the execution environment will be configured with
+the IAM credentials. However, the AWS access key and secret can be set
+via the plugin settings page.
 
-    $CFG->forced_plugin_settings['cltr_cloudwatch']['credentials'] = [
-        'key' => '<Access key ID>',
-        'secret' => '<Secret access key>',
-    ];
+It can also be set in the config file as depicted here.
+Substitute the value strings with your access keys.
+
+    $CFG->forced_plugin_settings['cltr_cloudwatch']['aws_key'] = '<Access key ID>';
+    $CFG->forced_plugin_settings['cltr_cloudwatch']['aws_secret'] = '<Secret access key>';
 
 Also see [Cloudwatch IAM policy docs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-identity-based-access-control-cw.html).
 
@@ -100,6 +101,8 @@ Also see [Cloudwatch IAM policy docs](https://docs.aws.amazon.com/AmazonCloudWat
 
 - awsregion - The region your AWS account is based in.
 - awsversion - The version of the API.
+- aws_key - The access key ID for the IAM user.
+- aws_secret - The secret access key for the IAM user.
 - namespace - Unique namespace for your installation. e.g. The sites's domain name.
 - environment - The deployment environment (prod, dev, uat or qat)
 

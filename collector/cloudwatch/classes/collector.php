@@ -64,21 +64,40 @@ class collector extends base {
     public function record_metric(metric_item $item) {
         self::$client->putMetricData([
             'Namespace' => self::$pluginconfig->namespace,
-            'MetricData' => [
+            'MetricData' => [ $this->make_metric_data_entry($item) ],
+        ]);
+    }
+
+    public function record_metrics(array $items) {
+        $metricdata = [];
+        foreach ($items as $item) {
+            $metricdata[] = $this->make_metric_data_entry($item);
+        }
+        self::$client->putMetricData([
+            'Namespace' => self::$pluginconfig->namespace,
+            'MetricData' => $metricdata,
+        ]);
+    }
+
+    /**
+     * Creates a metric data array from an item for use with the Cloudwatch API.
+     *
+     * @param metric_item $item
+     * @return array
+     */
+    private function make_metric_data_entry(metric_item $item): array {
+        return [
+            'MetricName' => $item->name,
+            'Value' => $item->value,
+            'Unit' => $item->unit ?? 'Count',
+            'Timestamp' => $item->time,
+            'Dimensions' => [
                 [
-                    'MetricName' => $item->name,
-                    'Value' => $item->value,
-                    'Unit' => $item->unit ?? 'Count',
-                    'Timestamp' => $item->time,
-                    'Dimensions' => [
-                        [
-                            'Name' => 'Environment',
-                            'Value' => self::$pluginconfig->environment,
-                        ],
-                    ],
+                    'Name' => 'Environment',
+                    'Value' => self::$pluginconfig->environment,
                 ],
             ],
-        ]);
+        ];
     }
 
     public function is_ready(): bool {

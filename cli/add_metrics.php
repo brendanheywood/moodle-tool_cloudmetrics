@@ -101,6 +101,7 @@ if (!empty($options['remove'])) {
     for ($i = 0; $i < $num; ++$i) {
         $item = $metric->get_metric_item();
         echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . "\n";
-        collector\manager::send_metrics([$item]);
+        $items[] = $item;
     }
+    collector\manager::send_metrics($items);
 }

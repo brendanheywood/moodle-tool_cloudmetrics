@@ -143,22 +143,22 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
             [
                 'midnight +75 minutes',
                 [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
-                ['activeusers', 'newusers']
+                ['newusers', 'activeusers']
             ],
             [
                 'midnight +60 minutes',
                 [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
-                ['activeusers', 'newusers', 'onlineusers']
+                ['newusers', 'activeusers', 'onlineusers']
             ],
             [
                 'midnight this month',
                 [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['activeusers', 'newusers', 'onlineusers']
+                ['newusers', 'onlineusers', 'activeusers']
             ],
             [
                 'midnight this month -10 seconds',
                 [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['activeusers', 'newusers', 'onlineusers']
+                ['newusers', 'onlineusers', 'activeusers']
             ],
             [
                 'midnight this month +15 minutes',

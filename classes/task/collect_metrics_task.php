@@ -60,7 +60,7 @@ class collect_metrics_task extends \core\task\scheduled_task {
      * @throws \coding_exception
      */
     public function get_name() {
-        return get_string('task_runner', 'tool_cloudmetrics');
+        return get_string('collect_metrics_task', 'tool_cloudmetrics');
     }
 
     /**

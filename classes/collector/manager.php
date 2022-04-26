@@ -47,9 +47,7 @@ class manager {
         foreach ($plugins as $plugin) {
             $collector = $plugin->get_collector();
             if ($collector->is_ready()) {
-                foreach ($items as $item) {
-                    $collector->record_metric($item);
-                }
+                $collector->record_metrics($items);
             }
         }
     }

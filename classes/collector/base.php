@@ -37,6 +37,18 @@ abstract class base {
     abstract public function record_metric(metric_item $metric);
 
     /**
+     * Records a number of metrics.
+     *
+     * @param array $metrics
+     * @return mixed
+     */
+    public function record_metrics(array $metrics) {
+        foreach ($metrics as $metric) {
+            $this->record_metric($metric);
+        }
+    }
+
+    /**
      * Returns true if the backend service is able to receive submissions.
      *
      * @return bool

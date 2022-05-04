@@ -34,7 +34,8 @@ $syscontext = context_system::instance();
 $PAGE->set_url('/admin/tool/cloudmetrics/collectors.php');
 $PAGE->set_context($syscontext);
 
-require_admin();
+require_login(null, false);
+require_capability('moodle/site:config', context_system::instance());
 require_sesskey();
 
 $return = new moodle_url($returnurl);

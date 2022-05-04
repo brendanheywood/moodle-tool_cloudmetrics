@@ -75,7 +75,9 @@ $chart->set_labels($labels);
 
 echo $OUTPUT->header();
 echo $OUTPUT->render($select);
-echo html_writer::tag('h3', $metric->get_label());
-echo html_writer::tag('p', $metric->get_description());
+if (isset($metric)) {
+    echo html_writer::tag('h3', $metric->get_label());
+    echo html_writer::tag('p', $metric->get_description());
+}
 echo $OUTPUT->render($chart);
 echo $OUTPUT->footer();

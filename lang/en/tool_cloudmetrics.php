@@ -34,7 +34,7 @@ $string['privacy:metadata'] = 'No personal information is stored';
 $string['subplugintype_cltr'] = 'Collector for a cloud metric service';
 $string['subplugintype_cltr_plural'] = 'Collectors for cloud metric services';
 
-// Tasks
+// Tasks.
 $string['collect_metrics_task'] = 'Collect Metrics';
 
 // Settings.

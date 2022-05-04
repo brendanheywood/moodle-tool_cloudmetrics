@@ -35,6 +35,7 @@ class test_metric extends base {
     public $name = 'foobar';
 
     public $enabled = false;
+    public $isready = true;
 
     /**
      * The metric's name.
@@ -110,6 +111,10 @@ class test_metric extends base {
      */
     public function set_enabled(bool $enabled) {
         $this->enabled = $enabled;
+    }
+
+    public function is_ready(): bool {
+        return $this->isready;
     }
 
     /**

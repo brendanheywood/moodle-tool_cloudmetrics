@@ -51,7 +51,7 @@ class manager {
                     $collector->record_metrics($items);
                 }
             } catch (\Exception $e) {
-                error_log('Collector ' . $plugin->name . ' failed. "' . $e->getMessage() . '"');
+                debugging('Collector ' . $plugin->name . ' failed. "' . $e->getMessage() . '"');
             }
         }
     }

@@ -74,3 +74,7 @@ function tool_cloudmetrics_inplace_editable(string $itemtype, int $itemid, strin
         return $editable;
     }
 }
+
+function tool_cloudmetrics_status_checks() {
+    return [new tool_cloudmetrics\check\collectorcheck()];
+}

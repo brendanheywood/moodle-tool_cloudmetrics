@@ -28,6 +28,9 @@ use tool_cloudmetrics\plugininfo\cltr;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class manager {
+
+    const STATUS_PREFIX = 'collector_status:';
+
     /**
      * Get all the collector classes.
      *
@@ -49,9 +52,16 @@ class manager {
             try {
                 if ($collector->is_ready()) {
                     $collector->record_metrics($items);
+                    // Clear any failure timestamps for this plugin.
+                    set_config(self::STATUS_PREFIX . $plugin->name, 'pass', 'tool_cloudmetrics');
                 }
             } catch (\Exception $e) {
                 debugging('Collector ' . $plugin->name . ' failed. "' . $e->getMessage() . '"');
+                // Store plugin name with timestamp of initial failure to track when problem first arose.
+                $lastfail = get_config('tool_cloudmetrics_failure', $plugin->name);
+                if ($lastfail === false || $lastfail === 'pass') {
+                    set_config(self::STATUS_PREFIX . $plugin->name, time(), 'tool_cloudmetrics');
+                }
             }
         }
     }

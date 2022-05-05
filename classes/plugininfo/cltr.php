@@ -47,6 +47,25 @@ class cltr extends \core\plugininfo\base {
     }
 
     /**
+     * Return a list of currently enabled and ready plugin names.
+     *
+     * @return array
+     */
+    public static function get_ready_plugin_names() {
+        $names = [];
+
+        $plugins = self::get_enabled_plugins();
+        foreach ($plugins as $plugin) {
+            $collector = $plugin->get_collector();
+            if ($collector->is_ready() && !in_array($plugin->name, $names)) {
+                $names[] = $plugin->name;
+            }
+        }
+
+        return $names;
+    }
+
+    /**
      * Returns the information about plugin availability
      *
      * True means that the plugin is enabled. False means that the plugin is

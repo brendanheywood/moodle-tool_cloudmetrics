@@ -83,6 +83,11 @@ $string['one_week'] = '1 week';
 $string['one_fortnight'] = '1 fortnight';
 $string['one_month'] = '1 month';
 
-// Error messages.
+// Error and status messages.
 $string['metric_not_found'] = 'Metric \'{$a}\' not found';
-
+$string['collector_failed'] = 'Collector \'{$a->name}\' failed {$a->time}';
+$string['collector_passed'] = 'Collector \'{$a}\' succeeded';
+$string['collector_never'] = 'Collector \'{$a}\' has never executed';
+$string['no_collectors'] = 'No active collectors';
+$string['checkcollectorcheck'] = 'Cloudmetrics collector status';
+$string['managelink'] = 'Manage collectors';

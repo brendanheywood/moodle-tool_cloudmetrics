@@ -155,7 +155,7 @@ class collect_metrics_task extends \core\task\scheduled_task {
         $metrics = metric\manager::get_metrics(true);
         $items = [];
         foreach ($metrics as $metric) {
-            if ($metric->get_frequency() <= $cutoff || $metric->get_frequency() == $ismonth) {
+            if (($metric->get_frequency() <= $cutoff || $metric->get_frequency() == $ismonth) && $metric->is_ready()) {
                 $items[] = $metric->get_metric_item();
             }
         }

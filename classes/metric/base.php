@@ -108,6 +108,15 @@ abstract class base {
     }
 
     /**
+     * Is the metric ready to be measured?
+     *
+     * @return bool
+     */
+    public function is_ready(): bool {
+        return true;
+    }
+
+    /**
      * Returns the URL for the settings. Returns null if there is none.
      *
      * @return \moodle_url|null

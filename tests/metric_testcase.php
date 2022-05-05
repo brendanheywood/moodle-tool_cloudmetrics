@@ -38,7 +38,7 @@ class metric_testcase extends \advanced_testcase {
      * @param int $interval
      * @return mixed|\PHPUnit\Framework\MockObject\MockObject|metric_base
      */
-    protected function get_metric_stub(array $cycle, $starttime = 1, $interval = 1) {
+    protected function get_metric_stub(array $cycle, $starttime = 1, $interval = 1, $isready = true) {
         $infinate = new \InfiniteIterator(new \ArrayIterator($cycle));
         $infinate->rewind();
 
@@ -53,6 +53,9 @@ class metric_testcase extends \advanced_testcase {
 
         $stub->method('get_label')
             ->willReturn('Mock');
+
+        $stub->method('is_ready')
+            ->willReturn($isready);
 
         $stub->method('get_metric_item')
             ->willReturnCallback(function() use ($stub, $infinate, &$time, $interval) {

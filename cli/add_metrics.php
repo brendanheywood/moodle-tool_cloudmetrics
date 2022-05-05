@@ -99,9 +99,15 @@ if (!empty($options['remove'])) {
     $metric->interval = $options['frequency'];
 
     for ($i = 0; $i < $num; ++$i) {
-        $item = $metric->get_metric_item();
-        echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . "\n";
-        $items[] = $item;
+        if ($metric->is_ready()) {
+            $item = $metric->get_metric_item();
+            echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . PHP_EOL;
+            $items[] = $item;
+        }
     }
-    collector\manager::send_metrics($items);
+    if (count($items) !== 0) {
+        collector\manager::send_metrics($items);
+    } else {
+        echo 'Nothing to send.', PHP_EOL;
+    }
 }

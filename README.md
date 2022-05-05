@@ -1,5 +1,7 @@
 # moodle-tool_cloudmetrics
 
+![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/catalyst/moodle-tool_cloudmetrics/ci/MOODLE_35_STABLE)
+
 
 * [What is this?](#what-is-this)
 * [Branches](#branches)
@@ -15,13 +17,18 @@
 
 ## What is this?
 
-This plugin is intended to be a generic admin tool for defining various realtime metrics of various sorts. 
+This plugin is intended to be a generic admin tool for defining various realtime metrics of various sorts.
 
 Metrics may be 'built in' ones such as the same metrics which are beaconed back to Moodle HQ when you register you site, or they may be custom ones specific to your site.
 
 In general a metric is any real time value that you might push to another service which monitors and tracks that metric over time such as a data warehouse or a tool like AWS CloudWatch. Eventually this plugin may support publishing to many potential services.
 
 ## Branches
+
+| Moodle version    | Branch           | PHP  |
+|-------------------|------------------|------|
+| Moodle 3.5+       | MOODLE_35_STABLE | 7.1+ |
+| Totara 10+        | MOODLE_35_STABLE | 7.1+ |
 
 ## Architecture
 

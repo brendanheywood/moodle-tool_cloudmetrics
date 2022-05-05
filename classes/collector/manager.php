@@ -46,8 +46,12 @@ class manager {
         $plugins = cltr::get_enabled_plugins();
         foreach ($plugins as $plugin) {
             $collector = $plugin->get_collector();
-            if ($collector->is_ready()) {
-                $collector->record_metrics($items);
+            try {
+                if ($collector->is_ready()) {
+                    $collector->record_metrics($items);
+                }
+            } catch (\Exception $e) {
+                debugging('Collector ' . $plugin->name . ' failed. "' . $e->getMessage() . '"');
             }
         }
     }

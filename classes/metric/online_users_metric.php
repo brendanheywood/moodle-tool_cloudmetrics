@@ -52,7 +52,7 @@ class online_users_metric extends builtin {
         global $DB;
         $now = time();
         // Don't use fetcher because this is faster.
-        $users = $DB->count_records_select('user', 'deleted = ? AND lastaccess > ?', [0, $now - $this->get_time_window()]);
+        $users = $DB->count_records_select('user', 'lastaccess > ?', [$now - $this->get_time_window()]);
         return new metric_item($this->get_name(), $now, $users, $this);
     }
 }

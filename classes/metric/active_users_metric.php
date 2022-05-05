@@ -52,7 +52,7 @@ class active_users_metric extends builtin {
         global $DB;
         $now = time();
         // Don't use get_site_info() because it's slow.
-        $users = $DB->count_records_select('user', 'deleted = ? AND lastlogin > ?', [0, $now - $this->get_time_window()]);
+        $users = $DB->count_records_select('user', 'lastlogin > ?', [$now - $this->get_time_window()]);
         return new metric_item($this->get_name(), $now, $users, $this);
     }
 }

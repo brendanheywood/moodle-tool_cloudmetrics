@@ -51,7 +51,7 @@ class new_users_metric extends builtin {
     public function get_metric_item(): metric_item {
         global $DB;
         $now = time();
-        $users = $DB->count_records_select('user', 'deleted = ? AND firstaccess > ?', [0, $now - $this->get_time_window()]);
+        $users = $DB->count_records_select('user', 'firstaccess > ?', [$now - $this->get_time_window()]);
         return new metric_item($this->get_name(), $now, $users, $this);
     }
 }

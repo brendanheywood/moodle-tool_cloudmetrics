@@ -114,7 +114,7 @@ class manager {
         }
 
         // Sort them so the most frequent metrics are first.
-        usort($metrics, function($a, $b) {
+        uasort($metrics, function($a, $b) {
             return $a->get_frequency() <=> $b->get_frequency();
         });
 

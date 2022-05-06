@@ -126,6 +126,30 @@ abstract class base {
     }
 
     /**
+     * The range for which a backfilled metric has retrieved data.
+     *
+     * @return array|bool First value is min timestamp, second is max timestamp, third is used interval.
+     * @throws \dml_exception
+     */
+    public function get_range_retrieved() {
+        $config = explode('-', get_config('tool_cloudmetrics', $this->get_name() . '_range'));
+        if (count($config) !== 3) {
+            return [-1, -1, -1];
+        }
+        return [(int)$config[0], (int)$config[1], (int)$config[2]];
+    }
+
+    /**
+     * Sets the range for which a backfilled metric has retrieved data.
+     *
+     * @param array $currentconfig Config containing min and max timestamps plus interval.
+     */
+    public function set_range_retrieved(array $currentconfig) {
+        $currentconfig = implode('-', $currentconfig);
+        set_config($this->get_name() . '_range', $currentconfig, 'tool_cloudmetrics');
+    }
+
+    /**
      * The latest time for which a metric item was generated for.
      *
      * @return int
@@ -154,4 +178,38 @@ abstract class base {
      * @return metric_item
      */
     abstract public function generate_metric_item(int $starttime, int $finishtime): metric_item;
+
+    /**
+     * Metric's ability to be backfilled.
+     *
+     * @return bool
+     */
+    public function is_backfillable(): bool {
+        return false;
+    }
+
+    /**
+     * Returns records for backfilled metric.
+     *
+     * @param int $backwardperiod Time from which sample is to be retrieved.
+     * @param int $finishtime If data is being completed argument is passed here.
+     *
+     * @return array|null
+     */
+    public function generate_metric_items(int $backwardperiod, int $finishtime = null): ?array {
+        return null;
+    }
+
+    /**
+     * Returns two dates representing start and end log points, hence available data to retrieve.
+     *
+     * @return object|bool
+     */
+    public function get_range_log_available() {
+        global $DB;
+
+        $sql = 'SELECT max(timecreated) AS "max", min(timecreated) AS "min"
+                  FROM {logstore_standard_log}';
+        return $DB->get_record_sql($sql);
+    }
 }

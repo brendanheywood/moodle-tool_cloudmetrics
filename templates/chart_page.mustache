@@ -1,0 +1,59 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tool_cloudmetrics/chart_page
+
+    This template renders chart for different metrics.
+
+    Context variables for this template:
+    * metriclabel - Label for the metric.
+    * metricdescription - Description for the metric.
+    * selector - Metric selector.
+    * periodselect - Chart period selector.
+    * chart - Chart display for metric data.
+    * backfillable - Whether or not selected metric supports data retrieval.
+    * backfillurl - Url redirecting to backfill form.
+    * metriclabeltolower - Same as metriclabel but lower case.
+
+    Example context (json):
+    {
+        "metriclabel": "Online users",
+        "metricdescription": "Users that are currently online.",
+        "selector": true,
+        "periodselect": "<div class='singleselect d-inline-block'>...</div>",
+        "chart": "<div class='chart-area' id='chart-area-629a7399c40fd629a7399b9f9b6'></div>",
+        "backfillable": true,
+        "backfillurl": "http://moodle.com/admin/tool/cloudmetrics/collector/database/backfill.php?metric=onlineusers",
+        "metriclabeltolower": "online users"
+    }
+}}
+<h3>
+    {{metriclabel}}
+</h3>
+<p>
+    {{metricdescription}}
+</p>
+{{{selector}}}
+<br>
+{{{periodselect}}}
+<br>
+{{{chart}}}
+{{#backfillable}}
+    <a href="{{{backfillurl}}}">
+        {{#str}} return_to_backfill, tool_cloudmetrics, {{metriclabeltolower}} {{/str}}
+    </a>
+{{/backfillable}}

@@ -36,6 +36,16 @@ if ($hassiteconfig) {
         )
     );
 
+    $ADMIN->add(
+        'reports',
+        new admin_externalpage(
+            'cltr_database_backfill',
+            get_string('metric_backfill', 'cltr_database'),
+            new moodle_url('/admin/tool/cloudmetrics/collector/database/backfill.php'),
+            'moodle/site:config'
+        )
+    );
+
     if ($ADMIN->fulltree) {
         $settings->add(
             new admin_setting_configduration(

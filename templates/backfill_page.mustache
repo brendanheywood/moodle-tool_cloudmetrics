@@ -1,0 +1,73 @@
+    {{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template tool_cloudmetrics/backfill_page
+
+    This template renders metrics backfill page.
+
+    Context variables for this template:
+    * metriclabel String - Label for the metric.
+    * form String - Form for retrieving data.
+    * linktochart String - Url redirecting to chart display.
+    * emptydb String | Boolean - Whether metric has already been backfilled in db.
+    * dataindb String - Already retrieved data stored.
+    * isdifferentfreq Boolean - Whether frequency change since last data retrieval.
+    * dataperiod String - Available data to retrieve for logstore log standard table.
+    * cautiondata String - Disclaimer for frequency change, only completion no overlapping data added.
+
+    Example context (json):
+    {
+        "metriclabel": "Online users",
+        "form": "<form autocomplete='off'> ... </form>",
+        "linktochart": "http://moodle.com/admin/tool/cloudmetrics/collector/database/chart.php?metric=onlineusers",
+        "emptydb": false,
+        "dataindb": "Your database contains data from 2 Jun 2021, 20:00 to 9 Feb 2022, 19:00.",
+        "isdifferentfreq": false,
+        "dataperiod": "Current information shows data can be retrieved from 22 Oct 2020, 17:10 to 3 Jun 2022, 08:33.",
+        "cautiondata": "Caution - frequency has been changed, new data will complete currently present but no data will be added between 12 May 2021, 20:00 and 24 Nov 2021, 19:00."
+    }
+}}
+<h3>
+    {{metriclabel}}
+</h3>
+<br>
+    {{{form}}}
+<br>
+    <a href="{{linktochart}}">
+        {{#str}} return_to_chart, tool_cloudmetrics, {{metriclabel}} {{/str}}
+    </a>
+<br>
+<br>
+<p>
+    {{^emptydb}}
+        {{dataperiod}}
+    {{/emptydb}}
+    {{#emptydb}}
+        {{emptydb}}
+    {{/emptydb}}
+</p>
+<p>
+    {{dataindb}}
+    <br>
+    <br>
+    {{^isdifferentfreq}}
+        {{#str}} same_freq, tool_cloudmetrics {{/str}}
+    {{/isdifferentfreq}}
+    {{#isdifferentfreq}}
+        {{cautiondata}}
+    {{/isdifferentfreq}}
+</p>

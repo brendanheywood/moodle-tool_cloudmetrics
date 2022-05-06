@@ -37,6 +37,7 @@ $string['metric_expiry_desc'] = 'Length of time to keep data before deleting.';
 
 // Chart display.
 $string['metric_display'] = 'Cloudmetrics Charts';
+$string['metric_backfill'] = 'Cloudmetrics Backfill';
 $string['select_metric_for_display'] = 'Select metric for display.';
 $string['select_graph_period'] = 'Select graph period.';
 
@@ -45,3 +46,6 @@ $string['metrics_cleanup_task'] = 'Cleanup metrics task';
 
 // Time format.
 $string['strftimedatetime'] = '%d %h %Y, %H:%M';
+
+// Error.
+$string['collector_not_supported'] = 'Collector \'{$a}\' does not support backfilled data collection.';

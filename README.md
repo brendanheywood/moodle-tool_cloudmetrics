@@ -23,7 +23,7 @@ This plugin is intended to be a generic admin tool for defining various realtime
 
 Metrics may be 'built in' ones such as the same metrics which are beaconed back to Moodle HQ when you register you site, or they may be custom ones specific to your site.
 
-In general a metric is any real time value that you might push to another service which monitors and tracks that metric over time such as a data warehouse or a tool like AWS CloudWatch. Eventually this plugin may support publishing to many potential services.
+In general a metric is any real time value that you might push to another service which monitors and tracks that metric over time such as a data warehouse or a tool like AWS CloudWatch.
 
 ## Branches
 
@@ -50,7 +50,7 @@ The key architecture here is decoupling the gathering of the metrics from where 
 
 ### Metrics
 
-The plan is to have different sources of metrics, possible
+The plan is to have different sources of metrics, and 3rd party plugins can define their own metrics.
 
 
 ### Collectors

@@ -10,6 +10,8 @@
   * [Collectors](#collectors)
 * [Installation](#installation)
 * [Configuration](#configuration)
+  * [Moodle Database](#moodle-database)
+  * [AWS CloudWatch](#aws-cloudwatch)
 * [Alternatives](#alternatives)
   * [report_stats](#report_stats)
 * [Support](#support)
@@ -55,29 +57,50 @@ The plan is to have different sources of metrics, possible
 
 Metrics may be sent to one or more different services which we call a Collector.
 
-#### Build in admin report
-
-TBA
-
-We plan to have a very simple internal record of metrics with a limited data retention policy and basic graphing.
+We currently ship with a collector for AWS Cloudwatch and an internal Moodle database
+collector which has no dependancies and it used 
 
 
-#### AWS CloudWatch
+## Installation
 
-Sends metric data to [AWS Cloudwatch](https://docs.aws.amazon.com/cloudwatch/).
+Install this plugin via the usual way:
 
-##### Requires
-- [local/aws](https://github.com/catalyst/moodle-local_aws) plugin.
+https://docs.moodle.org/en/Installing_plugins
+
+Or directly using git:
+
+```sh
+git clone git@github.com:catalyst/moodle-tool_cloudmetrics.git admin/tool/cloudmetrics
+```
+
+## Configuration
+
+### Moodle Database
+
+We include a basic internal Moodle database collector which can record metrics for a limited time
+and do some very basic graphing. It is mostly intended to be a reference implementation of a collector
+and to provide a sanity check when comparing data to a 3rd party collector.
+
+
+### AWS CloudWatch
+
+Sends metric data to AWS Cloudwatch
+
+https://docs.aws.amazon.com/cloudwatch/
+
+#### Requires
+- local/aws AWS SDK plugin (https://github.com/catalyst/moodle-local_aws)
 - AWS account
-- IAM user.
+- IAM user
 
-##### IAM Access
+#### IAM Access
 
 You need to have an IAM user connected to your AWS account.
 This user will need permissions to submit cloudwatch data.
 
 This is the minimum user policy for access.
 
+```json
     {
         "Version": "2012-10-17",
         "Statement": [{
@@ -88,6 +111,7 @@ This is the minimum user policy for access.
             "Resource": "*"
         }]
     }
+```
 
 Or the user can be assigned the `CloudWatchFullAccess`
 predefined policy.
@@ -99,12 +123,16 @@ via the plugin settings page.
 It can also be set in the config file as depicted here.
 Substitute the value strings with your access keys.
 
-    $CFG->forced_plugin_settings['cltr_cloudwatch']['aws_key'] = '<Access key ID>';
-    $CFG->forced_plugin_settings['cltr_cloudwatch']['aws_secret'] = '<Secret access key>';
+```php
+$CFG->forced_plugin_settings['cltr_cloudwatch']['aws_key'] = '<Access key ID>';
+$CFG->forced_plugin_settings['cltr_cloudwatch']['aws_secret'] = '<Secret access key>';
+```
 
-Also see [Cloudwatch IAM policy docs](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-identity-based-access-control-cw.html).
+Also see Cloudwatch IAM policy docs:
 
-##### Settings
+https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/iam-identity-based-access-control-cw.html
+
+#### Settings
 
 - awsregion - The region your AWS account is based in.
 - awsversion - The version of the API.
@@ -114,32 +142,13 @@ Also see [Cloudwatch IAM policy docs](https://docs.aws.amazon.com/AmazonCloudWat
 - environment - The deployment environment (prod, dev, uat or qat)
 
 
-#### Google Cloud Monitoring
-
-TBA
-
-https://cloud.google.com/monitoring
-
-#### Azure Monitor
-
-TBA
-
-https://docs.microsoft.com/en-us/azure/azure-monitor/overview
-
-
-#### Prometheus
-
-TBA
-
-https://prometheus.io/
-https://prometheus.io/docs/introduction/overview/#what-are-metrics
-https://github.com/promphp/prometheus_client_php
-
-## Installation
-
-## Configuration
 
 ## Alternatives
+
+There are many plugins out there that do statistics and graphing of various metrics in Moodle
+but there are not many that are designed to push these metrics to a 3rd party. If you are
+aware of any please open an issue with details.
+
 
 ### report_stats
 

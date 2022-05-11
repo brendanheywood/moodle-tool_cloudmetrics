@@ -101,7 +101,7 @@ class collector extends base {
     }
 
     public function is_ready(): bool {
-        $plugininfo = \core_plugin_manager::instance()->get_plugin_info('cltr_database');
+        $plugininfo = \core_plugin_manager::instance()->get_plugin_info('cltr_cloudwatch');
         if (!$plugininfo->is_enabled()) {
             return false;
         }

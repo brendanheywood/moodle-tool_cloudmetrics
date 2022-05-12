@@ -26,7 +26,7 @@ require_once(__DIR__ . '/../../../../../../config.php');
 
 $collector = new collector();
 
-$metric = new \tool_cloudmetrics\test_metric\metric();
+$metric = new \tool_cloudmetrics\metric\test_metric();
 $metric->name = 'activeusers';
 
 for ($x = 0; $x <= 100; ++$x) {

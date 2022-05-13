@@ -44,13 +44,14 @@ class collector extends base {
      *
      * @param mixed $metricnames The metrics to be retrieved. Either a single string, or an
      *         array of strings. If empty, then all available metrics will be retrieved.
+     * @param int | false $starting The earliest timestamp to retrieve.
      * @return array
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_metrics($metricnames = null): array {
+    public function get_metrics($metricnames = null, $since = false): array {
         global $DB;
-
+        $starting = '';
         if (is_null($metricnames)) {
             $metricnames = [];
             $metrics = metric\manager::get_metrics(true);
@@ -60,10 +61,14 @@ class collector extends base {
         } else if (is_string($metricnames)) {
             $metricnames = [$metricnames];
         }
+        if ($since) {
+            $starting = " AND time > " . (time() - $since);
+        }
         list ($clause, $params) = $DB->get_in_or_equal($metricnames);
         $sql = "SELECT id, name, time, value
                   FROM {cltr_database_metrics}
                  WHERE name $clause
+                 $starting
                ORDER BY time asc";
         return $DB->get_records_sql($sql, $params);
     }

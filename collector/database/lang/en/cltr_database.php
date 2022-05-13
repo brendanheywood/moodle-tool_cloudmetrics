@@ -38,6 +38,7 @@ $string['metric_expiry_desc'] = 'Length of time to keep data before deleting.';
 // Chart display.
 $string['metric_display'] = 'Cloudmetrics Charts';
 $string['select_metric_for_display'] = 'Select metric for display.';
+$string['select_graph_period'] = 'Select graph period.';
 
 // Scheduled tasks.
 $string['metrics_cleanup_task'] = 'Cleanup metrics task';

@@ -82,6 +82,8 @@ $string['one_day'] = '1 day';
 $string['one_week'] = '1 week';
 $string['one_fortnight'] = '1 fortnight';
 $string['one_month'] = '1 month';
+$string['four_month'] = '4 months'; // Chart length only.
+$string['twelve_month'] = '12 months'; // Chart length only.
 
 // Error and status messages.
 $string['metric_not_found'] = 'Metric \'{$a}\' not found';

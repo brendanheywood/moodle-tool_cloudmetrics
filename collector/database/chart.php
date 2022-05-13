@@ -39,6 +39,17 @@ $PAGE->set_url($url);
 
 $metricname = optional_param('metric', 'activeusers', PARAM_ALPHANUMEXT);
 
+if (intval($_REQUEST['graphperiod'])) {
+    set_config($metricname . '_chart_period', intval($_REQUEST['graphperiod']), 'tool_cloudmetrics');
+    \core_plugin_manager::reset_caches();
+    $defaultperiod = intval($_REQUEST['graphperiod']);
+} else {
+    $defaultperiod = get_config('tool_cloudmetrics', $metricname . '_chart_period');
+    if (!$defaultperiod) {
+        $defaultperiod = metric\lib::period_from_interval($metricname);
+    }
+}
+
 $metrics = metric\manager::get_metrics(true);
 $metriclabels = [];
 foreach ($metrics as $m) {
@@ -56,8 +67,27 @@ $select = new \single_select(
 );
 $select->set_label(get_string('select_metric_for_display', 'cltr_database'));
 
+// Prepare time window selector.
+
+$periods = [
+    3600 => get_string('one_hour', 'tool_cloudmetrics'),
+    DAYSECS => get_string('one_day', 'tool_cloudmetrics'),
+    DAYSECS * 7 => get_string('one_week', 'tool_cloudmetrics'),
+    DAYSECS * 30 => get_string('one_month', 'tool_cloudmetrics'),
+    DAYSECS * 120 => get_string('four_month', 'tool_cloudmetrics'),
+    DAYSECS * 365 => get_string('twelve_month', 'tool_cloudmetrics')
+];
+
+$periodselect = new \single_select(
+    $url,
+    'graphperiod',
+    $periods,
+    $defaultperiod
+);
+$periodselect->set_label(get_string('select_graph_period', 'cltr_database'));
+
 $collector = new \cltr_database\collector();
-$records = $collector->get_metrics($metricname);
+$records = $collector->get_metrics($metricname, $defaultperiod);
 
 $values = [];
 $labels = [];
@@ -75,6 +105,8 @@ $chart->set_labels($labels);
 
 echo $OUTPUT->header();
 echo $OUTPUT->render($select);
+echo html_writer::empty_tag('br');
+echo $OUTPUT->render($periodselect);
 if (isset($metric)) {
     echo html_writer::tag('h3', $metric->get_label());
     echo html_writer::tag('p', $metric->get_description());

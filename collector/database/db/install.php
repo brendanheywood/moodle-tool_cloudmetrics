@@ -15,25 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version
+ * Install script for cloudmetrics.
  *
  * @package   tool_cloudmetrics
- * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
- * @copyright  2022, Catalyst IT
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @author    Mike Macgirvin <mikemacgirvin@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
-$plugin->version = 2022051600;
-$plugin->release = 2022051600;
-
-$plugin->requires = 2017051500;    // Our lowest supported Moodle (3.3.0).
-
-$plugin->supported = [35, 401];     // Available as of Moodle 3.9.0 or later.
-// TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
-
-$plugin->component = 'tool_cloudmetrics';
-$plugin->maturity = MATURITY_ALPHA;
-
-$plugin->dependencies = [];
+function xmldb_cltr_database_install() {
+    set_config('enabled', 1, 'cltr_database');
+    \core_plugin_manager::reset_caches();
+}

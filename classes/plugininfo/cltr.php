@@ -76,7 +76,7 @@ class cltr extends \core\plugininfo\base {
      * @return null|bool
      */
     public function is_enabled(): bool {
-        return !((bool) get_config('cltr_' . $this->name, 'disabled'));
+        return ((bool) get_config('cltr_' . $this->name, 'enabled'));
     }
 
     /**
@@ -86,7 +86,7 @@ class cltr extends \core\plugininfo\base {
      */
     public function set_enabled(bool $enable) {
         if ($this->is_enabled() != $enable) {
-            set_config('disabled', (int) !$enable, 'cltr_' . $this->name);
+            set_config('enabled', (int) $enable, 'cltr_' . $this->name);
             \core_plugin_manager::reset_caches();
         }
     }

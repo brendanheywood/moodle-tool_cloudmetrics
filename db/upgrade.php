@@ -24,12 +24,25 @@
  */
 
 function xmldb_tool_cloudmetrics_upgrade($oldversion) {
-    global $DB;
+    global $DB, $CFG;
 
     $dbman = $DB->get_manager();
 
     // Automatically generated Moodle v3.11.0 release upgrade line.
     // Put any upgrade step following this.
+    if ($oldversion < 2022051600) {
+        // Reverse the logic of existing disabled settings.
+        foreach (['cloudwatch', 'database'] as $connector) {
+            $x = get_config('cltr_' . $collector, 'disabled');
+            // Never used. Default is now disabled, so leave alone.
+            if ($x === false) {
+                continue;
+            }
+            set_config('enabled', 1 - (int) $x, 'cltr_' . $collector);
+            unset_config('disabled', 'cltr_' . $collector);
+        }
+        upgrade_plugin_savepoint(true, 2022051600, 'tool', 'cloudmetrics');
+    }
 
     return true;
 }

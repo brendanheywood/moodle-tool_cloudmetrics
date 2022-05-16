@@ -32,7 +32,7 @@ function xmldb_tool_cloudmetrics_upgrade($oldversion) {
     // Put any upgrade step following this.
     if ($oldversion < 2022051600) {
         // Reverse the logic of existing disabled settings.
-        foreach (['cloudwatch', 'database'] as $connector) {
+        foreach (['cloudwatch', 'database'] as $collector) {
             $x = get_config('cltr_' . $collector, 'disabled');
             // Never used. Default is now disabled, so leave alone.
             if ($x === false) {

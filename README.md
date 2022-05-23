@@ -58,7 +58,8 @@ The plan is to have different sources of metrics, and 3rd party plugins can defi
 Metrics may be sent to one or more different services which we call a Collector.
 
 We currently ship with a collector for AWS Cloudwatch and an internal Moodle database
-collector which has no dependancies and it used 
+collector which has no dependancies and it used as a reference implementation and
+to validate the metrics are working consistently with an external collectors.
 
 
 ## Installation

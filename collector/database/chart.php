@@ -39,15 +39,15 @@ $PAGE->set_url($url);
 
 $metricname = optional_param('metric', 'activeusers', PARAM_ALPHANUMEXT);
 
-if (intval($_REQUEST['graphperiod'])) {
-    set_config($metricname . '_chart_period', intval($_REQUEST['graphperiod']), 'tool_cloudmetrics');
-    \core_plugin_manager::reset_caches();
-    $defaultperiod = intval($_REQUEST['graphperiod']);
-} else {
+$defaultperiod = optional_param('graphperiod',-1, PARAM_INT);
+if ($defaultperiod === -1) {
     $defaultperiod = get_config('tool_cloudmetrics', $metricname . '_chart_period');
     if (!$defaultperiod) {
         $defaultperiod = metric\lib::period_from_interval($metricname);
     }
+} else {
+    set_config($metricname . '_chart_period', $defaultperiod, 'tool_cloudmetrics');
+    \core_plugin_manager::reset_caches();
 }
 
 $metrics = metric\manager::get_metrics(true);
@@ -78,6 +78,9 @@ $periods = [
     DAYSECS * 365 => get_string('twelve_month', 'tool_cloudmetrics')
 ];
 
+// Create a new URL object to avoid poisoning the existing one.
+$url = clone $url;
+$url->param('metric', $metricname);
 $periodselect = new \single_select(
     $url,
     'graphperiod',

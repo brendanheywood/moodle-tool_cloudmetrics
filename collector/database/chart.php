@@ -39,7 +39,7 @@ $PAGE->set_url($url);
 
 $metricname = optional_param('metric', 'activeusers', PARAM_ALPHANUMEXT);
 
-$defaultperiod = optional_param('graphperiod',-1, PARAM_INT);
+$defaultperiod = optional_param('graphperiod', -1, PARAM_INT);
 if ($defaultperiod === -1) {
     $defaultperiod = get_config('tool_cloudmetrics', $metricname . '_chart_period');
     if (!$defaultperiod) {

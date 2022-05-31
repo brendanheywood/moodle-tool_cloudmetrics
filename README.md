@@ -9,6 +9,7 @@
   * [Metrics](#metrics)
   * [Collectors](#collectors)
 * [Installation](#installation)
+  * [Minute resolution metrics](#minute-resolution-metrics)
 * [Configuration](#configuration)
   * [Moodle Database](#moodle-database)
   * [AWS CloudWatch](#aws-cloudwatch)
@@ -73,6 +74,19 @@ Or directly using git:
 ```sh
 git clone git@github.com:catalyst/moodle-tool_cloudmetrics.git admin/tool/cloudmetrics
 ```
+
+### Minute resolution metrics 
+
+If you are intending to support minute level resolution metrics, and you have a large
+amount of cron tasks then there will always be a random latency in exactly when the tasks
+run which can introduce errors into the metrics. If this is an issue then set up a
+dedicated crond entry which runs just this one task:
+
+
+```php
+php admin/cli/scheduled_task.php --execute='\tool_cloudmetrics\task\collect_metrics_task'
+```
+
 
 ## Configuration
 

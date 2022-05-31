@@ -82,42 +82,6 @@ class collect_metrics_task extends \core\task\scheduled_task {
     }
 
     /**
-     * Determine the highest level of frequency to be used.
-     *
-     * Returns the highest frequency for which a whole number of time intervals fits in the value given.
-     *
-     * Each interval (except monthly) is a whole number of the next smallest interval.
-     * So if (for example), it is determined that all 3 hour metrics are to be measured, all
-     * metrics for smaller intervals will also be measured.
-     *
-     * @param int $timediff The number of minutes since the reference time.
-     * @return int
-     */
-    public function get_frequency_cutoff(int $timediff): int {
-        // We test until we don't get a clean division.
-        // After that, we know that we wont be measuring any longer interval.
-        if ($timediff % self::FIVEMINUTES != 0) {
-            return metric\manager::FREQ_MIN;
-        } else if ($timediff % self::FIFTEENMINUTES != 0) {
-            return metric\manager::FREQ_5MIN;
-        } else if ($timediff % self::THIRTYMINUTES != 0) {
-            return metric\manager::FREQ_15MIN;
-        } else if ($timediff % self::ONEHOUR != 0) {
-            return metric\manager::FREQ_30MIN;
-        } else if ($timediff % self::THREEHOURS != 0) {
-            return metric\manager::FREQ_HOUR;
-        } else if ($timediff % self::TWELVEHOURS != 0) {
-            return metric\manager::FREQ_3HOUR;
-        } else if ($timediff % self::ONEDAY != 0) {
-            return metric\manager::FREQ_12HOUR;
-        } else if ($timediff % self::ONEWEEK != 0) {
-            return metric\manager::FREQ_DAY;
-        } else {
-            return metric\manager::FREQ_WEEK;
-        }
-    }
-
-    /**
      * Perform the task
      *
      * @throws \Exception
@@ -125,38 +89,30 @@ class collect_metrics_task extends \core\task\scheduled_task {
     public function execute() {
         // This algorithm is performance important. Any opportunity to optimize should be welcome.
 
-        // Use the server's timezone for determining times from strings.
         $tz = \core_date::get_server_timezone_object();
 
-        // Get the time reference. The time string is in the server's timezone.
-        // It is then converted to a timestamp, which is UTC.
-        $reftime = (new \DateTime('midnight last Sunday', $tz))->getTimestamp();
+        $nowtimestamp = !is_null($this->time) ? $this->time : time();
 
-        // We don't need to use $tz here because timestamps are always UTC.
-        $time = $this->time ?? time();
-
-        // Get the number of minutes (rounded) that have passed since the ref time.
-        $timediff = (int) round(($time - $reftime) / MINSECS);
-
-        // Get the highest metric frequency to be record.
-        $cutoff = $this->get_frequency_cutoff($timediff);
-
-        // We need to determine the monthly metrics separately, since a month is not a whole number of weeks.
-        $halfmin = MINSECS / 2;
-        $ismonth = 0;
-        if ($cutoff >= metric\manager::FREQ_DAY) {
-            $reftime = (new \DateTime('midnight this month -'. $halfmin .' seconds', $tz))->getTimestamp();
-            // Time difference should be zero if we are indeed at monthly boundary, but we allow for up to +/-30 seconds.
-            if (($time - $reftime) < MINSECS) {
-                $ismonth = metric\manager::FREQ_MONTH;
-            }
-        }
-
-        $metrics = metric\manager::get_metrics(true);
+        $metrictypes = metric\manager::get_metrics(true);
         $items = [];
-        foreach ($metrics as $metric) {
-            if (($metric->get_frequency() <= $cutoff || $metric->get_frequency() == $ismonth) && $metric->is_ready()) {
-                $items[] = $metric->get_metric_item();
+        foreach ($metrictypes as $metrictype) {
+            if (!$metrictype->is_ready()) {
+                continue;
+            }
+
+            $freq = $metrictype->get_frequency();
+
+            // When is the next generation due?
+            $lasttimestamp = \tool_cloudmetrics\lib::get_last_whole_tick($metrictype->get_last_generate_time(), $freq);
+            if ($lasttimestamp === 0) {
+                $duetimestamp = $nowtimestamp; // We generate the metric item regardless.
+            } else {
+                $duetimestamp = \tool_cloudmetrics\lib::get_next_time($lasttimestamp, $freq);
+            }
+
+            if ($duetimestamp <= $nowtimestamp) {
+                $items = array_merge($items, $metrictype->generate_metric_items($lasttimestamp, $duetimestamp));
+                $metrictype->set_last_generate_time($duetimestamp);
             }
         }
 

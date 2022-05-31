@@ -80,10 +80,14 @@ $string['three_hour'] = '3 hours';
 $string['twelve_hour'] = '12 hours';
 $string['one_day'] = '1 day';
 $string['one_week'] = '1 week';
+$string['two_week'] = '2 week';
 $string['one_fortnight'] = '1 fortnight';
 $string['one_month'] = '1 month';
+$string['two_month'] = '2 monthis';
 $string['four_month'] = '4 months'; // Chart length only.
+$string['six_month'] = '6 months'; // Chart length only.
 $string['twelve_month'] = '12 months'; // Chart length only.
+$string['two_year'] = '2 years'; // Chart length only.
 
 // Error and status messages.
 $string['metric_not_found'] = 'Metric \'{$a}\' not found';

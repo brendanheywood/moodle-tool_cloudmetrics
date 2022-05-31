@@ -70,12 +70,16 @@ $select->set_label(get_string('select_metric_for_display', 'cltr_database'));
 // Prepare time window selector.
 
 $periods = [
-    3600 => get_string('one_hour', 'tool_cloudmetrics'),
-    DAYSECS => get_string('one_day', 'tool_cloudmetrics'),
-    DAYSECS * 7 => get_string('one_week', 'tool_cloudmetrics'),
-    DAYSECS * 30 => get_string('one_month', 'tool_cloudmetrics'),
-    DAYSECS * 120 => get_string('four_month', 'tool_cloudmetrics'),
-    DAYSECS * 365 => get_string('twelve_month', 'tool_cloudmetrics')
+    HOURSECS      => get_string('one_hour', 'tool_cloudmetrics'),
+    DAYSECS       => get_string('one_day', 'tool_cloudmetrics'),
+    WEEKSECS      => get_string('one_week', 'tool_cloudmetrics'),
+    WEEKSECS * 2  => get_string('two_week', 'tool_cloudmetrics'),
+    MONTHSECS     => get_string('one_month', 'tool_cloudmetrics'),
+    MONTHSECS * 2 => get_string('two_month', 'tool_cloudmetrics'),
+    MONTHSECS * 4 => get_string('four_month', 'tool_cloudmetrics'),
+    MONTHSECS * 6 => get_string('six_month', 'tool_cloudmetrics'),
+    YEARSECS      => get_string('twelve_month', 'tool_cloudmetrics'),
+    YEARSECS * 2  => get_string('two_year', 'tool_cloudmetrics'),
 ];
 
 // Create a new URL object to avoid poisoning the existing one.

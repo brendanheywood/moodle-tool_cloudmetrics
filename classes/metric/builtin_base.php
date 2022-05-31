@@ -24,7 +24,7 @@ namespace tool_cloudmetrics\metric;
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class builtin extends base {
+abstract class builtin_base extends base {
     /**
      * The metric's display name.
      *

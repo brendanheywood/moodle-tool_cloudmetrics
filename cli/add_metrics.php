@@ -37,6 +37,9 @@ define('CLI_SCRIPT', true);
 require_once(__DIR__ . '/../../../../config.php');
 require_once($CFG->libdir.'/clilib.php');
 
+// For some reson this will not auto load.
+require_once(__DIR__ . '/../classes/lib.php');
+
 // Simple check for a dev environment.
 // DO NOT add this setting to a production site config.
 if (empty($CFG->config_php_settings['tool_cloudmetrics_allow_add_metrics'])) {
@@ -94,19 +97,19 @@ if (!empty($options['remove'])) {
 } else {
     $metric = new test_metric();
     $metric->name = $options['metric'];
-    $num = (int)$options['number'];
-    $metric->starttime = strtotime('-' . ($num * $options['frequency']) . ' seconds - 5 min');
-    $metric->interval = $options['frequency'];
+    $finishtime = time();
+    $starttime = $finishtime - ((int) $options['number'] * (int) $options['frequency']);
 
-    for ($i = 0; $i < $num; ++$i) {
-        if ($metric->is_ready()) {
-            $item = $metric->get_metric_item();
-            echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . PHP_EOL;
-            $items[] = $item;
-        }
+    $items = [];
+    if ($metric->is_ready()) {
+        $items = $metric->generate_metric_items($starttime, $finishtime);
     }
     if (count($items) !== 0) {
-        collector\manager::send_metrics($items);
+        echo 'Sending ' . count($items) . PHP_EOL;
+        foreach ($items as $item) {
+            echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . PHP_EOL;
+        }
+        //collector\manager::send_metrics($items);
     } else {
         echo 'Nothing to send.', PHP_EOL;
     }

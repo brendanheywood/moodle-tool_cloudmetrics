@@ -126,9 +126,36 @@ abstract class base {
     }
 
     /**
-     * Retrieves the metric.
+     * The latest time for which a metric item was generated for.
      *
-     * @return metric_item
+     * @return int
+     * @throws \dml_exception
      */
-    abstract public function get_metric_item(): metric_item;
+    public function get_last_generate_time(): int {
+        return (int) get_config('tool_cloudmetrics', $this->get_name() . '_last_generate_time');
+    }
+
+    /**
+     * Set the latest time for which a metric item was generated for.
+     *
+     * @param int $timestamp
+     */
+    public function set_last_generate_time(int $timestamp) {
+        set_config($this->get_name() . '_last_generate_time', $timestamp, 'tool_cloudmetrics');
+    }
+
+    /**
+     * Generates the metric items from the source data.
+     *
+     * Starting from $finishtime, this will generate an item for each frequency period (as defined by get_frequency()),
+     * going backwards until $startime is reached.
+     *
+     * If the metric type is unable to generate items from past data, the parameters will be ignored, and a
+     * single item from the immediate time will be generated.
+     *
+     * @param int $starttime
+     * @param int $finishtime
+     * @return array An array of metric items, in forward chronological order.
+     */
+    abstract public function generate_metric_items(int $starttime, int $finishtime): array;
 }

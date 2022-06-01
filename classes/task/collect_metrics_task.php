@@ -29,9 +29,8 @@ use tool_cloudmetrics\metric;
  * The metrics are required to measured in sync with each other. For example, all FREQ_30MIN are required to
  * be measured at the same time, and those of FREQ_15MIN will also be measured at this time. And so on.
  *
- * This is done by taking the latest generation time recorded for the metric and rounding the reference back to the nearest clock
- * 'tick'. The next due time is calculated by adding one period to this. If the due time is in the past, then a metric will be
- * generated.
+ * This is done by taking the reference time (defaulting to current time), and rounding it back to the nearest clock
+ * 'tick'. If the metric was last measured before this time, then it is considered due.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>

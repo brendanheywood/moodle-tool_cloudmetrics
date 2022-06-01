@@ -121,6 +121,15 @@ class test_metric extends base {
     }
 
     /**
+     * True if this metric is capable of generating metric items for past times.
+     *
+     * @return bool
+     */
+    public function can_generate_past_metric_items(): bool {
+        return true;
+    }
+
+    /**
      * Retrieves the metric.
      *
      * @return array
@@ -140,6 +149,16 @@ class test_metric extends base {
             $this->value += rand(-$this->variance, $this->variance);
         }
         return array_reverse($items);
+    }
+
+    /**
+     * Generate a single metric item from source data using the immediate time.
+     *
+     * @return metric_item
+     */
+    public function generate_metric_item(): metric_item {
+        $ts = time();
+        return $this->generate_metric_items($ts, $ts)[0];
     }
 }
 

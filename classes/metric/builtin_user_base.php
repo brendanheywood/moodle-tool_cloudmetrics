@@ -39,6 +39,15 @@ abstract class builtin_user_base extends builtin_base {
     }
 
     /**
+     * True if this metric is capable of generating metric items for past times.
+     *
+     * @return bool
+     */
+    public function can_generate_past_metric_items(): bool {
+        return true;
+    }
+
+    /**
      * Generates the metric items from the source data.
      *
      * Starting from $finishtime, this will generate an item for each frequency period (as defined by get_frequency()),
@@ -64,11 +73,21 @@ abstract class builtin_user_base extends builtin_base {
 
         // We go backwards because we want to align with finishtime.
         $time = $finishtime;
-        while ($time > $starttime) {
+        do { // In the special case where $starttime = $finishtime, we allow one iteration.
             $users = $DB->count_records_select('user', $selectclause, [$time - $window, $time]);
             $items[] = new metric_item($name, $time, $users, $this);
             $time = \tool_cloudmetrics\lib::get_previous_time($time, $freq);
-        }
+        } while ($time > $starttime);
         return array_reverse($items);
+    }
+
+    /**
+     * Generate a single metric item from source data using the immediate time.
+     *
+     * @return metric_item
+     */
+    public function generate_metric_item(): metric_item {
+        $ts = time();
+        return $this->generate_metric_items($ts, $ts)[0];
     }
 }

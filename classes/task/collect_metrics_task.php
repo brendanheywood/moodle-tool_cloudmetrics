@@ -79,7 +79,7 @@ class collect_metrics_task extends \core\task\scheduled_task {
     public function execute() {
         // This algorithm is performance important. Any opportunity to optimize should be welcome.
 
-        $nowtimestamp = !is_null($this->time) ? $this->time : time();
+        $nowts = !is_null($this->time) ? $this->time : time();
 
         $metrictypes = metric\manager::get_metrics(true);
         $items = [];
@@ -91,19 +91,23 @@ class collect_metrics_task extends \core\task\scheduled_task {
             $freq = $metrictype->get_frequency();
 
             // When is the next generation due?
-            $lasttimestamp = $metrictype->get_last_generate_time();
-            if ($lasttimestamp === 0) {
-                // We generate the metric item regardless.
-                $duetimestamp = lib::get_last_whole_tick($nowtimestamp, $freq);
-                $lasttimestamp = lib::get_previous_time($duetimestamp, $freq);
-            } else {
-                $duetimestamp = lib::get_next_time(lib::get_last_whole_tick($lasttimestamp, $freq), $freq);
-            }
+            $lasttickts = lib::get_last_whole_tick($nowts, $freq);
 
-            if ($duetimestamp <= $nowtimestamp) {
-                mtrace('generating metric for ' . $metrictype->get_name() . ' from ' . userdate($lasttimestamp) . ' to ' . userdate($duetimestamp));
-                $items = array_merge($items, $metrictype->generate_metric_items($lasttimestamp, $duetimestamp));
-                $metrictype->set_last_generate_time($duetimestamp);
+            $lastgeneratets = $metrictype->get_last_generate_time();
+
+            if ($lastgeneratets < $lasttickts) {
+                $startts = lib::get_previous_time($lasttickts, $freq);
+
+                mtrace(sprintf(
+                    'Generating metric for %-20s from %s to %s',
+                    $metrictype->get_name(),
+                    userdate($startts, '%e %b %Y, %H:%M'),
+                    userdate($lasttickts, '%e %b %Y, %H:%M')
+                ));
+                $newitems = $metrictype->generate_metric_items($startts, $lasttickts);
+                mtrace(sprintf('Generated %3s metric item(s)', count($newitems)));
+                $items = array_merge($items, $newitems);
+                $metrictype->set_last_generate_time($lasttickts);
             }
         }
 

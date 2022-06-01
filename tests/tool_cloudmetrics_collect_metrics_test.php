@@ -34,7 +34,7 @@ class mock_receiver {
 
 /**
  * A class to help test the collect metrics task. This class overrides collect_metrics_task
- * so that instead of sending th emetric items to the collectors, it passes it to a
+ * so that instead of sending the metric items to the collectors, it passes it to a
  * mock receiver class instead.
  */
 class helper_collect_metrics_task extends collect_metrics_task {

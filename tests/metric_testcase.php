@@ -57,6 +57,9 @@ class metric_testcase extends \advanced_testcase {
         $stub->method('is_ready')
             ->willReturn($isready);
 
+        $stub->method('can_generate_past_metric_items')
+            ->willReturn(true);
+
         $stub->method('generate_metric_items')
             ->willReturnCallback(function($start, $finish) use ($stub, $infinate, &$time, $interval) {
                 $value = $infinate->current();
@@ -64,6 +67,15 @@ class metric_testcase extends \advanced_testcase {
                 $item = new metric_item('mock', $time, $value, $stub);
                 $time += $interval;
                 return [$item];
+            });
+
+        $stub->method('generate_metric_item')
+            ->willReturnCallback(function() use ($stub, $infinate, &$time, $interval) {
+                $value = $infinate->current();
+                $infinate->next();
+                $item = new metric_item('mock', $time, $value, $stub);
+                $time += $interval;
+                return $item;
             });
 
         return $stub;

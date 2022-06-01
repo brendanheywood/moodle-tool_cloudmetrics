@@ -145,17 +145,31 @@ abstract class base {
     }
 
     /**
+     * True if this metric is capable of generating metric items for past times.
+     *
+     * @return bool
+     */
+    abstract public function can_generate_past_metric_items(): bool;
+
+    /**
      * Generates the metric items from the source data.
      *
      * Starting from $finishtime, this will generate an item for each frequency period (as defined by get_frequency()),
      * going backwards until $startime is reached.
      *
-     * If the metric type is unable to generate items from past data, the parameters will be ignored, and a
-     * single item from the immediate time will be generated.
+     * This function is only meaningful if can_generate_past_metric_items() is true.
      *
      * @param int $starttime
      * @param int $finishtime
      * @return array An array of metric items, in forward chronological order.
+     * @throws \moodle_exception Thrown if unable to generate using past times.
      */
     abstract public function generate_metric_items(int $starttime, int $finishtime): array;
+
+    /**
+     * Generate a single metric item from source data using the immediate time.
+     *
+     * @return metric_item
+     */
+    abstract public function generate_metric_item(): metric_item;
 }

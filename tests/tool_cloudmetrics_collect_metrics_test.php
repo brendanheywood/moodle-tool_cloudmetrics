@@ -34,7 +34,7 @@ class mock_receiver {
 
 /**
  * A class to help test the collect metrics task. This class overrides collect_metrics_task
- * so that instead of sending th emetric items to the colletors, it passes it to a
+ * so that instead of sending the metric items to the collectors, it passes it to a
  * mock receiver class instead.
  */
 class helper_collect_metrics_task extends collect_metrics_task {
@@ -46,6 +46,8 @@ class helper_collect_metrics_task extends collect_metrics_task {
      * In this test, we are not interested in the times or values of the items, only the names. So we take out
      * the names and pass them on the mock class which checks them.
      *
+     * The array is alphabetically sorted to make it easier to test against.
+     *
      * @param array $items
      */
     public function send_metrics(array $items) {
@@ -53,6 +55,7 @@ class helper_collect_metrics_task extends collect_metrics_task {
         foreach ($items as $item) {
             $names[] = $item->name;
         }
+        sort($names);
         $this->mock->receive($names);
     }
 }
@@ -71,56 +74,28 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
     }
 
     /**
-     * Test the get_frequency_cutoff method
-     *
-     * @dataProvider cutoff_provider
-     * @param $input
-     * @param $expected
-     */
-    public function test_get_frequency_cutoff($input, $expected) {
-        $task = new collect_metrics_task();
-        $this->assertEquals($expected, $task->get_frequency_cutoff($input));
-    }
-
-    /**
-     * Provider function for test_get_frequency_cutoff.
-     *
-     * @return array[]
-     */
-    public function cutoff_provider() {
-        return [
-            [ 5, manager::FREQ_5MIN ],
-            [ 15, manager::FREQ_15MIN ],
-            [ 30, manager::FREQ_30MIN ],
-            [ 60, manager::FREQ_HOUR ],
-            [ 180, manager::FREQ_3HOUR ],
-            [ 720, manager::FREQ_12HOUR ],
-            [ 1440, manager::FREQ_DAY ],
-            [ 10080, manager::FREQ_WEEK ],
-            [ 16, manager::FREQ_MIN ],
-            [ 724, manager::FREQ_MIN ],
-            [ 2, manager::FREQ_MIN ],
-            [ 90, manager::FREQ_30MIN ],
-        ];
-    }
-
-    /**
      * Test the execute method.
      *
      * @dataProvider execute_provider
-     * @param int $time
-     * @param array $expected
+     * @param string $timestr The 'current' time to be used.
+     * @param array $meta List of [<frequency>, <last_generate_time>].
+     * @param array $expected The metrics that are expected to be in the result set.
      * @throws \Exception
      */
-    public function test_execute($timestr, $freqs, $expected) {
-        set_config('activeusers_frequency', $freqs[0], 'tool_cloudmetrics');
-        set_config('newusers_frequency', $freqs[1], 'tool_cloudmetrics');
-        set_config('onlineusers_frequency', $freqs[2], 'tool_cloudmetrics');
-        set_config('activeusers_enabled', 1, 'tool_cloudmetrics');
-        set_config('newusers_enabled', 1, 'tool_cloudmetrics');
-        set_config('onlineusers_enabled', 1, 'tool_cloudmetrics');
-
+    public function test_execute(string $timestr, array $meta, array $expected) {
         $tz = \core_date::get_server_timezone_object();
+
+        foreach ($meta as $metric => $data) {
+            $classname = '\tool_cloudmetrics\metric\\' . $metric;
+            $metric = new $classname();
+            $metric->set_frequency($data[0]);
+            if (!empty($data[1])) {
+                $metric->set_last_generate_time((new \DateTime($data[1], $tz))->getTimestamp());
+            } else {
+                $metric->set_last_generate_time(0);
+            }
+            $metric->set_enabled(true);
+        }
         $time = (new \DateTime($timestr, $tz))->getTimestamp();
 
         $mock = $this->createMock(mock_receiver::class);
@@ -142,28 +117,44 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
         return [
             [
                 'midnight +75 minutes',
-                [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
-                ['newusers', 'activeusers']
+                [
+                    'new_users_metric' => [manager::FREQ_15MIN, 'midnight +20 minutes'],
+                    'online_users_metric' => [manager::FREQ_5MIN, 'midnight +75 minutes'],
+                    'active_users_metric' => [manager::FREQ_HOUR, 'midnight'],
+                ],
+                ['activeusers', 'newusers'],
             ],
             [
-                'midnight +60 minutes',
-                [manager::FREQ_15MIN, manager::FREQ_5MIN, manager::FREQ_HOUR],
-                ['newusers', 'activeusers', 'onlineusers']
+                '2020-03-01T00:01:00',
+                [
+                    'new_users_metric' => [manager::FREQ_HOUR, '2020-03-01T00:00:00'],
+                    'online_users_metric' => [manager::FREQ_DAY, '2020-03-01T00:00:00'],
+                    'active_users_metric' => [manager::FREQ_MONTH, '2020-03-01T00:00:00'],
+                ],
+                [],
             ],
             [
-                'midnight this month',
-                [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['newusers', 'onlineusers', 'activeusers']
+                '2020-03-01T00:00:00',
+                [
+                    'new_users_metric' => [manager::FREQ_HOUR, '2020-02-01T00:00:00'],
+                    'online_users_metric' => [manager::FREQ_DAY, '2020-02-01T00:00:00'],
+                    'active_users_metric' => [manager::FREQ_MONTH, '2020-02-01T00:00:00'],
+                ],
+                ['activeusers', 'newusers', 'onlineusers'],
             ],
             [
-                'midnight this month -10 seconds',
-                [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['newusers', 'onlineusers', 'activeusers']
+                '2020-02-02T00:02:00',
+                [
+                    'new_users_metric' => [manager::FREQ_5MIN, '2020-02-01T00:00:00'],
+                    'online_users_metric' => [manager::FREQ_DAY, '2020-02-01T00:00:00'],
+                    'active_users_metric' => [manager::FREQ_MONTH, '2020-02-01T00:00:00'],
+                ],
+                ['newusers', 'onlineusers'],
             ],
             [
-                'midnight this month +15 minutes',
-                [manager::FREQ_MONTH, manager::FREQ_15MIN, manager::FREQ_HOUR],
-                ['newusers']
+                '2020-02-02T00:03:00',
+                ['new_users_metric' => [manager::FREQ_5MIN, null]],
+                ['newusers'],
             ],
         ];
     }

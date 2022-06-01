@@ -16,8 +16,10 @@
 
 namespace tool_cloudmetrics\metric;
 
+use tool_cloudmetrics\lib;
+
 /**
- * Test metric that generates a random trail of data.
+ * Test metric that generates a random trail of integers.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -26,13 +28,14 @@ namespace tool_cloudmetrics\metric;
  */
 class test_metric extends base {
 
+    public $name = 'foobar';
+
+    /** @var int The value to be used next. */
     public $value = 100;
+    /** @var int The amount the value may vary by (+/-) between generates. */
     public $variance = 10;
 
-    public $starttime = 1640955600; // Midnight, 1st Jan 2022.
-    public $interval = 86400; // 1 day.
-
-    public $name = 'foobar';
+    public $frequency = manager::FREQ_MIN;
 
     public $enabled = false;
     public $isready = true;
@@ -79,7 +82,7 @@ class test_metric extends base {
      * @return int
      */
     public function get_frequency(): int {
-        return manager::FREQ_MIN;
+        return $this->frequency;
     }
 
     public function get_frequency_default(): int {
@@ -120,11 +123,11 @@ class test_metric extends base {
     /**
      * Retrieves the metric.
      *
-     * @return metric_item
+     * @return array
      */
-    public function get_metric_item(): metric_item {
+    public function generate_metric_item($starttime, $finishtime): metric_item {
+        $item = new metric_item($this->get_name(), $finishtime, $this->value, $this);
         $this->value += rand(-$this->variance, $this->variance);
-        return new metric_item($this->get_name(), $this->starttime += $this->interval, $this->value, $this);
+        return $item;
     }
 }
-

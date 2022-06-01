@@ -24,7 +24,7 @@ namespace tool_cloudmetrics\metric;
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-abstract class builtin extends base {
+abstract class builtin_base extends base {
     /**
      * The metric's display name.
      *
@@ -49,18 +49,5 @@ abstract class builtin extends base {
 
     public function get_frequency_default(): int {
         return manager::FREQ_DEFAULTS[$this->get_name()];
-    }
-
-    /**
-     * Time to show users config.
-     *
-     * @return int Time as seconds.
-     */
-    protected function get_time_window(): int {
-        $value = (int) get_config('tool_cloudmetrics', $this->get_name() . '_time_window');
-        if ($value < 1) {
-            $value = 1;
-        }
-        return $value;
     }
 }

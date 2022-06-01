@@ -26,13 +26,13 @@ namespace tool_cloudmetrics\metric;
  */
 class metric_item {
 
-    /** @var string */
+    /** @var string Metric type name.*/
     public $name;
-    /** @var int */
+    /** @var int Time of the metric. This should be the time of the original recording of the source data. */
     public $time;
-    /** @var mixed */
+    /** @var mixed The value of the metric. */
     public $value;
-    /** @var base */
+    /** @var base Reference to the metric type object. */
     public $metric;
 
     public function __construct(string $name, int $time, $value, base $item) {

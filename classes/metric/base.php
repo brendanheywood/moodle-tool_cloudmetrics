@@ -126,9 +126,32 @@ abstract class base {
     }
 
     /**
-     * Retrieves the metric.
+     * The latest time for which a metric item was generated for.
      *
+     * @return int
+     * @throws \dml_exception
+     */
+    public function get_last_generate_time(): int {
+        return (int) get_config('tool_cloudmetrics', $this->get_name() . '_last_generate_time');
+    }
+
+    /**
+     * Set the latest time for which a metric item was generated for.
+     *
+     * @param int $timestamp
+     */
+    public function set_last_generate_time(int $timestamp) {
+        set_config($this->get_name() . '_last_generate_time', $timestamp, 'tool_cloudmetrics');
+    }
+
+    /**
+     * Generates a metric item from the source data.
+     *
+     * Uses $starttime to $finishtime to draw from the source data.
+     *
+     * @param int $starttime
+     * @param int $finishtime
      * @return metric_item
      */
-    abstract public function get_metric_item(): metric_item;
+    abstract public function generate_metric_item(int $starttime, int $finishtime): metric_item;
 }

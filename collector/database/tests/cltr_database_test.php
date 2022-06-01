@@ -83,7 +83,9 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $rec = $DB->get_records(lib::TABLE);
         $this->assertEquals(0, count($rec));
 
-        $collector->record_metric($stub->get_metric_item());
+        $time = 100;
+        $collector->record_metric($stub->generate_metric_item(0, $time));
+        $time += 10;
 
         // Should have one metric of value 1.
         $rec = array_values($DB->get_records(lib::TABLE));
@@ -91,7 +93,8 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $this->assertEquals('mock', $rec[0]->name);
         $this->assertEquals('1', $rec[0]->value);
 
-        $collector->record_metric($stub->get_metric_item());
+        $collector->record_metric($stub->generate_metric_item(0, $time));
+        $time += 10;
 
         // Should have two metrics of values 1 & 2.
         $rec = array_values($DB->get_records(lib::TABLE, null, 'time ASC'));
@@ -107,8 +110,9 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $this->assertEquals('1', $rec[0]->value);
         $this->assertEquals('2', $rec[1]->value);
 
-        $collector->record_metric($stub->get_metric_item());
-        $collector->record_metric($stub->get_metric_item());
+        $collector->record_metric($stub->generate_metric_item(0, $time));
+        $time += 10;
+        $collector->record_metric($stub->generate_metric_item(0, $time));
 
         // Should have four metrics of values 1, 2, 3 & 1.
         $rec = array_values($collector->get_metrics('mock'));
@@ -148,11 +152,12 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
 
         $time = $time->getTimestamp();
 
-        $stub = $this->get_metric_stub([1, 2, 3], $time, DAYSECS);
+        $stub = $this->get_metric_stub([1, 2, 3]);
         $collector = new collector();
 
         for ($i = 0; $i < $numrecords; ++$i) {
-            $collector->record_metric($stub->get_metric_item());
+            $collector->record_metric($stub->generate_metric_item(0, $time));
+            $time += DAYSECS;
         }
 
         // Sanity check. There should be $numrecords items in the database.

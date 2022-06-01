@@ -34,15 +34,12 @@ class metric_testcase extends \advanced_testcase {
      * the array of values, repeating when it gets to the end.
      *
      * @param array $cycle
-     * @param int $starttime
-     * @param int $interval
-     * @return mixed|\PHPUnit\Framework\MockObject\MockObject|metric_base
+     * @param bool $isready
+     * @return mixed|\PHPUnit\Framework\MockObject\MockObject|base
      */
-    protected function get_metric_stub(array $cycle, $starttime = 1, $interval = 1, $isready = true) {
+    protected function get_metric_stub(array $cycle, bool $isready = true) {
         $infinate = new \InfiniteIterator(new \ArrayIterator($cycle));
         $infinate->rewind();
-
-        $time = $starttime;
 
         $stub = $this->getMockBuilder(base::class)
             ->disableOriginalConstructor()
@@ -57,12 +54,11 @@ class metric_testcase extends \advanced_testcase {
         $stub->method('is_ready')
             ->willReturn($isready);
 
-        $stub->method('get_metric_item')
-            ->willReturnCallback(function() use ($stub, $infinate, &$time, $interval) {
+        $stub->method('generate_metric_item')
+            ->willReturnCallback(function($start, $finish) use ($stub, $infinate) {
                 $value = $infinate->current();
                 $infinate->next();
-                $item = new metric_item('mock', $time, $value, $stub);
-                $time += $interval;
+                $item = new metric_item('mock', $finish, $value, $stub);
                 return $item;
             });
 

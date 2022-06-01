@@ -24,7 +24,11 @@ namespace tool_cloudmetrics\metric;
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class online_users_metric extends builtin {
+class online_users_metric extends builtin_user_base {
+
+    /** @var string The DB field the metric accesses. */
+    protected $dbfield = 'lastaccess';
+
     /**
      * The metric's name.
      *
@@ -32,27 +36,5 @@ class online_users_metric extends builtin {
      */
     public function get_name(): string {
         return 'onlineusers';
-    }
-
-    /**
-     * The metric type.
-     *
-     * @return int
-     */
-    public function get_type(): int {
-        return manager::TYPE_GAUGE;
-    }
-
-    /**
-     * Retrieves the metric.
-     *
-     * @return metric_item
-     */
-    public function get_metric_item(): metric_item {
-        global $DB;
-        $now = time();
-        // Don't use fetcher because this is faster.
-        $users = $DB->count_records_select('user', 'lastaccess > ?', [$now - $this->get_time_window()]);
-        return new metric_item($this->get_name(), $now, $users, $this);
     }
 }

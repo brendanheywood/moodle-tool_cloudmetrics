@@ -28,19 +28,19 @@ class tool_cloudmetrics_metric_stub_test extends metric_testcase {
     public function test_get_stub() {
         $stub = $this->get_metric_stub([1, 2, 3]);
 
-        list($i) = $stub->generate_metric_items(0,0);
+        list($i) = $stub->generate_metric_items(0, 0);
         $this->assertEquals(1, $i->value);
         $this->assertEquals(1, $i->time);
 
-        list($i) = $stub->generate_metric_items(0,0);
+        list($i) = $stub->generate_metric_items(0, 0);
         $this->assertEquals(2, $i->value);
         $this->assertEquals(2, $i->time);
 
-        list($i) = $stub->generate_metric_items(0,0);
+        list($i) = $stub->generate_metric_items(0, 0);
         $this->assertEquals(3, $i->value);
         $this->assertEquals(3, $i->time);
 
-        list($i) = $stub->generate_metric_items(0,0);
+        list($i) = $stub->generate_metric_items(0, 0);
         $this->assertEquals(1, $i->value);
         $this->assertEquals(4, $i->time);
     }

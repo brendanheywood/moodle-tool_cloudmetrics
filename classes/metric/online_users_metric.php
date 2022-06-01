@@ -27,7 +27,7 @@ namespace tool_cloudmetrics\metric;
 class online_users_metric extends builtin_user_base {
 
     /** @var string The DB field the metric accesses. */
-    protected $dbfield = 'lastlogin';
+    protected $dbfield = 'lastaccess';
 
     /**
      * The metric's name.

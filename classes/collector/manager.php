@@ -43,7 +43,7 @@ class manager {
     /**
      * Sends an array of metrics to all enabled collectors.
      *
-     * @param array $items
+     * @param array $items An array of metric_item.
      */
     public static function send_metrics(array $items) {
         $plugins = cltr::get_enabled_plugins();

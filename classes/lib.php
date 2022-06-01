@@ -17,7 +17,7 @@
 namespace tool_cloudmetrics;
 
 /**
- * Library for fucntions that don't belong anywhere else.
+ * Library for functions that don't belong anywhere else.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
@@ -25,7 +25,9 @@ namespace tool_cloudmetrics;
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class lib {
-    const FREQ_TIMES = [
+
+    /** @var array A mapping of FREQ_ constants to actual times in seconds. */
+    public const FREQ_TIMES = [
         metric\manager::FREQ_MIN => MINSECS,
         metric\manager::FREQ_5MIN => MINSECS * 5,
         metric\manager::FREQ_15MIN => MINSECS * 15,
@@ -45,10 +47,10 @@ class lib {
      * @return int
      * @throws \Exception
      */
-    static function get_previous_time(int $timestamp, int $freq): int {
+    public static function get_previous_time(int $timestamp, int $freq): int {
         if ($freq == metric\manager::FREQ_MONTH) {
             $tz = \core_date::get_server_timezone_object();
-            // special handling for months because it is not a consistant value.
+            // Special handling for months because it is not a consistant value.
             return (new \DateTime('', $tz))
                 ->setTimestamp($timestamp)
                 ->modify('-1 month')
@@ -66,10 +68,10 @@ class lib {
      * @return int
      * @throws \Exception
      */
-    static function get_next_time(int $timestamp, int $freq): int {
+    public static function get_next_time(int $timestamp, int $freq): int {
         if ($freq == metric\manager::FREQ_MONTH) {
             $tz = \core_date::get_server_timezone_object();
-            // special handling for months because it is not a consistant value.
+            // Special handling for months because it is not a consistant value.
             return (new \DateTime('', $tz))
                 ->setTimestamp($timestamp)
                 ->modify('+1 month')
@@ -88,7 +90,7 @@ class lib {
      * @return int
      * @throws \Exception
      */
-    static function get_last_whole_tick(int $timestamp, int $freq): int {
+    public static function get_last_whole_tick(int $timestamp, int $freq): int {
 
         // Use the server's timezone for determining times from strings.
         $tz = \core_date::get_server_timezone_object();
@@ -96,7 +98,7 @@ class lib {
         $dt->setTimestamp($timestamp);
 
         if ($freq == metric\manager::FREQ_MONTH) {
-            // special handling for months because it is not a consistant value.
+            // Special handling for months because it is not a consistant value.
             $dt = new \DateTime($dt->format('Y-m-01\T00:00:00'), $tz);
             return $dt->getTimestamp();
         } else {
@@ -106,4 +108,3 @@ class lib {
         }
     }
 }
-

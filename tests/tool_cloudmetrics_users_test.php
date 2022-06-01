@@ -19,11 +19,12 @@ namespace tool_cloudmetrics;
 use tool_cloudmetrics\metric\metric_item;
 use tool_cloudmetrics\metric\new_users_metric;
 use tool_cloudmetrics\metric\active_users_metric;
+use tool_cloudmetrics\metric\online_users_metric;
 
 /**
- * <insertdescription>
+ * Unit tests to test the builtin user metric types.
  *
- * @package   <insert>
+ * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -40,28 +41,28 @@ class tool_cloudmetrics_users_test extends \advanced_testcase {
 
     /** @var array[] Sample user DB data to be used in tests. */
     public const USER_DATA = [
-        ['username' => 'a', 'firstaccess' => 1000, 'lastaccess' => 2000, 'lastlogin' => 2560],
-        ['username' => 'b', 'firstaccess' => 500, 'lastaccess' => 2000, 'lastlogin' => 4200],
-        ['username' => 'c', 'firstaccess' => 1100, 'lastaccess' => 2000, 'lastlogin' => 2871],
-        ['username' => 'd', 'firstaccess' => 1150, 'lastaccess' => 2000, 'lastlogin' => 1401],
-        ['username' => 'e', 'firstaccess' => 1500, 'lastaccess' => 2000, 'lastlogin' => 2940],
-        ['username' => 'f', 'firstaccess' => 2450, 'lastaccess' => 2000, 'lastlogin' => 2790],
-        ['username' => 'g', 'firstaccess' => 2500, 'lastaccess' => 2000, 'lastlogin' => 2999],
-        ['username' => 'h', 'firstaccess' => 2600, 'lastaccess' => 2000, 'lastlogin' => 2777],
-        ['username' => 'i', 'firstaccess' => 2800, 'lastaccess' => 2000, 'lastlogin' => 2882],
-        ['username' => 'j', 'firstaccess' => 3000, 'lastaccess' => 2000, 'lastlogin' => 2500],
+        ['username' => 'a', 'firstaccess' => 11000, 'lastaccess' => 12950, 'lastlogin' => 12560],
+        ['username' => 'b', 'firstaccess' => 1500, 'lastaccess' => 2050, 'lastlogin' => 14200],
+        ['username' => 'c', 'firstaccess' => 11100, 'lastaccess' => 10100, 'lastlogin' => 12871],
+        ['username' => 'd', 'firstaccess' => 11150, 'lastaccess' => 14000, 'lastlogin' => 11401],
+        ['username' => 'e', 'firstaccess' => 11500, 'lastaccess' => 9043, 'lastlogin' => 12940],
+        ['username' => 'f', 'firstaccess' => 12450, 'lastaccess' => 8001, 'lastlogin' => 12790],
+        ['username' => 'g', 'firstaccess' => 12500, 'lastaccess' => 9999, 'lastlogin' => 12999],
+        ['username' => 'h', 'firstaccess' => 12600, 'lastaccess' => 11000, 'lastlogin' => 12777],
+        ['username' => 'i', 'firstaccess' => 12800, 'lastaccess' => 100, 'lastlogin' => 12882],
+        ['username' => 'j', 'firstaccess' => 13000, 'lastaccess' => 12950, 'lastlogin' => 12500],
     ];
 
     /**
      * Tests generate_metric_items() for the builtin user metrics.
      *
-     * @dataProvider data_for_users_metric_test
+     * @dataProvider data_for_test_generate_metrics
      * @param string $metricname The name of the metric to be tested.
      * @param int $frequency The frequency setting as a metric\manager::FREQ_ value.
      * @param array $expected List of metric items that expect to be generated.
      * @throws \dml_exception
      */
-    public function test_users_metric(string $metricname, int $frequency, array $expected) {
+    public function test_generate_metrics(string $metricname, int $frequency, array $expected) {
         global $DB;
 
         foreach (self::USER_DATA as $row) {
@@ -74,29 +75,43 @@ class tool_cloudmetrics_users_test extends \advanced_testcase {
         $metric->set_frequency($frequency);
         set_config($metricname . '_time_window', MINSECS * 5, 'tool_cloudmetrics');
 
-        $finishtime = 3000;
+        $finishtime = 13000;
         $items = $metric->generate_metric_items($finishtime - (5 * lib::FREQ_TIMES[$metric->get_frequency()]), $finishtime);
         $this->assertEquals($expected, $items);
     }
 
-    public function data_for_users_metric_test(): array {
+    /**
+     * Data provider for test_generate_metrics.
+     *
+     * @return array[]
+     */
+    public function data_for_test_generate_metrics(): array {
         $newusersmetric = new new_users_metric();
         $activeusersmetric = new active_users_metric();
+        $onlineusersmetric = new online_users_metric();
         return [
             [ 'newusers', metric\manager::FREQ_5MIN, [
-                    new metric_item('newusers', 1800, 0, $newusersmetric),
-                    new metric_item('newusers', 2100, 0, $newusersmetric),
-                    new metric_item('newusers', 2400, 0, $newusersmetric),
-                    new metric_item('newusers', 2700, 3, $newusersmetric),
-                    new metric_item('newusers', 3000, 2, $newusersmetric),
+                    new metric_item('newusers', 11800, 0, $newusersmetric),
+                    new metric_item('newusers', 12100, 0, $newusersmetric),
+                    new metric_item('newusers', 12400, 0, $newusersmetric),
+                    new metric_item('newusers', 12700, 3, $newusersmetric),
+                    new metric_item('newusers', 13000, 2, $newusersmetric),
                 ]
             ],
             [ 'activeusers', metric\manager::FREQ_MIN, [
-                    new metric_item('activeusers', 2760, 2, $activeusersmetric),
-                    new metric_item('activeusers', 2820, 3, $activeusersmetric),
-                    new metric_item('activeusers', 2880, 3, $activeusersmetric),
-                    new metric_item('activeusers', 2940, 5, $activeusersmetric),
-                    new metric_item('activeusers', 3000, 6, $activeusersmetric),
+                    new metric_item('activeusers', 12760, 2, $activeusersmetric),
+                    new metric_item('activeusers', 12820, 3, $activeusersmetric),
+                    new metric_item('activeusers', 12880, 3, $activeusersmetric),
+                    new metric_item('activeusers', 12940, 5, $activeusersmetric),
+                    new metric_item('activeusers', 13000, 6, $activeusersmetric),
+                ]
+            ],
+            [ 'onlineusers', metric\manager::FREQ_15MIN, [
+                    new metric_item('onlineusers', 9400, 0, $onlineusersmetric),
+                    new metric_item('onlineusers', 10300, 1, $onlineusersmetric),
+                    new metric_item('onlineusers', 11200, 1, $onlineusersmetric),
+                    new metric_item('onlineusers', 12100, 0, $onlineusersmetric),
+                    new metric_item('onlineusers', 13000, 2, $onlineusersmetric),
                 ]
             ],
         ];

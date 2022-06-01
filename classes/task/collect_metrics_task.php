@@ -16,8 +16,9 @@
 
 namespace tool_cloudmetrics\task;
 
-use tool_cloudmetrics\metric;
 use tool_cloudmetrics\collector;
+use tool_cloudmetrics\lib;
+use tool_cloudmetrics\metric;
 
 /**
  * Controls the running of metrics within a single task.
@@ -28,29 +29,18 @@ use tool_cloudmetrics\collector;
  * The metrics are required to measured in sync with each other. For example, all FREQ_30MIN are required to
  * be measured at the same time, and those of FREQ_15MIN will also be measured at this time. And so on.
  *
- * This is done by taking a suitable reference time, and measuring the number of minutes that have passed since
- * then, and determining if a whole number of intervals have passed since then.
- *
- * For example if 75 minutes have passed since 'midnight last Sunday', then FREQ_15MIN metrics will be measured,
- * but FREQ_30MIN metrics will not.
+ * This is done by taking the latest generation time recorded for the metric and rounding the reference back to the nearest clock
+ * 'tick'. The next due time is calculated by adding one period to this. If the due time is in the past, then a metric will be
+ * generated.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class collect_metrics_task extends \core\task\scheduled_task {
 
-    const FIVEMINUTES = 5;
-    const FIFTEENMINUTES = 15;
-    const THIRTYMINUTES = 30;
-    const ONEHOUR = 60;
-    const THREEHOURS = 180;
-    const TWELVEHOURS = 720;
-    const ONEDAY = 1440;
-    const ONEWEEK = 10080;
-
+    /** @var int|null Reference timestamp, if set by user. */
     private $time = null;
 
     /**
@@ -64,7 +54,7 @@ class collect_metrics_task extends \core\task\scheduled_task {
     }
 
     /**
-     * Set a specific time for the use. Defaults to now.
+     * Set a specific time for the task run. Defaults to now.
      *
      * @param int $time
      */
@@ -89,8 +79,6 @@ class collect_metrics_task extends \core\task\scheduled_task {
     public function execute() {
         // This algorithm is performance important. Any opportunity to optimize should be welcome.
 
-        $tz = \core_date::get_server_timezone_object();
-
         $nowtimestamp = !is_null($this->time) ? $this->time : time();
 
         $metrictypes = metric\manager::get_metrics(true);
@@ -103,14 +91,17 @@ class collect_metrics_task extends \core\task\scheduled_task {
             $freq = $metrictype->get_frequency();
 
             // When is the next generation due?
-            $lasttimestamp = \tool_cloudmetrics\lib::get_last_whole_tick($metrictype->get_last_generate_time(), $freq);
+            $lasttimestamp = $metrictype->get_last_generate_time();
             if ($lasttimestamp === 0) {
-                $duetimestamp = $nowtimestamp; // We generate the metric item regardless.
+                // We generate the metric item regardless.
+                $duetimestamp = lib::get_last_whole_tick($nowtimestamp, $freq);
+                $lasttimestamp = lib::get_previous_time($duetimestamp, $freq);
             } else {
-                $duetimestamp = \tool_cloudmetrics\lib::get_next_time($lasttimestamp, $freq);
+                $duetimestamp = lib::get_next_time(lib::get_last_whole_tick($lasttimestamp, $freq), $freq);
             }
 
             if ($duetimestamp <= $nowtimestamp) {
+                mtrace('generating metric for ' . $metrictype->get_name() . ' from ' . userdate($lasttimestamp) . ' to ' . userdate($duetimestamp));
                 $items = array_merge($items, $metrictype->generate_metric_items($lasttimestamp, $duetimestamp));
                 $metrictype->set_last_generate_time($duetimestamp);
             }
@@ -119,4 +110,5 @@ class collect_metrics_task extends \core\task\scheduled_task {
         // Performance important part is over, we can relax a little.
         $this->send_metrics($items);
     }
+
 }

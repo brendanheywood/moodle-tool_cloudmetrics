@@ -61,7 +61,7 @@ abstract class builtin_user_base extends builtin_base {
         $items = [];
 
         $selectclause = $this->dbfield . ' > ? and ' . $this->dbfield . ' <= ?';
-        
+
         // We go backwards because we want to align with finishtime.
         $time = $finishtime;
         while ($time > $starttime) {

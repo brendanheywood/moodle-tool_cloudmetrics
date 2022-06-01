@@ -30,7 +30,9 @@ class test_metric extends base {
 
     public $name = 'foobar';
 
+    /** @var int The value to be used next. */
     public $value = 100;
+    /** @var int The amount the value may vary by (+/-) between generates. */
     public $variance = 10;
 
     public $frequency = manager::FREQ_MIN;

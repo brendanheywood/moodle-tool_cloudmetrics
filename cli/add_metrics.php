@@ -109,7 +109,7 @@ if (!empty($options['remove'])) {
         foreach ($items as $item) {
             echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . PHP_EOL;
         }
-        //collector\manager::send_metrics($items);
+        collector\manager::send_metrics($items);
     } else {
         echo 'Nothing to send.', PHP_EOL;
     }

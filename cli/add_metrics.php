@@ -97,17 +97,22 @@ if (!empty($options['remove'])) {
 } else {
     $metric = new test_metric();
     $metric->name = $options['metric'];
+    $num = (int) $options['number'];
+    $freq = (int) $options['frequency'];
     $finishtime = time();
-    $starttime = $finishtime - ((int) $options['number'] * (int) $options['frequency']);
+    $time = $finishtime - ($num * $freq);
 
     $items = [];
     if ($metric->is_ready()) {
-        $items = $metric->generate_metric_items($starttime, $finishtime);
+        for ($x = 0; $x < $num; ++$x) {
+            $items[] = $metric->generate_metric_item($time, $time + $freq);
+            $time += $freq;
+        }
     }
     if (count($items) !== 0) {
         echo 'Sending ' . count($items) . PHP_EOL;
         foreach ($items as $item) {
-            echo 'Sending item ' . $item->name . ', ' . $item->value . ',' . userdate($item->time) . PHP_EOL;
+            echo 'Sending item ' . $item->name . ', ' . $item->value . ', ' . userdate($item->time) . PHP_EOL;
         }
         collector\manager::send_metrics($items);
     } else {

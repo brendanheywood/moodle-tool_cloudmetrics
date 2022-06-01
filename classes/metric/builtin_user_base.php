@@ -39,55 +39,35 @@ abstract class builtin_user_base extends builtin_base {
     }
 
     /**
-     * True if this metric is capable of generating metric items for past times.
+     * Time window to draw user data from for the metric.
      *
-     * @return bool
+     * @return int Time as seconds.
      */
-    public function can_generate_past_metric_items(): bool {
-        return true;
+    protected function get_time_window(): int {
+        $value = (int) get_config('tool_cloudmetrics', $this->get_name() . '_time_window');
+        if ($value < 1) {
+            $value = 1;
+        }
+        return $value;
     }
 
     /**
      * Generates the metric items from the source data.
      *
-     * Starting from $finishtime, this will generate an item for each frequency period (as defined by get_frequency()),
-     * going backwards until $startime is reached.
-     *
-     * If the metric type is unable to generate items from past data, the parameters will be ignored, and a
-     * single item from the immediate time will be generated.
+     * Uses $starttime to $finishtime to draw from the source data.
      *
      * @param int $starttime
      * @param int $finishtime
-     * @return array An array of metric items, in forward chronological order.
-     */
-    public function generate_metric_items(int $starttime, int $finishtime): array {
-        global $DB;
-
-        $window = $this->get_time_window();
-        $name = $this->get_name();
-        $freq = $this->get_frequency();
-
-        $items = [];
-
-        $selectclause = $this->dbfield . ' > ? and ' . $this->dbfield . ' <= ?';
-
-        // We go backwards because we want to align with finishtime.
-        $time = $finishtime;
-        do { // In the special case where $starttime = $finishtime, we allow one iteration.
-            $users = $DB->count_records_select('user', $selectclause, [$time - $window, $time]);
-            $items[] = new metric_item($name, $time, $users, $this);
-            $time = \tool_cloudmetrics\lib::get_previous_time($time, $freq);
-        } while ($time > $starttime);
-        return array_reverse($items);
-    }
-
-    /**
-     * Generate a single metric item from source data using the immediate time.
-     *
      * @return metric_item
      */
-    public function generate_metric_item(): metric_item {
-        $ts = time();
-        return $this->generate_metric_items($ts, $ts)[0];
+    public function generate_metric_item(int $starttime, int $finishtime): metric_item {
+        global $DB;
+
+        $users = $DB->count_records_select(
+            'user',
+            $this->dbfield . ' > ? and ' . $this->dbfield . ' <= ?',
+            [$finishtime - $this->get_time_window(), $finishtime]
+        );
+        return new metric_item($this->get_name(), $finishtime, $users, $this);
     }
 }

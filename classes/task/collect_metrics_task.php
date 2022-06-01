@@ -104,10 +104,10 @@ class collect_metrics_task extends \core\task\scheduled_task {
                     userdate($startts, '%e %b %Y, %H:%M'),
                     userdate($lasttickts, '%e %b %Y, %H:%M')
                 ));
-                $newitems = $metrictype->generate_metric_items($startts, $lasttickts);
-                mtrace(sprintf('Generated %3s metric item(s)', count($newitems)));
-                $items = array_merge($items, $newitems);
-                $metrictype->set_last_generate_time($lasttickts);
+                $item = $metrictype->generate_metric_item($startts, $lasttickts);
+                mtrace(sprintf('Generated metric \'%s\' at %s', $item->value, userdate($item->time, '%e %b %Y, %H:%M')));
+                $items[] = $item;
+                $metrictype->set_last_generate_time($item->time);
             }
         }
 

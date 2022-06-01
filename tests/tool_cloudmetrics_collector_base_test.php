@@ -32,7 +32,7 @@ class tool_cloudmetrics_collector_base_test extends metric_testcase {
      */
     public function test_basic() {
         $stub = $this->get_metric_stub([1]);
-        list($item) = $stub->generate_metric_items(0, 0);
+        $item = $stub->generate_metric_item(0, 0);
 
         $collectormock = $this->createMock(base::class);
         $collectormock->expects($this->once())

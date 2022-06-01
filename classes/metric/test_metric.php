@@ -121,44 +121,13 @@ class test_metric extends base {
     }
 
     /**
-     * True if this metric is capable of generating metric items for past times.
-     *
-     * @return bool
-     */
-    public function can_generate_past_metric_items(): bool {
-        return true;
-    }
-
-    /**
      * Retrieves the metric.
      *
      * @return array
      */
-    public function generate_metric_items($starttime, $finishtime): array {
-
-        $name = $this->get_name();
-        $freq = $this->get_frequency();
-
-        $items = [];
-
-        // We go backwards because we want to align with finishtime.
-        $time = $finishtime;
-        while ($time > $starttime) {
-            $items[] = new metric_item($name, $time, $this->value, $this);
-            $time = lib::get_previous_time($time, $freq);
-            $this->value += rand(-$this->variance, $this->variance);
-        }
-        return array_reverse($items);
-    }
-
-    /**
-     * Generate a single metric item from source data using the immediate time.
-     *
-     * @return metric_item
-     */
-    public function generate_metric_item(): metric_item {
-        $ts = time();
-        return $this->generate_metric_items($ts, $ts)[0];
+    public function generate_metric_item($starttime, $finishtime): metric_item {
+        $item = new metric_item($this->get_name(), $finishtime, $this->value, $this);
+        $this->value += rand(-$this->variance, $this->variance);
+        return $item;
     }
 }
-

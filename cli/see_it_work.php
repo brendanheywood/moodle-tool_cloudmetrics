@@ -30,5 +30,5 @@ require_once(__DIR__ . '/../../../../config.php');
 $collector = new test_collector();
 $metric = new test_metric();
 for ($x = 0; $x <= 100; ++$x) {
-    $collector->record_metric($metric->generate_metric_item());
+    $collector->record_metric($metric->generate_metric_item(0, $x));
 }

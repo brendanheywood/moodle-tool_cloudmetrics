@@ -75,8 +75,13 @@ class tool_cloudmetrics_users_test extends \advanced_testcase {
         $metric->set_frequency($frequency);
         set_config($metricname . '_time_window', MINSECS * 5, 'tool_cloudmetrics');
 
-        $finishtime = 13000;
-        $items = $metric->generate_metric_items($finishtime - (5 * lib::FREQ_TIMES[$metric->get_frequency()]), $finishtime);
+        $endtime = 13000;
+        $time = $endtime - (4 * lib::FREQ_TIMES[$frequency]);
+        $items = [];
+        while ($time <= $endtime) {
+            $items[] = $metric->generate_metric_item(0, $time);
+            $time = lib::get_next_time($time, $frequency);
+        }
         $this->assertEquals($expected, $items);
     }
 

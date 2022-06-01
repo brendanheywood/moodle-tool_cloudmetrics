@@ -28,20 +28,24 @@ class tool_cloudmetrics_metric_stub_test extends metric_testcase {
     public function test_get_stub() {
         $stub = $this->get_metric_stub([1, 2, 3]);
 
-        $i = $stub->generate_metric_item();
+        $time = 100;
+        $i = $stub->generate_metric_item(0, $time);
         $this->assertEquals(1, $i->value);
-        $this->assertEquals(1, $i->time);
+        $this->assertEquals($time, $i->time);
 
-        list($i) = $stub->generate_metric_items(0, 0);
+        $time += 10;
+        $i = $stub->generate_metric_item(0, $time);
         $this->assertEquals(2, $i->value);
-        $this->assertEquals(2, $i->time);
+        $this->assertEquals($time, $i->time);
 
-        list($i) = $stub->generate_metric_items(0, 0);
+        $time += 10;
+        $i = $stub->generate_metric_item(0, $time);
         $this->assertEquals(3, $i->value);
-        $this->assertEquals(3, $i->time);
+        $this->assertEquals($time, $i->time);
 
-        $i = $stub->generate_metric_item();
+        $time += 10;
+        $i = $stub->generate_metric_item(0, $time);
         $this->assertEquals(1, $i->value);
-        $this->assertEquals(4, $i->time);
+        $this->assertEquals($time, $i->time);
     }
 }

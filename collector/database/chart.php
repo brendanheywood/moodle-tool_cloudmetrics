@@ -24,6 +24,7 @@ use tool_cloudmetrics\metric;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+define('MONTHSECS', WEEKSECS * 4);
 
 require_once(__DIR__.'/../../../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');

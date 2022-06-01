@@ -112,7 +112,7 @@ if (!empty($options['remove'])) {
     if (count($items) !== 0) {
         echo 'Sending ' . count($items) . PHP_EOL;
         foreach ($items as $item) {
-            echo 'Sending item ' . $item->name . ', ' . $item->value . ', ' . userdate($item->time) . PHP_EOL;
+            echo sprintf("Sending item %s = %3s for %s\n", $item->name, $item->value, userdate($item->time, '%e %b %Y, %H:%M'));
         }
         collector\manager::send_metrics($items);
     } else {

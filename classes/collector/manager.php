@@ -47,20 +47,54 @@ class manager {
      */
     public static function send_metrics(array $items) {
         $plugins = cltr::get_enabled_plugins();
+        if (!$plugins) {
+            mtrace('No collectors to send metrics to!');
+            return;
+        }
+
+        if (!$items) {
+            mtrace('No metrics to send at the moment');
+            return;
+        }
+
         foreach ($plugins as $plugin) {
             $collector = $plugin->get_collector();
+
+            // If the status is empty then we don't know. If it it positive then
+            // it is a timestamp of when it originally failed. If it is negative
+            // then it is a timestamp of when it originally worked.
+            $key = self::STATUS_PREFIX . $plugin->name;
+            $status = get_config('tool_cloudmetrics', $key);
+
+            // Migrate from old cache value:
+            if ($status == 'pass') {
+                $status = false;
+            }
+            $time = (int)$status;
+
             try {
                 if ($collector->is_ready()) {
                     $collector->record_metrics($items);
-                    // Clear any failure timestamps for this plugin.
-                    set_config(self::STATUS_PREFIX . $plugin->name, 'pass', 'tool_cloudmetrics');
+                    mtrace("Sending " . count($items) . " metrics to '{$plugin->name}' collector");
+                    if ($status === false || $time > 0) {
+                        // Only record the point in time is changed from not working to working.
+                        mtrace("Collector '{$plugin->name}' is now working");
+                        set_config($key, -time(), 'tool_cloudmetrics');
+                    }
+                } else {
+                    mtrace("Collector '{$plugin->name}' is not ready!");
+                    if ($status === false || $time <= 0) {
+                        mtrace("Collector '{$plugin->name}' is NOT ready since now");
+                        set_config($key, time(), 'tool_cloudmetrics');
+                    }
                 }
             } catch (\Exception $e) {
-                debugging('Collector ' . $plugin->name . ' failed. "' . $e->getMessage() . '"');
+                mtrace("Collector '{$plugin->name}' failed. " . $e->getMessage());
+                debugging("Collector '{$plugin->name}' failed. " . $e->getMessage());
                 // Store plugin name with timestamp of initial failure to track when problem first arose.
-                $lastfail = get_config('tool_cloudmetrics_failure', $plugin->name);
-                if ($lastfail === false || $lastfail === 'pass') {
-                    set_config(self::STATUS_PREFIX . $plugin->name, time(), 'tool_cloudmetrics');
+                if ($status === false || $time <= 0) {
+                    mtrace("Collector '{$plugin->name}' is NOT working since now");
+                    set_config($key, time(), 'tool_cloudmetrics');
                 }
             }
         }

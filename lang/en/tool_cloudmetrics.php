@@ -92,7 +92,7 @@ $string['two_year'] = '2 years'; // Chart length only.
 // Error and status messages.
 $string['metric_not_found'] = 'Metric \'{$a}\' not found';
 $string['collector_failed'] = 'Collector \'{$a->name}\' failed {$a->time}';
-$string['collector_passed'] = 'Collector \'{$a}\' succeeded';
+$string['collector_passed'] = 'Collector \'{$a->name}\' succeeded since {$a->time}';
 $string['collector_never'] = 'Collector \'{$a}\' has never executed';
 $string['no_collectors'] = 'No active collectors';
 $string['checkcollectorcheck'] = 'Cloudmetrics collector status';

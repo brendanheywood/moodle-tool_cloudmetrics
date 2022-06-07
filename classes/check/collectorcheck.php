@@ -63,35 +63,38 @@ class collectorcheck extends check {
         $messages = [];
 
         $names = cltr::get_ready_plugin_names();
+        if (!$names) {
+            return new result(result::INFO, get_string('no_collectors', 'tool_cloudmetrics'), '');
+        }
         foreach ($names as $name) {
-            $result = get_config('tool_cloudmetrics', manager::STATUS_PREFIX . $name);
-            if (! $result) {
+            $status = get_config('tool_cloudmetrics', manager::STATUS_PREFIX . $name);
+            if (! $status) {
                 $warnings = true;
                 $messages[] = get_string('collector_never', 'tool_cloudmetrics', $name);
                 continue;
             }
-            if ($result === 'pass') {
-                $messages[] = get_string('collector_passed', 'tool_cloudmetrics', $name);
+
+            // If the status is negative then it has been correctly working for some time.
+            if ($status < 0) {
+                $messages[] = get_string('collector_passed', 'tool_cloudmetrics',
+                    ['name' => $name, 'time' => userdate((int)(-$status), '%e %b %Y, %H:%M')]);
                 continue;
             }
             $failures = true;
-            $summarytemplate = get_string('collector_failed', 'tool_cloudmetrics',
-                ['name' => $name, 'time' => userdate((int) $result)]);
+            $messages[] = get_string('collector_failed', 'tool_cloudmetrics',
+                ['name' => $name, 'time' => userdate((int) $status, '%e %b %Y, %H:%M')]);
         }
 
-        if ($messages) {
-            $failuretype = result::OK;
-            if ($warnings) {
-                $failuretype = result::WARNING;
-            }
-            if ($failures) {
-                $failuretype = result::ERROR;
-            }
-            // This result contains the enumerated detail of each test.
-            return new result($failuretype, implode('<br>', $messages));
+        $failuretype = result::OK;
+        if ($warnings) {
+            $failuretype = result::WARNING;
         }
+        if ($failures) {
+            $failuretype = result::ERROR;
+        }
+        // This result contains the enumerated detail of each test.
+        return new result($failuretype, implode('<br>', $messages));
 
-        return new result(result::INFO, get_string('no_collectors', 'tool_cloudmetrics'), '');
     }
 
 

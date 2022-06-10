@@ -34,6 +34,6 @@ $plugin->supported = [35, 401];     // Available as of Moodle 3.9.0 or later.
 // TODO $plugin->incompatible = ;  // Available as of Moodle 3.9.0 or later.
 
 $plugin->component = 'tool_cloudmetrics';
-$plugin->maturity = MATURITY_ALPHA;
+$plugin->maturity  = MATURITY_STABLE;
 
 $plugin->dependencies = [];

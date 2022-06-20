@@ -14,6 +14,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+use cltr_database\form\metric_backfill_form;
+use cltr_database\collector;
+use core\chart_line;
+use core\chart_series;
+use single_select;
 use tool_cloudmetrics\metric;
 
 /**
@@ -51,6 +56,10 @@ if ($defaultperiod === -1) {
 }
 
 $metrics = metric\manager::get_metrics(true);
+// Error management if metric is not enabled.
+if (!isset($metrics[$metricname])) {
+    throw new moodle_exception('metric_not_enabled', 'tool_cloudmetrics', '', $metricname);
+}
 $metriclabels = [];
 foreach ($metrics as $m) {
     $metriclabels[$m->get_name()] = $m->get_label();
@@ -59,16 +68,16 @@ foreach ($metrics as $m) {
     }
 }
 
-$select = new \single_select(
+$select = new single_select(
     $url,
     'metric',
     $metriclabels,
     $metricname
 );
 $select->set_label(get_string('select_metric_for_display', 'cltr_database'));
+$context = [];
 
 // Prepare time window selector.
-
 $periods = [
     HOURSECS      => get_string('one_hour', 'tool_cloudmetrics'),
     DAYSECS       => get_string('one_day', 'tool_cloudmetrics'),
@@ -82,6 +91,8 @@ $periods = [
     YEARSECS * 2  => get_string('two_year', 'tool_cloudmetrics'),
 ];
 
+$collector = new \cltr_database\collector();
+
 // Create a new URL object to avoid poisoning the existing one.
 $url = clone $url;
 $url->param('metric', $metricname);
@@ -91,11 +102,12 @@ $periodselect = new \single_select(
     $periods,
     $defaultperiod
 );
+
+$backfillurl = new moodle_url('/admin/tool/cloudmetrics/collector/database/backfill.php', ['metric' => $metricname]);
+
 $periodselect->set_label(get_string('select_graph_period', 'cltr_database'));
 
-$collector = new \cltr_database\collector();
 $records = $collector->get_metrics($metricname, $defaultperiod);
-
 $values = [];
 $labels = [];
 
@@ -104,19 +116,22 @@ foreach ($records as $record) {
     $labels[] = userdate($record->time, get_string('strftimedatetime', 'cltr_database'), $CFG->timezone);
 }
 
-$chartseries = new \core\chart_series($metriclabels[$metricname], $values);
-
-$chart = new \core\chart_line();
+$chartseries = new chart_series($metriclabels[$metricname], $values);
+$chart = new chart_line();
 $chart->add_series($chartseries);
 $chart->set_labels($labels);
 
+$context['chart'] = $OUTPUT->render($chart);
+$context['selector'] = $OUTPUT->render($select);
+$context['periodselect'] = $OUTPUT->render($periodselect);
+$context['backfillurl'] = $backfillurl;
+$context['backfillable'] = $metrics[$metricname]->is_backfillable();
+$context['metriclabel'] = $metric->get_label();
+$context['metricdescription'] = $metrics[$metricname]->get_description();
+$context['metriclabeltolower'] = strtolower($metric->get_label());
+
+$renderer = $PAGE->get_renderer('tool_cloudmetrics');
+
 echo $OUTPUT->header();
-echo $OUTPUT->render($select);
-echo html_writer::empty_tag('br');
-echo $OUTPUT->render($periodselect);
-if (isset($metric)) {
-    echo html_writer::tag('h3', $metric->get_label());
-    echo html_writer::tag('p', $metric->get_description());
-}
-echo $OUTPUT->render($chart);
+echo $renderer->render_chart_page($context);
 echo $OUTPUT->footer();

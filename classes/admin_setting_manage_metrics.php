@@ -85,7 +85,7 @@ class admin_setting_manage_metrics extends \admin_setting {
         $txt->frequency = get_string('frequency', 'tool_cloudmetrics');
 
         $table = new \html_table();
-        $table->head  = array($txt->plugin, $txt->name, $txt->description, $txt->frequency, $txt->actions);
+        $table->head  = array($txt->plugin, $txt->name, $txt->description, $txt->frequency, $txt->actions, get_string('backfillable', 'tool_cloudmetrics'));
         $table->align = array('left', 'left', 'left', 'left');
         $table->attributes['class'] = 'manageformattable generaltable admintable w-auto';
         $table->data  = array();
@@ -133,6 +133,15 @@ class admin_setting_manage_metrics extends \admin_setting {
                 $attributes
             );
 
+            $backfillurl = new \moodle_url('/admin/tool/cloudmetrics/collector/database/backfill.php', ['metric' => $metric->get_name()]);
+            // Metric backfill support and if so - link.
+            if ($metric->is_backfillable()) {
+                $class = '';
+                $backfilllink = \html_writer::link($backfillurl->out(false), $metric->get_label() . ' backfill');
+            } else {
+                $backfilllink = get_string('no_support', 'tool_cloudmetrics');
+            }
+
             // Inplace editables required an integer ID, whereas metrics are identified with strings.
             // We use a hash function to convert to an integer, to future proof the code.
             $intid = hexdec(substr(md5($metric->get_name()), 0, 8));
@@ -155,7 +164,8 @@ class admin_setting_manage_metrics extends \admin_setting {
                 $displayname,
                 $description,
                 $OUTPUT->render($editable),
-                $hideshow . $settingslink . $chartlink
+                $hideshow . $settingslink . $chartlink,
+                $backfilllink,
             ]);
             if ($class) {
                 $row->attributes['class'] = $class;

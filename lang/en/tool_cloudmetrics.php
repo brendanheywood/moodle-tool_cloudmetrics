@@ -62,6 +62,9 @@ $string['onlineusers_time_window_desc'] = 'Metric will include users who were ac
 $string['frequency'] = 'Frequency';
 $string['change_frequency'] = 'Change frequency';
 
+$string['backfillable'] = 'Backfillable';
+$string['no_support'] = 'Not supported';
+
 // Built in metrics.
 $string['activeusers'] = 'Active users';
 $string['activeusers_desc'] = 'Users that have been active in the recent past.';
@@ -69,6 +72,17 @@ $string['onlineusers'] = 'Online users';
 $string['onlineusers_desc'] = 'Users that are currently online.';
 $string['newusers'] = 'New users';
 $string['newusers_desc'] = 'Users who have signed up recently.';
+
+// User selection labels.
+$string['data_empty'] = 'Your database for this metric is empty.';
+$string['data_in_db'] = 'Your database contains data from {$a->dbstart} to {$a->dbend}.';
+$string['data_period'] = 'Current information shows data can be retrieved from {$a->startdate} to {$a->enddate}.';
+$string['different_freq'] = 'Caution - frequency has been changed, new data will complete currently present but no data will be added between
+{$a->backfilledfrom} and {$a->backfilledto}.';
+$string['period_select'] = 'Select period to retrieve data from: ';
+$string['return_to_backfill'] = 'Backfill {$a} period';
+$string['return_to_chart'] = 'Return to {$a} chart';
+$string['same_freq'] = 'Backfilling to a further date in the past will complete already present data.';
 
 // Frequency labels.
 $string['one_minute'] = '1 minute';
@@ -90,6 +104,8 @@ $string['twelve_month'] = '12 months'; // Chart length only.
 $string['two_year'] = '2 years'; // Chart length only.
 
 // Error and status messages.
+$string['backfill_not_supported'] = 'Metric \'{$a}\' does not support backfilling';
+$string['metric_not_enabled'] = 'Metric \'{$a}\' not enabled';
 $string['metric_not_found'] = 'Metric \'{$a}\' not found';
 $string['collector_failed'] = 'Collector \'{$a->name}\' failed {$a->time}';
 $string['collector_passed'] = 'Collector \'{$a->name}\' succeeded since {$a->time}';

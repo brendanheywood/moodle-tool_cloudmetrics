@@ -56,4 +56,13 @@ abstract class base {
     public function is_ready(): bool {
         return true;
     }
+
+    /**
+     * Abilitity for a collector to save old data.
+     *
+     * @return bool
+     */
+    public function supports_backfillable_metrics(): bool {
+        return false;
+    }
 }

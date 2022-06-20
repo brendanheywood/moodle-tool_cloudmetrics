@@ -28,8 +28,12 @@ use tool_cloudmetrics\metric;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class collector extends base {
+    /**
+     * Records metric in cltr table.
+     *
+     * @param metric_item $item Item representing metric to record.
+     */
     public function record_metric(metric_item $item) {
         global $DB;
 
@@ -40,11 +44,22 @@ class collector extends base {
     }
 
     /**
+     * Deletes every metric from cltr table for a given metric name.
+     *
+     * @param string $metricname Metric name to remove.
+     */
+    public function delete_metrics(string $metricname) {
+        global $DB;
+
+        $DB->delete_records(lib::TABLE, ['name' => $metricname]);
+    }
+
+    /**
      * Returns stored metrics for the collector.
      *
-     * @param mixed $metricnames The metrics to be retrieved. Either a single string, or an
+     * @param  mixed  $metricnames The metrics to be retrieved. Either a single string, or an
      *         array of strings. If empty, then all available metrics will be retrieved.
-     * @param int | false $starting The earliest timestamp to retrieve.
+     * @param  int | false $since The earliest timestamp to retrieve.
      * @return array
      * @throws \coding_exception
      * @throws \dml_exception
@@ -52,6 +67,7 @@ class collector extends base {
     public function get_metrics($metricnames = null, $since = false): array {
         global $DB;
         $starting = '';
+
         if (is_null($metricnames)) {
             $metricnames = [];
             $metrics = metric\manager::get_metrics(true);
@@ -71,5 +87,31 @@ class collector extends base {
                  $starting
                ORDER BY time asc";
         return $DB->get_records_sql($sql, $params);
+    }
+
+    /**
+     * Records retrieved data in collector.
+     *
+     * @param  \tool_cloudmetrics\metric\base $metricclass Class representing metric.
+     * @param  array $data Array of metric items.
+     */
+    public function record_saved_metrics(\tool_cloudmetrics\metric\base $metricclass, array $metricitems = []) {
+        global $DB;
+        $transaction = $DB->start_delegated_transaction();
+        if (count($metricitems) != 0 && !$metricclass->sameconfig) {
+            $this->record_metrics($metricitems);
+        }
+        $transaction->allow_commit();
+        // Sets what data has been sent to collector.
+        $metricclass->set_data_sent_config();
+    }
+
+    /**
+     * Abilitity for a collector to retrieve old data.
+     *
+     * @return bool
+     */
+    public function supports_backfillable_metrics(): bool {
+        return true;
     }
 }

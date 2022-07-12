@@ -38,12 +38,18 @@ class cltr extends \core\plugininfo\base {
      */
     public static function get_enabled_plugins() {
         $plugins = \core_plugin_manager::instance()->get_plugins_of_type('cltr');
+
+        if (empty($plugins)) {
+            return array();
+        }
+
+        $enabled = array();
         foreach ($plugins as $name => $plugin) {
-            if (!$plugin->is_enabled()) {
-                unset($plugins[$name]);
+            if ($plugin->is_enabled()) {
+                $enabled[$name] = $name;
             }
         }
-        return $plugins;
+        return $enabled;
     }
 
     /**

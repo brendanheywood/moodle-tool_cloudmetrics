@@ -33,10 +33,32 @@ class cltr extends \core\plugininfo\base {
     ];
 
     /**
-     * Finds all enabled plugins, the result may include missing plugins.
+     * Finds all enabled plugin names, the result may include missing plugins.
      * @return array|null of enabled plugins $pluginname=>$pluginname, null means unknown
      */
     public static function get_enabled_plugins() {
+        $plugins = \core_plugin_manager::instance()->get_plugins_of_type('cltr');
+
+        if (empty($plugins)) {
+            return array();
+        }
+
+        $enabled = [];
+        foreach ($plugins as $name => $plugin) {
+            if ($plugin->is_enabled()) {
+                $enabled[$name] = $name;
+            }
+        }
+        return $enabled;
+    }
+
+    /**
+     * Finds all enabled plugin instances of 'cltr', the result may include
+     * missing plugins.
+     * @return array of enabled plugin objects. Empty array means plugin is not
+     * enabled or missing
+     */
+    public static function get_enabled_plugin_instances() {
         $plugins = \core_plugin_manager::instance()->get_plugins_of_type('cltr');
         foreach ($plugins as $name => $plugin) {
             if (!$plugin->is_enabled()) {
@@ -54,7 +76,7 @@ class cltr extends \core\plugininfo\base {
     public static function get_ready_plugin_names() {
         $names = [];
 
-        $plugins = self::get_enabled_plugins();
+        $plugins = self::get_enabled_plugin_instances();
         foreach ($plugins as $plugin) {
             $collector = $plugin->get_collector();
             if ($collector->is_ready() && !in_array($plugin->name, $names)) {

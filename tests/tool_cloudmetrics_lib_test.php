@@ -27,6 +27,43 @@ namespace tool_cloudmetrics;
 class tool_cloudmetrics_lib_test  extends \advanced_testcase {
 
     /**
+     * Tests cltr::get_enabled_plugins() that should return
+     * the plugin names as $pluginname => $pluginname.
+     *
+     * @throws \Exception
+     */
+    public function test_get_enabled_plugins() {
+        $pluginnames = \core_plugin_manager::instance()->get_enabled_plugins('cltr');
+        // Not all versions support assertIsArray(), use assertTrue() instead.
+        $this->assertTrue(is_array($pluginnames));
+        // If plugin is not enabled the result will be an empty array.
+        if (!empty($pluginnames)) {
+            foreach ($pluginnames as $key => $val) {
+                $this->assertRegExp('/^[a-z]+[a-z0-9_]*$/', $key);
+                $this->assertSame($key, $val);
+            }
+        }
+    }
+
+    /**
+     * Tests cltr::get_enabled_plugin_instances() that should return
+     * the plugin objects.
+     *
+     * @throws \Exception
+     */
+    public function test_get_enabled_plugin_instances() {
+        $plugins = plugininfo\cltr::get_enabled_plugin_instances();
+        // Not all versions support assertIsArray(), use assertTrue() instead.
+        $this->assertTrue(is_array($plugins));
+        // If plugin is not enabled the result will be an empty array.
+        if (!empty($plugins)) {
+            foreach ($plugins as $key => $val) {
+                $this->assertTrue(is_object($val));
+            }
+        }
+    }
+
+    /**
      * Tests lib::get_previous_time()
      *
      * @dataProvider data_for_get_previous_time

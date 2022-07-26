@@ -46,7 +46,7 @@ class manager {
      * @param array $items An array of metric_item.
      */
     public static function send_metrics(array $items) {
-        $plugins = cltr::get_enabled_plugins();
+        $plugins = cltr::get_enabled_plugin_instances();
         if (!$plugins) {
             mtrace('No collectors to send metrics to!');
             return;

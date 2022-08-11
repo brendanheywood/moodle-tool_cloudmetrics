@@ -6,4 +6,4 @@ on: [push, pull_request]
 jobs:
   ci:
     # change this back to @main after testing
-    uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@main
+    uses: catalyst/catalyst-moodle-workflows/.github/workflows/ci.yml@checkapi-main

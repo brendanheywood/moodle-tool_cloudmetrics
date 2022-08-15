@@ -23,6 +23,8 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_cloudmetrics\metric\manager;
+
 /**
  * Function to upgrade tool_cloudmetrics.
  *
@@ -48,6 +50,18 @@ function xmldb_tool_cloudmetrics_upgrade($oldversion) {
             unset_config('disabled', 'cltr_' . $collector);
         }
         upgrade_plugin_savepoint(true, 2022051600, 'tool', 'cloudmetrics');
+    }
+
+    // Upgrade script turn all metrics on.
+    if ($oldversion < 2022081500) {
+        $metrics = manager::get_metrics(false);
+
+        foreach ($metrics as $metric) {
+            if (!$metric->is_enabled()) {
+                $metric->set_enabled(true);
+            }
+        }
+        upgrade_plugin_savepoint(true, 2022081500, 'tool', 'cloudmetrics');
     }
 
     return true;

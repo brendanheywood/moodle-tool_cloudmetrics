@@ -28,16 +28,18 @@ use tool_cloudmetrics\lib;
  */
 class test_metric extends base {
 
+    /** @var string Metric name. */
     public $name = 'foobar';
 
     /** @var int The value to be used next. */
     public $value = 100;
     /** @var int The amount the value may vary by (+/-) between generates. */
     public $variance = 10;
-
+    /** @var int The frequency of the metric's sampling. */
     public $frequency = manager::FREQ_MIN;
-
+    /** @var bool Is the metric switched on. */
     public $enabled = false;
+    /** @var bool Is the metric ready. */
     public $isready = true;
 
     /**
@@ -85,6 +87,11 @@ class test_metric extends base {
         return $this->frequency;
     }
 
+    /**
+     * The metric's default frequency.
+     *
+     * @return int
+     */
     public function get_frequency_default(): int {
         return manager::FREQ_MIN;
     }
@@ -116,6 +123,11 @@ class test_metric extends base {
         $this->enabled = $enabled;
     }
 
+    /**
+     * Is the metric ready?
+     *
+     * @return bool
+     */
     public function is_ready(): bool {
         return $this->isready;
     }
@@ -123,7 +135,9 @@ class test_metric extends base {
     /**
      * Retrieves the metric.
      *
-     * @return array
+     * @param int $starttime
+     * @param int $finishtime
+     * @return metric_item
      */
     public function generate_metric_item($starttime, $finishtime): metric_item {
         $item = new metric_item($this->get_name(), $finishtime, $this->value, $this);

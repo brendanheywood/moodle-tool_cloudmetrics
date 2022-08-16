@@ -29,6 +29,7 @@ use tool_cloudmetrics\plugininfo\cltr;
  */
 class manager {
 
+    /** @var string status prefix */
     const STATUS_PREFIX = 'collector_status:';
 
     /**

@@ -24,7 +24,6 @@ namespace tool_cloudmetrics\metric;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class manager {
     /** @var int Gauge metric type. */
     const TYPE_GAUGE = 1;
@@ -59,6 +58,11 @@ class manager {
     /** @var int Per month frequency. */
     const FREQ_MONTH = 4096;
 
+    /**
+     * Get frequency labels
+     *
+     * @return array
+     */
     public static function get_frequency_labels(): array {
         return [
             self::FREQ_MIN => get_string('one_minute', 'tool_cloudmetrics'),
@@ -84,6 +88,7 @@ class manager {
     /**
      * Gets all metrics installed on the system. Returns an associative array of all metrics installed.
      *
+     * @param bool $enabledonly
      * @return array An associative array of name => metric.
      */
     public static function get_metrics(bool $enabledonly = true): array {

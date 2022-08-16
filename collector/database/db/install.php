@@ -17,12 +17,15 @@
 /**
  * Install script for cloudmetrics.
  *
- * @package   tool_cloudmetrics
+ * @package   cltr_database
  * @author    Mike Macgirvin <mikemacgirvin@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Perform the post-install procedures.
+ */
 function xmldb_cltr_database_install() {
     set_config('enabled', 1, 'cltr_database');
     \core_plugin_manager::reset_caches();

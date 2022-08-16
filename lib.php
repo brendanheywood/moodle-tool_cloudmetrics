@@ -14,9 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use tool_cloudmetrics\metric\manager;
-use \core\output\inplace_editable;
-
 /**
  * Main file
  *
@@ -25,6 +22,9 @@ use \core\output\inplace_editable;
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use tool_cloudmetrics\metric\manager;
+use \core\output\inplace_editable;
 
 /**
  * Update the frequency config for metrics.
@@ -75,6 +75,11 @@ function tool_cloudmetrics_inplace_editable(string $itemtype, int $itemid, strin
     }
 }
 
+/**
+ * Returns cloumetrics status checks
+ *
+ * @return array
+ */
 function tool_cloudmetrics_status_checks() {
     return [new tool_cloudmetrics\check\collectorcheck()];
 }

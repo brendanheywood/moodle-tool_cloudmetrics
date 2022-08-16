@@ -34,6 +34,11 @@ abstract class builtin_base extends base {
         return get_string($this->get_name(), 'tool_cloudmetrics');
     }
 
+    /**
+     * The metric's description.
+     *
+     * @return string
+     */
     public function get_description(): string {
         return get_string($this->get_name() . '_desc', 'tool_cloudmetrics');
     }
@@ -47,6 +52,11 @@ abstract class builtin_base extends base {
         return 'tool_cloudmetrics';
     }
 
+    /**
+     * The metric's default frequency
+     *
+     * @return int
+     */
     public function get_frequency_default(): int {
         return manager::FREQ_DEFAULTS[$this->get_name()];
     }

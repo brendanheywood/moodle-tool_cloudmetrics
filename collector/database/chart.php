@@ -14,13 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use cltr_database\form\metric_backfill_form;
-use cltr_database\collector;
-use core\chart_line;
-use core\chart_series;
-use single_select;
-use tool_cloudmetrics\metric;
-
 /**
  * Shows a chart of recorded metrics.
  *
@@ -29,6 +22,13 @@ use tool_cloudmetrics\metric;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use cltr_database\form\metric_backfill_form;
+use cltr_database\collector;
+use core\chart_line;
+use core\chart_series;
+use single_select;
+use tool_cloudmetrics\metric;
 
 require_once(__DIR__.'/../../../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');

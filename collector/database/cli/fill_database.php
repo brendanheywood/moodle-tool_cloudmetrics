@@ -14,13 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Test script to fill the database collector with data.
+ *
+ * @package   cltr_database
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 namespace cltr_database;
 
 define('CLI_SCRIPT', true);
-
-/**
- * Test script to fill the database collector with data.
- */
 
 require_once(__DIR__ . '/../../../../../../config.php');
 

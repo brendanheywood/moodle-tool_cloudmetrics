@@ -27,7 +27,6 @@ use core\output\inplace_editable;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class admin_setting_manage_metrics extends \admin_setting {
 
     /**

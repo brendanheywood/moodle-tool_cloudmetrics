@@ -14,6 +14,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace tool_cloudmetrics\check;
+
+use core\check\check;
+use core\check\result;
+use tool_cloudmetrics\collector\manager;
+use tool_cloudmetrics\plugininfo\cltr;
+
 /**
  * Collector failure tests for Check API
  *
@@ -22,14 +29,6 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @copyright Catalyst IT
  */
-
-namespace tool_cloudmetrics\check;
-
-use core\check\check;
-use core\check\result;
-use tool_cloudmetrics\collector\manager;
-use tool_cloudmetrics\plugininfo\cltr;
-
 class collectorcheck extends check {
 
     /**

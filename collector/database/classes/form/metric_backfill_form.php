@@ -31,6 +31,9 @@ require_once($CFG->libdir . '/formslib.php');
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class metric_backfill_form extends moodleform {
+    /**
+     * Define form
+     */
     public function definition() {
         $mform = $this->_form;
         $maxbackwardsdate = $this->_customdata[0]->min;
@@ -49,6 +52,12 @@ class metric_backfill_form extends moodleform {
         $this->add_action_buttons(false, 'Backfill data');
     }
 
+    /**
+     * Validate form
+     *
+     * @param array $data
+     * @param array $files
+     */
     public function validation($data, $files) {
         return [];
     }

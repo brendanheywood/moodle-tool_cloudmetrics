@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use tool_cloudmetrics\metric\test_metric;
-use tool_cloudmetrics\collector;
-
 /**
- * This is a development tool to create mock data to send to collectors. This can be used where it is
- * inconvenient to create real data, but you still want to see the collectors working.
+ * This is a development tool to create mock data to send to collectors.
+ *
+ * This can be used where it is inconvenient to create real data, but you still want to see the collectors working.
  *
  * In order to use this script, you need to have $CFG->config_php_settings['tool_cloudmetrics_allow_add_metrics']
  * set to a non empty value. This is to prevent running in a production environment.
@@ -31,6 +29,9 @@ use tool_cloudmetrics\collector;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use tool_cloudmetrics\metric\test_metric;
+use tool_cloudmetrics\collector;
 
 define('CLI_SCRIPT', true);
 

@@ -39,14 +39,17 @@ The key architecture here is decoupling the gathering of the metrics from where 
 
 ```mermaid
   graph LR;
-      moodle-->metric_abc;
-      moodle-->metric_xyz;
-      metric_abc-->tool_cloudmetrics
-      metric_xyz-->tool_cloudmetrics
-      tool_cloudmetrics-->cltr_database;
-      tool_cloudmetrics-->cltr_cloudwatch;
-      tool_cloudmetrics-->cltr_prometheus;
-      cltr_cloudwatch-->AWSCloudWatch;
+          subgraph Moodle
+          core-->metric_abc;
+          core-->metric_xyz;
+          metric_abc-->tool_cloudmetrics
+          metric_xyz-->tool_cloudmetrics
+          tool_cloudmetrics-->cltr_database;
+          tool_cloudmetrics-->cltr_cloudwatch;
+          tool_cloudmetrics-->cltr_prometheus;
+      end
+      cltr_cloudwatch --> cw[AWS CloudWatch];
+      cltr_prometheus --> Prometheus;
 ```
 
 ### Metrics

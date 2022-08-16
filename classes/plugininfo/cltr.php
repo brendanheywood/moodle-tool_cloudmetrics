@@ -28,6 +28,7 @@ use tool_cloudmetrics\collector\base;
  */
 class cltr extends \core\plugininfo\base {
 
+    /** Builtin plugins array. */
     const BUILTIN_PLUGINS = [
         'database',
     ];
@@ -132,10 +133,22 @@ class cltr extends \core\plugininfo\base {
         return 'cltr_' . $this->name;
     }
 
+    /**
+     * Return whether the builtin plugin can be uninstalled
+     *
+     * @return bool true if uninstalled allowed
+     */
     public function is_uninstall_allowed() {
         return !in_array($this->name, self::BUILTIN_PLUGINS);
     }
 
+    /**
+     * Load plugin settings
+     *
+     * @param \part_of_admin_tree $adminroot
+     * @param  string $parentnodename
+     * @param bool $hassiteconfig
+     */
     public function load_settings(\part_of_admin_tree $adminroot, $parentnodename, $hassiteconfig) {
         global $CFG, $USER, $DB, $OUTPUT, $PAGE; // In case settings.php wants to refer to them.
         $ADMIN = $adminroot; // May be used in settings.php.

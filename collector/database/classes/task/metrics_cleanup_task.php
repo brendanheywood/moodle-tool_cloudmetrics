@@ -14,26 +14,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+namespace cltr_database\task;
+
+use cltr_database\lib;
+
 /**
- * Delete metrics that have expired. The cutoff time is rounded to the nearest 'midnight' based on the
- * server's timezone.
+ * Delete metrics that have expired. Cutoff time is rounded to the nearest 'midnight' based on the * server's timezone.
  *
  * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
-namespace cltr_database\task;
-
-use cltr_database\lib;
-
 class metrics_cleanup_task extends \core\task\scheduled_task {
 
+    /**
+     * Get task name
+     */
     public function get_name() {
         return get_string('metrics_cleanup_task', 'cltr_database');
     }
 
+    /**
+     *  Execute task
+     */
     public function execute() {
         global $DB;
 

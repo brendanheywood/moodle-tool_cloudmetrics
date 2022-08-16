@@ -24,6 +24,11 @@ require_once(__DIR__ . "/metric_testcase.php"); // This is needed. File will not
 
 /**
  * Basic test for collectors.
+ *
+ * @package   tool_cloudmetrics
+ * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @copyright 2022, Catalyst IT
+ * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class tool_cloudmetrics_collector_base_test extends metric_testcase {
 

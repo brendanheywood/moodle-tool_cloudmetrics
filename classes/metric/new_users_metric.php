@@ -19,7 +19,7 @@ namespace tool_cloudmetrics\metric;
 /**
  * Metric class for new users.
  *
- * @package    metric_foobar
+ * @package    tool_cloudmetrics
  * @author     Jason den Dulk <jasondendulk@catalyst-au.net>
  * @copyright  2022, Catalyst IT
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

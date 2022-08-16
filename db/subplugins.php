@@ -15,8 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Defines subplugin types introduced by this module.
- * This fiel is included for compatibility with Moodle versions 3.7 and lower.
+ * Defines subplugin types introduced by this module, included for compatibility with Moodle versions 3.7 and lower.
  *
  * @package   tool_cloudmetrics
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>

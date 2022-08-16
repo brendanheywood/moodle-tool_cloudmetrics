@@ -33,6 +33,7 @@ use tool_cloudmetrics\metric\active_users_metric;
  */
 class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
 
+    /** @var int Hours in a day*/
     const DAYHOURS = 24;
 
     /**
@@ -47,6 +48,9 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
      * Test get_midnight_of.
      *
      * @dataProvider midnight_provider
+     *
+     * @param string $datestr
+     * @param string  $expected   The expected result of the transformation
      */
     public function test_midnight($datestr, $expected) {
         $tz = \core_date::get_server_timezone_object();
@@ -185,6 +189,8 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
     }
 
     /**
+     * Test expiry metric_expiry task is working properly
+     *
      * @dataProvider expiry_provider
      * @param int $daysago
      * @param int $houradjustment
@@ -236,6 +242,11 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         $this->assertEquals($numexpected, $count);
     }
 
+    /**
+     *  Data provider for test_expiry()
+     *
+     * @return array
+     */
     public function expiry_provider() {
         return [
             [20, 10, 10 * DAYSECS, 20, 10],

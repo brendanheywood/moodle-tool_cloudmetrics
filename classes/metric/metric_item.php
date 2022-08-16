@@ -35,6 +35,13 @@ class metric_item {
     /** @var base Reference to the metric type object. */
     public $metric;
 
+    /**
+     * metric_item constructor.
+     * @param string $name
+     * @param int $time
+     * @param string $value
+     * @param base $item
+     */
     public function __construct(string $name, int $time, $value, base $item) {
         $this->name = $name;
         $this->time = $time;

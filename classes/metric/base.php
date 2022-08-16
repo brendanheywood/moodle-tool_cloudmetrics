@@ -76,6 +76,7 @@ abstract class base {
     /**
      * Set frequency of the metric's sampling.
      *
+     * @param int $freq
      * @return int
      */
     public function set_frequency(int $freq) {

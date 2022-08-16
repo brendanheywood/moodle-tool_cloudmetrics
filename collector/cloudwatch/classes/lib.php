@@ -24,9 +24,10 @@ namespace cltr_cloudwatch;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class lib {
+    /** @var string AWS version*/
     const AWS_VERSION = '2010-08-01';
+    /** @var int Local AWS version*/
     const LOCAL_AWS_VERSION = 2022033100;
 
     /**
@@ -73,7 +74,7 @@ class lib {
     /**
      * Makes a namespace for the parameter by stripping any HTTP schema prefix.
      *
-     * @param $ns
+     * @param string $ns
      * @return mixed|string
      */
     private static function to_namespace($ns) {

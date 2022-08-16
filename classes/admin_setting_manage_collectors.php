@@ -18,7 +18,8 @@ namespace tool_cloudmetrics;
 
 /**
  * A table to manage collector plugins.
- * TODO: This is largely copied from lib/adminlib.php:admin_setting_managedataformats.
+ *
+ * @package   tool_cloudmetrics
  */
 class admin_setting_manage_collectors extends \admin_setting {
 

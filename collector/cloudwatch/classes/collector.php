@@ -33,11 +33,15 @@ require_once($CFG->dirroot . '/local/aws/sdk/aws-autoloader.php');
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-
 class collector extends base {
+    /** @var null|client_factory CloudWatch client*/
     protected static $client = null;
+    /** @var array Client config */
     protected static $pluginconfig;
 
+    /**
+     * AWS Cloudwatch collector constructor.
+     */
     public function __construct() {
         global $CFG;
 
@@ -61,6 +65,11 @@ class collector extends base {
         }
     }
 
+    /**
+     * Record single metric item
+     *
+     * @param metric_item $item
+     */
     public function record_metric(metric_item $item) {
         self::$client->putMetricData([
             'Namespace' => self::$pluginconfig->namespace,
@@ -68,6 +77,11 @@ class collector extends base {
         ]);
     }
 
+    /**
+     * Record an array of metric data
+     *
+     * @param array $items
+     */
     public function record_metrics(array $items) {
         $metricdata = [];
         foreach ($items as $item) {
@@ -100,6 +114,11 @@ class collector extends base {
         ];
     }
 
+    /**
+     * Is plugin ready
+     *
+     * @return bool
+     */
     public function is_ready(): bool {
         $plugininfo = \core_plugin_manager::instance()->get_plugin_info('cltr_cloudwatch');
         if (!$plugininfo->is_enabled()) {

@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-use tool_cloudmetrics\metric\manager;
-
 /**
  * Sumbission for metric plugin management.
  *
@@ -24,6 +22,8 @@ use tool_cloudmetrics\metric\manager;
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
+use tool_cloudmetrics\metric\manager;
 
 require_once('../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');

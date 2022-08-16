@@ -57,9 +57,9 @@ class collector extends base {
     /**
      * Returns stored metrics for the collector.
      *
-     * @param  mixed  $metricnames The metrics to be retrieved. Either a single string, or an
+     * @param mixed $metricnames The metrics to be retrieved. Either a single string, or an
      *         array of strings. If empty, then all available metrics will be retrieved.
-     * @param  int | false $since The earliest timestamp to retrieve.
+     * @param int|false $since The earliest timestamp to retrieve.
      * @return array
      * @throws \coding_exception
      * @throws \dml_exception
@@ -92,8 +92,8 @@ class collector extends base {
     /**
      * Records retrieved data in collector.
      *
-     * @param  \tool_cloudmetrics\metric\base $metricclass Class representing metric.
-     * @param  array $data Array of metric items.
+     * @param \tool_cloudmetrics\metric\base $metricclass Class representing metric.
+     * @param array $metricitems Array of metric items.
      */
     public function record_saved_metrics(\tool_cloudmetrics\metric\base $metricclass, array $metricitems = []) {
         global $DB;

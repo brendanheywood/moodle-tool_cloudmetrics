@@ -23,6 +23,12 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+/**
+ * Function to upgrade cltr_database.
+ *
+ * @param int $oldversion the version we are upgrading from
+ * @return bool result
+ */
 function xmldb_cltr_database_upgrade($oldversion) {
     global $DB;
 

@@ -64,5 +64,12 @@ function xmldb_tool_cloudmetrics_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2022081500, 'tool', 'cloudmetrics');
     }
 
+    // Upgrade script turn off metric expiry.
+    if ($oldversion < 2022081600) {
+        if (get_config('metric_expiry', 'cltr_database') != 0) {
+            set_config('metric_expiry', 0, 'cltr_database');
+        }
+        upgrade_plugin_savepoint(true, 2022081600, 'tool', 'cloudmetrics');
+    }
     return true;
 }

@@ -52,7 +52,7 @@ if ($hassiteconfig) {
                 'cltr_database/metric_expiry',
                 get_string('metric_expiry', 'cltr_database'),
                 get_string('metric_expiry_desc', 'cltr_database'),
-                30 * DAYSECS
+                0
             )
         );
     }

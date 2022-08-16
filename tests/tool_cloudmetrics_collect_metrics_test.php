@@ -178,7 +178,7 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
             [
                 '2020-02-02T00:03:00',
                 ['new_users_metric' => [manager::FREQ_5MIN, null]],
-                ['newusers'],
+                ['activeusers', 'newusers', 'onlineusers'],
             ],
         ];
     }

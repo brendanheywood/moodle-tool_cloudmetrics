@@ -70,4 +70,17 @@ abstract class builtin_user_base extends builtin_base {
         );
         return new metric_item($this->get_name(), $finishtime, $users, $this);
     }
+
+    /**
+     * Override for builtin metrics to default on
+     *
+     * @return bool
+     */
+    public function is_enabled(): bool {
+        $enabled = get_config('tool_cloudmetrics', $this->get_name() . '_enabled');
+        if ($enabled === false) { // False if config has not been set, so set as enabled.
+            $this->set_enabled(true);
+        }
+        return (bool)get_config('tool_cloudmetrics', $this->get_name() . '_enabled');
+    }
 }

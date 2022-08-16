@@ -33,7 +33,7 @@ $string['privacy:metadata'] = 'No personal information is stored';
 
 // Settings.
 $string['metric_expiry'] = 'Time to keep data';
-$string['metric_expiry_desc'] = 'Length of time to keep data before deleting.';
+$string['metric_expiry_desc'] = 'Length of time to keep data before deleting. If set to 0 data will never expire.';
 
 // Chart display.
 $string['metric_display'] = 'Cloudmetrics Charts';

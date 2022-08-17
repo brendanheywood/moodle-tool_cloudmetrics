@@ -107,7 +107,9 @@ $backfillurl = new moodle_url('/admin/tool/cloudmetrics/collector/database/backf
 
 $periodselect->set_label(get_string('select_graph_period', 'cltr_database'));
 
-$records = $collector->get_metrics($metricname, $defaultperiod);
+$maxrecords = 1000;
+
+$records = $collector->get_metrics($metricname, $defaultperiod, $maxrecords);
 $values = [];
 $labels = [];
 
@@ -133,5 +135,9 @@ $context['metriclabeltolower'] = strtolower($metric->get_label());
 $renderer = $PAGE->get_renderer('tool_cloudmetrics');
 
 echo $OUTPUT->header();
+if (count($records) === $maxrecords) {
+    echo $OUTPUT->notification(get_string('maxrecords', 'cltr_database', $maxrecords), 'notifyproblem');
+}
 echo $renderer->render_chart_page($context);
 echo $OUTPUT->footer();
+

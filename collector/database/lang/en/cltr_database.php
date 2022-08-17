@@ -49,3 +49,6 @@ $string['strftimedatetime'] = '%d %h %Y, %H:%M';
 
 // Error.
 $string['collector_not_supported'] = 'Collector \'{$a}\' does not support backfilled data collection.';
+
+// Max records reached.
+$string['maxrecords'] = 'There are more than {$a} data points for this graph, it is currently only displaying the first {$a} records. Please change either the time scale or the time resolution';

@@ -60,11 +60,12 @@ class collector extends base {
      * @param mixed $metricnames The metrics to be retrieved. Either a single string, or an
      *         array of strings. If empty, then all available metrics will be retrieved.
      * @param int|false $since The earliest timestamp to retrieve.
+     * @param int $limit The max number of records to retrieve.
      * @return array
      * @throws \coding_exception
      * @throws \dml_exception
      */
-    public function get_metrics($metricnames = null, $since = false): array {
+    public function get_metrics($metricnames = null, $since = false, int $limit = 1000): array {
         global $DB;
         $starting = '';
 
@@ -86,7 +87,7 @@ class collector extends base {
                  WHERE name $clause
                  $starting
                ORDER BY time asc";
-        return $DB->get_records_sql($sql, $params);
+        return $DB->get_records_sql($sql, $params, 0, $limit);
     }
 
     /**

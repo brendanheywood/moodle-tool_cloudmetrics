@@ -86,7 +86,7 @@ class collectorcheck extends check {
 
         $failuretype = result::OK;
         if ($warnings) {
-            $failuretype = result::WARNING;
+            $failuretype = result::INFO;
         }
         if ($failures) {
             $failuretype = result::ERROR;

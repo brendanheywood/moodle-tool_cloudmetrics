@@ -23,12 +23,11 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-use cltr_database\form\metric_backfill_form;
-use cltr_database\collector;
 use core\chart_line;
 use core\chart_series;
-use single_select;
+use tool_cloudmetrics\lib;
 use tool_cloudmetrics\metric;
+use tool_cloudmetrics\metric\manager;
 
 require_once(__DIR__.'/../../../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
@@ -93,9 +92,13 @@ $periods = [
 
 $collector = new \cltr_database\collector();
 
+$configfrequency = $metrics[$metricname]->get_frequency();
+$selectedfrequency = optional_param('graphfrequency', $configfrequency ?? 1, PARAM_INT);
+
 // Create a new URL object to avoid poisoning the existing one.
 $url = clone $url;
 $url->param('metric', $metricname);
+$url->param('graphfrequency', $selectedfrequency);
 $periodselect = new \single_select(
     $url,
     'graphperiod',
@@ -103,29 +106,71 @@ $periodselect = new \single_select(
     $defaultperiod
 );
 
+$freqoptions = manager::get_frequency_labels();
+$freqselect = new \single_select(
+    $url,
+    'graphfrequency',
+    $freqoptions,
+    $selectedfrequency
+);
+
 $backfillurl = new moodle_url('/admin/tool/cloudmetrics/collector/database/backfill.php', ['metric' => $metricname]);
 
 $periodselect->set_label(get_string('select_graph_period', 'cltr_database'));
 
+$freqselect->set_label(get_string('select_graph_freq', 'cltr_database'));
+
+$aggregatefreqtimes = lib::FREQ_TIMES;
+
+// TODO Handle a month properly currently aggregated over last 30 days.
+$aggregatefreqtimes[4096] = 30 * 24 * 60 * 60;
+
 $maxrecords = 1000;
 
-$records = $collector->get_metrics($metricname, $defaultperiod, $maxrecords);
 $values = [];
 $labels = [];
+$mins = [];
+$maxs = [];
+$count = 0;
 
+$records = $collector->get_metrics_aggregated($metricname, $defaultperiod, $maxrecords, $aggregatefreqtimes[$selectedfrequency]);
 foreach ($records as $record) {
-    $values[] = (float) $record->value;
-    $labels[] = userdate($record->time, get_string('strftimedatetime', 'cltr_database'), $CFG->timezone);
-}
+    $values[] = round($record->avg, 1);
 
+    // Convert back from floored time.
+    $datelabel = ($record->increment_start * $aggregatefreqtimes[$selectedfrequency]);
+
+    // If freq 12hr or greater set to UTC.
+    $timezone = $CFG->timezone;
+    if ($selectedfrequency >= 128) {
+        $timezone = 'UTC';
+    }
+    // If time increment is month display data at start of month.
+    if ($selectedfrequency == 4096) {
+        $datelabel += $aggregatefreqtimes[$selectedfrequency];
+        $labels[] = userdate($datelabel, get_string('strftimemonth', 'cltr_database'), $timezone);
+    } else {
+        $labels[] = userdate($datelabel, get_string('strftimedatetime', 'cltr_database'), $timezone);
+    }
+    $mins[] = (float) $record->min;
+    $maxs[] = (float) $record->max;
+    $count++;
+}
 $chartseries = new chart_series($metriclabels[$metricname], $values);
 $chart = new chart_line();
 $chart->add_series($chartseries);
+
+$minseries = new chart_series('Minimum '.$metriclabels[$metricname], $mins);
+$maxseries = new chart_series('Maximum '.$metriclabels[$metricname], $maxs);
+$chart->add_series($minseries);
+$chart->add_series($maxseries);
+
 $chart->set_labels($labels);
 
 $context['chart'] = $OUTPUT->render($chart);
 $context['selector'] = $OUTPUT->render($select);
 $context['periodselect'] = $OUTPUT->render($periodselect);
+$context['freqselect'] = $OUTPUT->render($freqselect);
 $context['backfillurl'] = $backfillurl;
 $context['backfillable'] = $metrics[$metricname]->is_backfillable();
 $context['metriclabel'] = $metric->get_label();
@@ -135,9 +180,15 @@ $context['metriclabeltolower'] = strtolower($metric->get_label());
 $renderer = $PAGE->get_renderer('tool_cloudmetrics');
 
 echo $OUTPUT->header();
-if (count($records) === $maxrecords) {
-    echo $OUTPUT->notification(get_string('maxrecords', 'cltr_database', $maxrecords), 'notifyproblem');
+if ($count == 0) {
+    echo $OUTPUT->notification(get_string('norecords', 'cltr_database', $maxrecords), 'notifyproblem');
+} else {
+    if ($count === $maxrecords) {
+        echo $OUTPUT->notification(get_string('maxrecords', 'cltr_database', $maxrecords), 'notifyproblem');
+    }
+    if ($selectedfrequency != $configfrequency) {
+        echo $OUTPUT->notification(get_string('aggregated', 'cltr_database', $freqoptions[$selectedfrequency]), 'notifysuccess');
+    }
 }
 echo $renderer->render_chart_page($context);
 echo $OUTPUT->footer();
-

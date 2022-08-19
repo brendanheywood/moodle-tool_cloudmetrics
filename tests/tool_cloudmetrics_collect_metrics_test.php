@@ -128,7 +128,9 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
             ->with($expected);
         $task = new helper_collect_metrics_task($mock);
         $task->set_time($time);
+        ob_start();
         $task->execute();
+        ob_end_clean();
     }
 
     /**

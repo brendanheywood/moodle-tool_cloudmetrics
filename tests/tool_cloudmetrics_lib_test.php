@@ -39,7 +39,11 @@ class tool_cloudmetrics_lib_test  extends \advanced_testcase {
         // If plugin is not enabled the result will be an empty array.
         if (!empty($pluginnames)) {
             foreach ($pluginnames as $key => $val) {
-                $this->assertRegExp('/^[a-z]+[a-z0-9_]*$/', $key);
+                if (method_exists($this, 'assertMatchesRegularExpression')) {
+                    $this->assertMatchesRegularExpression('/^[a-z]+[a-z0-9_]*$/', $key);
+                } else {
+                    $this->assertRegExp('/^[a-z]+[a-z0-9_]*$/', $key);
+                }
                 $this->assertSame($key, $val);
             }
         }

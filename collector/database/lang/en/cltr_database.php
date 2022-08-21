@@ -40,15 +40,23 @@ $string['metric_display'] = 'Cloudmetrics Charts';
 $string['metric_backfill'] = 'Cloudmetrics Backfill';
 $string['select_metric_for_display'] = 'Select metric for display.';
 $string['select_graph_period'] = 'Select graph period.';
+$string['select_graph_freq'] = 'Select graph frequency.';
 
 // Scheduled tasks.
 $string['metrics_cleanup_task'] = 'Cleanup metrics task';
 
 // Time format.
 $string['strftimedatetime'] = '%d %h %Y, %H:%M';
+$string['strftimemonth'] = '%h %Y';
 
 // Error.
 $string['collector_not_supported'] = 'Collector \'{$a}\' does not support backfilled data collection.';
 
 // Max records reached.
 $string['maxrecords'] = 'There are more than {$a} data points for this graph, it is currently only displaying the first {$a} records. Please change either the time scale or the time resolution';
+
+// Data aggregated.
+$string['aggregated'] = 'Selected time frequency differs from the data collected. Each data point is aggregated over time periods of {$a} and also displays the min and max for that period.';
+
+// No records.
+$string['norecords'] = 'No data collected for the selected time period.';

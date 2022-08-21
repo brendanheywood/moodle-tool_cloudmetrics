@@ -91,6 +91,47 @@ class collector extends base {
     }
 
     /**
+     * Returns stored metrics for the collector aggregated over a particular time increment.
+     *
+     * @param mixed $metricnames The metrics to be retrieved. Either a single string, or an
+     *         array of strings. If empty, then all available metrics will be retrieved.
+     * @param int|false $since The earliest timestamp to retrieve.
+     * @param int $limit The max number of records to retrieve.
+     * @param int $aggregate The time increment to aggregate data into, in secs.
+     * @return \moodle_recordset
+     * @throws \coding_exception
+     * @throws \dml_exception
+     */
+    public function get_metrics_aggregated($metricnames = null, $since = false, int $limit = 1000, int $aggregate = 1) {
+        global $DB;
+        $starting = '';
+
+        if (is_null($metricnames)) {
+            $metricnames = [];
+            $metrics = metric\manager::get_metrics(true);
+            foreach ($metrics as $metric) {
+                $metricnames[] = $metric->get_name();
+            }
+        } else if (is_string($metricnames)) {
+            $metricnames = [$metricnames];
+        }
+        if ($since) {
+            $starting = " AND time > " . (time() - $since);
+        }
+        list ($clause, $params) = $DB->get_in_or_equal($metricnames);
+        $sql = "SELECT AVG(".$DB->sql_cast_char2int('value', true).") as avg,
+                MIN(".$DB->sql_cast_char2int('value', true).") as min,
+                MAX(".$DB->sql_cast_char2int('value', true).") as max,
+                FLOOR(time /$aggregate) as increment_start
+                FROM {cltr_database_metrics}
+                WHERE name $clause
+                $starting
+                GROUP BY increment_start
+                ORDER BY increment_start ASC";
+        return $DB->get_recordset_sql($sql, $params, 0,  $limit);
+    }
+
+    /**
      * Records retrieved data in collector.
      *
      * @param \tool_cloudmetrics\metric\base $metricclass Class representing metric.

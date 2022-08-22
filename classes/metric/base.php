@@ -54,6 +54,13 @@ abstract class base {
     abstract public function get_plugin_name(): string;
 
     /**
+     * Unique colour to represent the metric
+     *
+     * @return string - The colour in RGB hex. E.g. 'FDFF00' for the colour 'Lemon'.
+     */
+    abstract public function get_colour(): string;
+
+    /**
      * The frequency of the metric's sampling.
      *
      * @return int

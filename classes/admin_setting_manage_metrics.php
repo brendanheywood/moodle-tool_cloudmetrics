@@ -84,8 +84,8 @@ class admin_setting_manage_metrics extends \admin_setting {
         $txt->frequency = get_string('frequency', 'tool_cloudmetrics');
 
         $table = new \html_table();
-        $table->head  = array($txt->plugin, $txt->name, $txt->description, $txt->frequency, $txt->actions, get_string('backfillable', 'tool_cloudmetrics'));
-        $table->align = array('left', 'left', 'left', 'left');
+        $table->head  = array($txt->plugin, $txt->name, 'colour', $txt->description, $txt->frequency, $txt->actions, get_string('backfillable', 'tool_cloudmetrics'));
+        $table->align = array('left', 'left', 'center', 'left', 'left');
         $table->attributes['class'] = 'manageformattable generaltable admintable w-auto';
         $table->data  = array();
 
@@ -94,6 +94,11 @@ class admin_setting_manage_metrics extends \admin_setting {
                 array('sesskey' => sesskey(), 'name' => $metric->get_name()));
             $displayname = $metric->get_label();
             $description = $metric->get_description();
+
+            // Colour.
+            $colour = $metric->get_colour();
+            $swatch = \html_writer::div('', '',
+                    ['style' => "height: 16px; width: 16px; background-color: #$colour; display: inline-block"]);
 
             // Enable/disable link.
             if ($metric->is_enabled()) {
@@ -161,6 +166,7 @@ class admin_setting_manage_metrics extends \admin_setting {
             $row = new \html_table_row([
                 $metric->get_plugin_name(),
                 $displayname,
+                $swatch,
                 $description,
                 $OUTPUT->render($editable),
                 $hideshow . $settingslink . $chartlink,

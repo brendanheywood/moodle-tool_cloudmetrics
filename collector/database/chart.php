@@ -157,11 +157,14 @@ foreach ($records as $record) {
     $count++;
 }
 $chartseries = new chart_series($metriclabels[$metricname], $values);
+$chartseries->set_color('#' . $metric->get_colour());
 $chart = new chart_line();
 $chart->add_series($chartseries);
 
 $minseries = new chart_series('Minimum '.$metriclabels[$metricname], $mins);
+$minseries->set_color('#' . $metric->get_colour());
 $maxseries = new chart_series('Maximum '.$metriclabels[$metricname], $maxs);
+$maxseries->set_color('#' . $metric->get_colour());
 $chart->add_series($minseries);
 $chart->add_series($maxseries);
 

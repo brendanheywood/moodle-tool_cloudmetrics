@@ -51,6 +51,15 @@ class online_users_metric extends builtin_user_base {
     }
 
     /**
+     * Unique colour to represent the metric
+     *
+     * @return string - The colour in RGB hex.
+     */
+    public function get_colour(): string {
+        return '00FF00'; // Green.
+    }
+
+    /**
      * Metric's ability to be backfilled.
      *
      * @return bool

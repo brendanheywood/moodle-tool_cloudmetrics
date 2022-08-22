@@ -44,6 +44,6 @@ class new_users_metric extends builtin_user_base {
      * @return string - The colour in RGB hex.
      */
     public function get_colour(): string {
-        return 'FF0000'; // Red.
+        return '#df4242'; // Red.
     }
 }

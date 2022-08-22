@@ -59,6 +59,7 @@ $string['onlineusers_frequency_desc'] = 'Frequency of taking the online users me
 $string['onlineusers_time_window'] = 'Online user time window';
 $string['onlineusers_time_window_desc'] = 'Metric will include users who were active in this time period.';
 
+$string['colour'] = 'Colour';
 $string['frequency'] = 'Frequency';
 $string['change_frequency'] = 'Change frequency';
 

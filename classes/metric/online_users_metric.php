@@ -56,7 +56,7 @@ class online_users_metric extends builtin_user_base {
      * @return string - The colour in RGB hex.
      */
     public function get_colour(): string {
-        return '00FF00'; // Green.
+        return '#2bc92b'; // Green.
     }
 
     /**

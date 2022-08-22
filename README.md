@@ -1,7 +1,6 @@
 # moodle-tool_cloudmetrics
 
-![GitHub Workflow Status (branch)](https://img.shields.io/github/workflow/status/catalyst/moodle-tool_cloudmetrics/ci/MOODLE_35_STABLE)
-
+[![ci](https://github.com/catalyst/moodle-tool_cloudmetrics/workflows/ci/badge.svg)](https://github.com/catalyst/moodle-tool_cloudmetrics/actions?query=workflow%3Aci)
 
 * [What is this?](#what-is-this)
 * [Branches](#branches)

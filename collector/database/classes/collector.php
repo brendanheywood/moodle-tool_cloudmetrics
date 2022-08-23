@@ -119,16 +119,30 @@ class collector extends base {
             $starting = " AND time > " . (time() - $since);
         }
         list ($clause, $params) = $DB->get_in_or_equal($metricnames);
-        $sql = "SELECT AVG(".$DB->sql_cast_char2int('value', true).") as avg,
-                MIN(".$DB->sql_cast_char2int('value', true).") as min,
-                MAX(".$DB->sql_cast_char2int('value', true).") as max,
+        if (count($metricnames) == 1) {
+            $sql = "SELECT AVG(" . $DB->sql_cast_char2int('value', true) . ") as $metricnames[0],
+                MIN(" . $DB->sql_cast_char2int('value', true) . ") as min,
+                MAX(" . $DB->sql_cast_char2int('value', true) . ") as max,
                 FLOOR(time /$aggregate) as increment_start
                 FROM {cltr_database_metrics}
                 WHERE name $clause
                 $starting
                 GROUP BY increment_start
                 ORDER BY increment_start ASC";
-        return $DB->get_recordset_sql($sql, $params, 0,  $limit);
+        } else {
+            $metricselect = '';
+            foreach ($params as $param) {
+                $metricselect .= "AVG(CASE name WHEN '$param' THEN CAST(value AS INT) END) $param,";
+            }
+            $metricselect = rtrim($metricselect, ',');
+            $sql = "SELECT FLOOR(time /$aggregate) as increment_start,
+                $metricselect
+                FROM {cltr_database_metrics}
+                WHERE 1=1 $starting
+                GROUP BY increment_start
+                ORDER BY increment_start ASC";
+        }
+        return $DB->get_recordset_sql($sql, $params, 0, $limit);
     }
 
     /**

@@ -41,6 +41,7 @@ $string['metric_backfill'] = 'Cloudmetrics Backfill';
 $string['select_metric_for_display'] = 'Select metric for display.';
 $string['select_graph_period'] = 'Select graph period.';
 $string['select_graph_freq'] = 'Select graph frequency.';
+$string['multiplemetrics'] = 'Multiple metrics displayed';
 
 // Scheduled tasks.
 $string['metrics_cleanup_task'] = 'Cleanup metrics task';

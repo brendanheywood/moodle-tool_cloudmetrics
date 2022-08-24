@@ -126,7 +126,7 @@ class admin_setting_manage_metrics extends \admin_setting {
             );
 
             // Chart link.
-            $url = new \moodle_url('/admin/tool/cloudmetrics/collector/database/chart.php', ['metric' => $metric->get_name()]);
+            $url = new \moodle_url('/admin/tool/cloudmetrics/collector/database/chart.php', [$metric->get_name() => 1]);
             if (!$metric->is_enabled()) {
                 $attributes = ['class' => 'invisible'];
             } else {

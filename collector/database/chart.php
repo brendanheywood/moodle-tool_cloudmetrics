@@ -41,39 +41,41 @@ $url = new moodle_url('/admin/tool/cloudmetrics/collector/database/chart.php');
 $PAGE->set_context($context);
 $PAGE->set_url($url);
 
-$metricname = optional_param('metric', 'activeusers', PARAM_ALPHANUMEXT);
-
 $defaultperiod = optional_param('graphperiod', -1, PARAM_INT);
+
+$metrics = metric\manager::get_metrics(true);
+$metriclabels = [];
+$checkboxes = [];
+$displayedmetrics = [];
+$notifications = [];
+
+foreach ($metrics as $m) {
+    $metriclabels[$m->get_name()] = $m->get_label();
+
+    $metricparam = optional_param($m->get_name(), 0, PARAM_INT);
+    if ($metricparam) {
+        $displayedmetrics[] = $m->get_name();
+    }
+    $checkboxes[] = ['checkbox' => html_writer::checkbox($m->get_name(), 1, $metricparam, $m->get_label(),
+        ['onchange' => 'this.form.submit()'])];
+}
+
+if (empty($displayedmetrics)) {
+    $displayedmetrics[] = 'activeusers';
+    $checkboxes[0] = ['checkbox' => html_writer::checkbox('activeusers', 1, true, 'Active Users',
+        ['onchange' => 'this.form.submit()'])];
+}
+
 if ($defaultperiod === -1) {
-    $defaultperiod = get_config('tool_cloudmetrics', $metricname . '_chart_period');
+    $defaultperiod = get_config('tool_cloudmetrics', 'chart_period');
     if (!$defaultperiod) {
-        $defaultperiod = metric\lib::period_from_interval($metricname);
+        $defaultperiod = metric\lib::period_from_interval( $displayedmetrics[0]);
     }
 } else {
-    set_config($metricname . '_chart_period', $defaultperiod, 'tool_cloudmetrics');
+    set_config('chart_period', $defaultperiod, 'tool_cloudmetrics');
     \core_plugin_manager::reset_caches();
 }
 
-$metrics = metric\manager::get_metrics(true);
-// Error management if metric is not enabled.
-if (!isset($metrics[$metricname])) {
-    throw new moodle_exception('metric_not_enabled', 'tool_cloudmetrics', '', $metricname);
-}
-$metriclabels = [];
-foreach ($metrics as $m) {
-    $metriclabels[$m->get_name()] = $m->get_label();
-    if ($m->get_name() == $metricname) {
-        $metric = $m;
-    }
-}
-
-$select = new single_select(
-    $url,
-    'metric',
-    $metriclabels,
-    $metricname
-);
-$select->set_label(get_string('select_metric_for_display', 'cltr_database'));
 $context = [];
 
 // Prepare time window selector.
@@ -92,15 +94,22 @@ $periods = [
 
 $collector = new \cltr_database\collector();
 
-$configfrequency = $metrics[$metricname]->get_frequency();
+$configfrequency = $metrics[$displayedmetrics[0]]->get_frequency();
 $selectedfrequency = optional_param('graphfrequency', $configfrequency ?? 1, PARAM_INT);
 
 // Create a new URL object to avoid poisoning the existing one.
 $url = clone $url;
-$url->param('metric', $metricname);
-$url->param('graphfrequency', $selectedfrequency);
+$url->param('metric', $displayedmetrics[0]);
+
+foreach ($displayedmetrics as $displayedmetric) {
+    $url->param($displayedmetric, 1);
+}
+
+$periodurl = clone $url;
+$periodurl->param('graphfrequency', $selectedfrequency);
+
 $periodselect = new \single_select(
-    $url,
+    $periodurl,
     'graphperiod',
     $periods,
     $defaultperiod
@@ -114,7 +123,7 @@ $freqselect = new \single_select(
     $selectedfrequency
 );
 
-$backfillurl = new moodle_url('/admin/tool/cloudmetrics/collector/database/backfill.php', ['metric' => $metricname]);
+$backfillurl = new moodle_url('/admin/tool/cloudmetrics/collector/database/backfill.php', ['metric' => $displayedmetrics[0]]);
 
 $periodselect->set_label(get_string('select_graph_period', 'cltr_database'));
 
@@ -133,9 +142,15 @@ $mins = [];
 $maxs = [];
 $count = 0;
 
-$records = $collector->get_metrics_aggregated($metricname, $defaultperiod, $maxrecords, $aggregatefreqtimes[$selectedfrequency]);
+$chart = new chart_line();
+
+$records = $collector->get_metrics_aggregated($displayedmetrics, $defaultperiod, $maxrecords, $aggregatefreqtimes[$selectedfrequency]);
+$lastvaluearr = [];
 foreach ($records as $record) {
-    $values[] = round($record->avg, 1);
+    foreach ($displayedmetrics as $displayedmetric) {
+        $value = !$record->{$displayedmetric} ? null : round($record->{$displayedmetric}, 1);
+        $values[$displayedmetric][] = $value;
+    }
 
     // Convert back from floored time.
     $datelabel = ($record->increment_start * $aggregatefreqtimes[$selectedfrequency]);
@@ -152,34 +167,43 @@ foreach ($records as $record) {
     } else {
         $labels[] = userdate($datelabel, get_string('strftimedatetime', 'cltr_database'), $timezone);
     }
-    $mins[] = (float) $record->min;
-    $maxs[] = (float) $record->max;
+    if (count($displayedmetrics) == 1) {
+        $mins[] = (float)$record->min;
+        $maxs[] = (float)$record->max;
+    }
     $count++;
 }
-$chartseries = new chart_series($metriclabels[$metricname], $values);
-$chartseries->set_color($metric->get_colour());
-$chart = new chart_line();
-$chart->add_series($chartseries);
+$chartseries = new chart_series($metriclabels[$displayedmetrics[0]], $values);
 
-$minseries = new chart_series('Minimum '.$metriclabels[$metricname], $mins);
-$minseries->set_color($metric->get_colour());
-$maxseries = new chart_series('Maximum '.$metriclabels[$metricname], $maxs);
-$maxseries->set_color($metric->get_colour());
-$chart->add_series($minseries);
-$chart->add_series($maxseries);
+foreach ($displayedmetrics as $displayedmetric) {
+    $chartseries = new chart_series($metriclabels[$displayedmetric], $values[$displayedmetric] ?? null);
+    $chartseries->set_color($metrics[$displayedmetric]->get_colour());
+    $chart->add_series($chartseries);
+    $chart->set_labels($labels);
+}
 
-$chart->set_labels($labels);
+if (count($displayedmetrics) == 1) {
+    $minseries = new chart_series('Minimum '.$metriclabels[$displayedmetrics[0]], $mins);
+    $color = $metrics[$displayedmetrics[0]]->get_colour();
+    $minseries->set_color($metrics[$displayedmetrics[0]]->get_colour());
+    $maxseries = new chart_series('Maximum '.$metriclabels[$displayedmetrics[0]], $maxs);
+    $maxseries->set_color($metrics[$displayedmetrics[0]]->get_colour());
+    $chart->add_series($minseries);
+    $chart->add_series($maxseries);
+    $context['backfillable'] = $metrics[$displayedmetrics[0]]->is_backfillable();
+    $context['metriclabel'] = $metrics[$displayedmetrics[0]]->get_label();
+    $context['metricdescription'] = $metrics[$displayedmetrics[0]]->get_description();
+    $context['metriclabeltolower'] = strtolower( $metrics[$displayedmetrics[0]]->get_label());
+}
 
 $context['chart'] = $OUTPUT->render($chart);
-$context['selector'] = $OUTPUT->render($select);
 $context['periodselect'] = $OUTPUT->render($periodselect);
 $context['freqselect'] = $OUTPUT->render($freqselect);
 $context['backfillurl'] = $backfillurl;
-$context['backfillable'] = $metrics[$metricname]->is_backfillable();
-$context['metriclabel'] = $metric->get_label();
-$context['metricdescription'] = $metrics[$metricname]->get_description();
-$context['metriclabeltolower'] = strtolower($metric->get_label());
-
+$context['checkboxes'] = $checkboxes;
+$context['metriclabel'] = $context['metriclabel'] ?? get_string('multiplemetrics', 'cltr_database');
+$context['frequency'] = html_writer::empty_tag('input',
+    array('type' => 'hidden', 'name' => 'graphfrequency', 'value' => $selectedfrequency));
 $renderer = $PAGE->get_renderer('tool_cloudmetrics');
 
 echo $OUTPUT->header();

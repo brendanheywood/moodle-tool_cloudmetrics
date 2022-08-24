@@ -47,11 +47,19 @@
 <p>
     {{metricdescription}}
 </p>
-{{{selector}}}
-<br>
+<form>
+    {{#checkboxes}}
+        {{{checkbox}}}
+    {{/checkboxes}}
+    {{{frequency}}}
+    <noscript>
+        <input type="submit" class="btn btn-secondary ml-1" value="{{#str}}go, core{{/str}}">
+    </noscript>
+</form>
 {{{periodselect}}}
 <br>
 {{{freqselect}}}
+<br>
 <br>
 {{{chart}}}
 {{#backfillable}}

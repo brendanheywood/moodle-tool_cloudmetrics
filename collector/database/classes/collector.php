@@ -182,4 +182,17 @@ class collector extends base {
     public function supports_backfillable_metrics(): bool {
         return true;
     }
+
+    /**
+     * Is the collector ready to receive data.
+     *
+     * A collector is considered to be ready if it is able to receive data. This means that it is enabled,
+     * properly configured, third party libraries are present, and any external connection must be sound.
+     *
+     * @return bool
+     */
+    public function is_ready(): bool {
+        $plugininfo = \core_plugin_manager::instance()->get_plugin_info('cltr_database');
+        return $plugininfo->is_enabled();
+    }
 }

@@ -118,10 +118,13 @@ abstract class base {
     /**
      * Is the metric ready to be measured?
      *
+     * A metric is considered to be ready if it is able to generate data. This means that it is enabled,
+     * properly configured, third party libraries are present, and any external connection must be sound.
+     *
      * @return bool
      */
     public function is_ready(): bool {
-        return true;
+        return $this->is_enabled();
     }
 
     /**

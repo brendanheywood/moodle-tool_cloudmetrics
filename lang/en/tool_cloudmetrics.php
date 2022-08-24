@@ -114,3 +114,8 @@ $string['collector_never'] = 'Collector \'{$a}\' has never executed';
 $string['no_collectors'] = 'No active collectors';
 $string['checkcollectorcheck'] = 'Cloudmetrics collector status';
 $string['managelink'] = 'Manage collectors';
+
+// Backfill progress.
+$string['backfillcomplete'] = 'Backfilling data for {$a} complete.';
+$string['backfillsaving'] = 'Saving metric items for {$a}.';
+$string['backfillgenerating'] = 'Generating metric items for {$a}.';

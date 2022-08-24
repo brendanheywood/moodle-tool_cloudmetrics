@@ -94,6 +94,7 @@ Example:
 }
 
 if (!empty($options['remove'])) {
+    echo 'Removing existing items' . PHP_EOL;
     $DB->delete_records(cltr_database\lib::TABLE, ['name' => $options['metric']]);
 } else {
     $metric = new test_metric();

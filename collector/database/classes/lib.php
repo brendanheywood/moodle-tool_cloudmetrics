@@ -47,12 +47,20 @@ class lib {
      * Use this function to ensure that the datetime is rounded to midnight after any other date string processing.
      *
      * @param string $datestr The datetime string to be passed to the DateTime constructor.
-     * @param \DateTimeZone $timezone The timezone to work in.
+     * @param \DateTimeZone|null $timezone The timezone to work in. If null, then the core timezone will be used.
      * @return \DateTime The datetime object rounded downwards to midnight.
      * @throws \Exception
      */
-    public static function get_midnight_of(string $datestr, \DateTimeZone $timezone): \DateTime {
-        $dt = new \DateTimeImmutable($datestr, $timezone);
+    public static function get_midnight_of(string $datestr, ?\DateTimeZone $timezone = null): \DateTime {
+        if (!isset($timezone)) {
+            $timezone = \core_date::get_server_timezone_object();
+        }
+        if (ctype_digit($datestr)) {
+            // The $datestr value is a timestamp, so we must use createFromFormat.
+            $dt = \DateTimeImmutable::createFromFormat('U', $datestr)->setTimezone($timezone);
+        } else {
+            $dt = new \DateTimeImmutable($datestr, $timezone);
+        }
         return new \DateTime($dt->format('Y-m-d\T00:00:00'), $timezone);
     }
 }

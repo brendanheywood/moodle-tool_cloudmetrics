@@ -37,5 +37,29 @@ function xmldb_cltr_database_upgrade($oldversion) {
     // Automatically generated Moodle v3.11.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2022082400) {
+        // Add date column.
+        $table = new xmldb_table('cltr_database_metrics');
+        $field = new xmldb_field('date', XMLDB_TYPE_INTEGER, 11, null, null, null, null, 'name');
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+
+        // Add indexes for date and time.
+        $table->add_index('dateindex', XMLDB_INDEX_NOTUNIQUE, ['date']);
+        $table->add_index('timeindex', XMLDB_INDEX_NOTUNIQUE, ['time']);
+
+        // Fill in date column.
+        $tz = \core_date::get_server_timezone_object();
+        $records = $DB->get_recordset('cltr_database_metrics', null, '', 'id, time');
+        foreach ($records as $record) {
+            $record->date = \cltr_database\lib::get_midnight_of($record->time, $tz)->getTimestamp();
+            $DB->update_record('cltr_database_metrics', $record);
+        }
+
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, 2022082400, 'cltr', 'database');
+    }
     return true;
 }

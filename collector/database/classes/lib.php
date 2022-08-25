@@ -16,11 +16,14 @@
 
 namespace cltr_database;
 
+use tool_cloudmetrics\metric;
+
 /**
  * General functions used by plugin
  *
  * @package   cltr_database
  * @author    Jason den Dulk <jasondendulk@catalyst-au.net>
+ * @author    Mike Macgirvin <mikemacgirvin@catalyst-au.net>
  * @copyright 2022, Catalyst IT
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -62,5 +65,26 @@ class lib {
             $dt = new \DateTimeImmutable($datestr, $timezone);
         }
         return new \DateTime($dt->format('Y-m-d\T00:00:00'), $timezone);
+    }
+
+    /**
+     * Returns a calculated default chart period based on the sample interval of $metricname.
+     *
+     * @param metric\base $metric
+     * @return int
+     */
+    public static function period_from_interval(metric\base $metric): int {
+        $interval = $metric->get_frequency();
+
+        if ($interval <= 2) {
+            $period = DAYSECS * 7;
+        } else if ($interval <= 120) {
+            $period = DAYSECS * 30;
+        } else if ($interval <= 2880) {
+            $period = DAYSECS * 120;
+        } else {
+            $period = DAYSECS * 365;
+        }
+        return $period;
     }
 }

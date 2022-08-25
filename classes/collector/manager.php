@@ -67,7 +67,7 @@ class manager {
             $key = self::STATUS_PREFIX . $plugin->name;
             $status = get_config('tool_cloudmetrics', $key);
 
-            // Migrate from old cache value:
+            // Migrate from old cache value.
             if ($status == 'pass') {
                 $status = false;
             }

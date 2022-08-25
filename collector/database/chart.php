@@ -69,7 +69,7 @@ if (empty($displayedmetrics)) {
 if ($defaultperiod === -1) {
     $defaultperiod = get_config('tool_cloudmetrics', 'chart_period');
     if (!$defaultperiod) {
-        $defaultperiod = metric\lib::period_from_interval( $displayedmetrics[0]);
+        $defaultperiod = metric\lib::period_from_interval($metrics[$displayedmetrics[0]]);
     }
 } else {
     set_config('chart_period', $defaultperiod, 'tool_cloudmetrics');

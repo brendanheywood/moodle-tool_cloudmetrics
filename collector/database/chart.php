@@ -152,8 +152,7 @@ foreach ($records as $record) {
         $values[$displayedmetric][] = $value;
     }
 
-    // Convert back from floored time.
-    $datelabel = ($record->increment_start * $aggregatefreqtimes[$selectedfrequency]);
+    $datelabel = $record->increment_start;
 
     // If freq 12hr or greater set to UTC.
     $timezone = $CFG->timezone;

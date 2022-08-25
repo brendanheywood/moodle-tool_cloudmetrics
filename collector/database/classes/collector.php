@@ -39,7 +39,12 @@ class collector extends base {
 
         $DB->insert_record(
             lib::TABLE,
-            ['name' => $item->name, 'value' => $item->value, 'time' => $item->time]
+            [
+                'name' => $item->name,
+                'value' => $item->value,
+                'time' => $item->time,
+                'date' => lib::get_midnight_of($item->time)->getTimestamp(),
+            ]
         );
     }
 
@@ -82,7 +87,7 @@ class collector extends base {
             $starting = " AND time > " . (time() - $since);
         }
         list ($clause, $params) = $DB->get_in_or_equal($metricnames);
-        $sql = "SELECT id, name, time, value
+        $sql = "SELECT id, name, date, time, value
                   FROM {cltr_database_metrics}
                  WHERE name $clause
                  $starting
@@ -118,12 +123,18 @@ class collector extends base {
         if ($since) {
             $starting = " AND time > " . (time() - $since);
         }
+
+        if ($aggregate == DAYSECS) {
+            $incrementstart = "date as increment_start";
+        } else {
+            $incrementstart = "FLOOR(time/$aggregate) * $aggregate as increment_start";
+        }
         list ($clause, $params) = $DB->get_in_or_equal($metricnames);
         if (count($metricnames) == 1) {
             $sql = "SELECT AVG(" . $DB->sql_cast_char2int('value', true) . ") as $metricnames[0],
                 MIN(" . $DB->sql_cast_char2int('value', true) . ") as min,
                 MAX(" . $DB->sql_cast_char2int('value', true) . ") as max,
-                FLOOR(time /$aggregate) as increment_start
+                $incrementstart
                 FROM {cltr_database_metrics}
                 WHERE name $clause
                 $starting
@@ -135,7 +146,7 @@ class collector extends base {
                 $metricselect .= "AVG(CASE name WHEN '$param' THEN CAST(value AS INT) END) $param,";
             }
             $metricselect = rtrim($metricselect, ',');
-            $sql = "SELECT FLOOR(time /$aggregate) as increment_start,
+            $sql = "SELECT $incrementstart,
                 $metricselect
                 FROM {cltr_database_metrics}
                 WHERE 1=1 $starting

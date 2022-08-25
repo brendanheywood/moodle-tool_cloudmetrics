@@ -1,9 +1,10 @@
-<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PATH="admin/tool/cloudmetrics/collector/database/db" VERSION="20220114" COMMENT="XMLDB file for Moodle admin/tool/excimer" xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd">
+<XMLDB xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" PATH="admin/tool/cloudmetrics/collector/database/db" VERSION="20220824" COMMENT="XMLDB file for Moodle admin/tool/excimer" xsi:noNamespaceSchemaLocation="../../../../lib/xmldb/xmldb.xsd">
     <TABLES>
         <TABLE NAME="cltr_database_metrics" COMMENT="Local store for metrics data.">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="true"/>
                 <FIELD NAME="name" TYPE="char" LENGTH="255" SEQUENCE="false" COMMENT="Name fo metric"/>
+                <FIELD NAME="date" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" COMMENT="Date of metric"/>
                 <FIELD NAME="time" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp of metric"/>
                 <FIELD NAME="value" TYPE="text" SEQUENCE="false" COMMENT="Value of metric"/>
             </FIELDS>
@@ -12,6 +13,8 @@
             </KEYS>
             <INDEXES>
                 <INDEX NAME="nameindex" UNIQUE="false" FIELDS="name"/>
+                <INDEX NAME="dateindex" UNIQUE="false" FIELDS="date"/>
+                <INDEX NAME="timeindex" UNIQUE="false" FIELDS="time"/>
             </INDEXES>
         </TABLE>
     </TABLES>

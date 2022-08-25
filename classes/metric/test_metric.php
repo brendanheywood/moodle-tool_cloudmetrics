@@ -61,6 +61,15 @@ class test_metric extends base {
     }
 
     /**
+     * Returns the colour of the metric.
+     *
+     * @return string
+     */
+    public function get_colour(): string {
+        return '#ffffff';
+    }
+
+    /**
      * A short description of the metric.
      *
      * @return string

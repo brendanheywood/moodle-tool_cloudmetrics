@@ -80,6 +80,23 @@ class cltr_database_test extends \tool_cloudmetrics\metric_testcase {
         ];
     }
 
+    /**
+     * Tests get_midnight_of's ability to handle timestamps.
+     *
+     * @dataProvider midnight_provider
+     * @covers \cltr_database\lib::get_midnight_of
+     * @param string $datestr
+     * @param string $expected
+     */
+    public function test_midnight_timestamp(string $datestr, string $expected) {
+        $tz = \core_date::get_server_timezone_object();
+        $ti = new \DateTimeImmutable($datestr, $tz);
+        $ts = $ti->getTimestamp();
+        $time = lib::get_midnight_of($ts, $tz);
+        $expecteddate = new \DateTimeImmutable($expected, $tz);
+        $this->assertEquals($expecteddate->format(\DateTime::ATOM), $time->format(\DateTime::ATOM));
+    }
+
     public function test_collector() {
         global $DB;
 

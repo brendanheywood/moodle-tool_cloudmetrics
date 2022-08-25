@@ -74,10 +74,11 @@ class online_users_metric extends builtin_user_base {
      *
      * @param int $backwardperiod Time from which sample is to be retrieved.
      * @param int $finishtime If data is being completed argument is passed here.
+     * @param \progress_bar|null $progress
      *
      * @return array
      */
-    public function generate_metric_items($backwardperiod, $finishtime = null): array {
+    public function generate_metric_items($backwardperiod, $finishtime = null, \progress_bar $progress = null): array {
         global $DB;
 
         // Get start time from period selection.
@@ -129,6 +130,10 @@ class online_users_metric extends builtin_user_base {
                 }
             } else {
                 $metricitems[] = new metric_item($this->get_name(), $r->time, $r->value, $this);
+            }
+            if ($progress) {
+                $progress->update($count, $backwardperiod / $interval,
+                    get_string('backfillgenerating', 'tool_cloudmetrics', $this->get_label()));
             }
             $count++;
         }

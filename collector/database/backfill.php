@@ -23,6 +23,7 @@
  * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+define('NO_OUTPUT_BUFFERING', true);
 require_once(__DIR__.'/../../../../../config.php');
 require_once($CFG->libdir . '/adminlib.php');
 
@@ -93,11 +94,6 @@ $startdate = userdate($daterange->min, get_string('strftimedatetime', 'cltr_data
 $enddate = userdate($daterange->max, get_string('strftimedatetime', 'cltr_database'), $CFG->timezone);
 $mform = new metric_backfill_form(null, [$daterange, $periods, $metricname]);
 $context['form'] = $mform->render();
-if ($fromform = $mform->get_data()) {
-    $periodretrieval = $fromform->periodretrieval;
-    $metricitems = $metrics[$metricname]->generate_metric_items($periodretrieval, $mintmptmp);
-    $collector->record_saved_metrics($metrics[$metricname], $metricitems);
-}
 
 $context['dataperiod'] = get_string('data_period', 'tool_cloudmetrics',
             ['startdate' => $startdate ?? 0, 'enddate' => $enddate ?? 0]);
@@ -107,7 +103,16 @@ $context['metriclabel'] = $metrics[$metricname]->get_label();
 $context['isdifferentfreq'] = $isdifferentfreq ?? null;
 
 $renderer = $PAGE->get_renderer('tool_cloudmetrics');
+$progressbar = new progress_bar();
 
 echo $OUTPUT->header();
 echo $renderer->render_backfill_page($context);
+if ($fromform = $mform->get_data()) {
+    \core\session\manager::write_close(); // Unlock session while backfilling.
+    $progressbar->create();
+    $periodretrieval = $fromform->periodretrieval;
+    $metricitems = $metrics[$metricname]->generate_metric_items($periodretrieval, $mintmptmp, $progressbar);
+    $collector->record_saved_metrics($metrics[$metricname], $metricitems, $progressbar);
+    $progressbar->update_full(100, get_string('backfillcomplete', 'tool_cloudmetrics', $metrics[$metricname]->get_label()));
+}
 echo $OUTPUT->footer();

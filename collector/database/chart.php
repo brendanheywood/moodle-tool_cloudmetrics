@@ -67,12 +67,12 @@ if (empty($displayedmetrics)) {
 }
 
 if ($defaultperiod === -1) {
-    $defaultperiod = get_config('tool_cloudmetrics', 'chart_period');
+    $defaultperiod = get_config('cltr_database', 'chart_period');
     if (!$defaultperiod) {
-        $defaultperiod = metric\lib::period_from_interval($metrics[$displayedmetrics[0]]);
+        $defaultperiod = \cltr_database\lib::period_from_interval($metrics[$displayedmetrics[0]]);
     }
 } else {
-    set_config('chart_period', $defaultperiod, 'tool_cloudmetrics');
+    set_config('chart_period', $defaultperiod, 'cltr_database');
     \core_plugin_manager::reset_caches();
 }
 
@@ -99,7 +99,6 @@ $selectedfrequency = optional_param('graphfrequency', $configfrequency ?? 1, PAR
 
 // Create a new URL object to avoid poisoning the existing one.
 $url = clone $url;
-$url->param('metric', $displayedmetrics[0]);
 
 foreach ($displayedmetrics as $displayedmetric) {
     $url->param($displayedmetric, 1);

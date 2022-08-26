@@ -115,7 +115,10 @@ class collector extends base {
     }
 
     /**
-     * Is plugin ready
+     * Is the collector ready to receive data.
+     *
+     * A collector is considered to be ready if it is able to receive data. This means that it is enabled,
+     * properly configured, third party libraries are present, and any external connection must be sound.
      *
      * @return bool
      */

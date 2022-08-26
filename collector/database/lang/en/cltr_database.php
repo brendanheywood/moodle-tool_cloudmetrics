@@ -52,6 +52,7 @@ $string['strftimemonth'] = '%h %Y';
 
 // Error.
 $string['collector_not_supported'] = 'Collector \'{$a}\' does not support backfilled data collection.';
+$string['no_metrics_enabled'] = 'No metrics enabled';
 
 // Max records reached.
 $string['maxrecords'] = 'There are more than {$a} data points for this graph, it is currently only displaying the first {$a} records. Please change either the time scale or the time resolution';

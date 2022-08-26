@@ -44,6 +44,11 @@ $PAGE->set_url($url);
 $defaultperiod = optional_param('graphperiod', -1, PARAM_INT);
 
 $metrics = metric\manager::get_metrics(true);
+if (empty($metrics)) {
+    // Error management if no metrics enabled.
+    throw new moodle_exception('no_metrics_enabled', 'cltr_database');
+}
+
 $metriclabels = [];
 $checkboxes = [];
 $displayedmetrics = [];
@@ -61,8 +66,8 @@ foreach ($metrics as $m) {
 }
 
 if (empty($displayedmetrics)) {
-    $displayedmetrics[] = 'activeusers';
-    $checkboxes[0] = ['checkbox' => html_writer::checkbox('activeusers', 1, true, 'Active Users',
+    $displayedmetrics[] = reset($metrics)->get_name();
+    $checkboxes[0] = ['checkbox' => html_writer::checkbox(reset($metrics)->get_name(), 1, true, reset($metrics)->get_label(),
         ['onchange' => 'this.form.submit()'])];
 }
 

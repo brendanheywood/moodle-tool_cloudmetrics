@@ -41,7 +41,7 @@ $PAGE->set_context($ctx);
 $PAGE->set_url($url);
 
 $metricname = optional_param('metric', 'onlineusers', PARAM_ALPHANUMEXT);
-$tochart = new moodle_url('/admin/tool/cloudmetrics/collector/database/chart.php', ['metric' => $metricname]);
+$tochart = new moodle_url('/admin/tool/cloudmetrics/collector/database/chart.php', [$metricname => 1]);
 
 $metrics = manager::get_metrics(true);
 $collector = new collector();

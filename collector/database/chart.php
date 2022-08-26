@@ -132,6 +132,7 @@ $aggregatefreqtimes = lib::FREQ_TIMES;
 
 // TODO Handle a month properly currently aggregated over last 30 days.
 $aggregatefreqtimes[4096] = 30 * 24 * 60 * 60;
+$aggregatefreqtime = $aggregatefreqtimes[$selectedfrequency];
 
 $maxrecords = 1000;
 
@@ -140,10 +141,10 @@ $labels = [];
 $mins = [];
 $maxs = [];
 $count = 0;
-
+$times = [];
 $chart = new chart_line();
 
-$records = $collector->get_metrics_aggregated($displayedmetrics, $defaultperiod, $maxrecords, $aggregatefreqtimes[$selectedfrequency]);
+$records = $collector->get_metrics_aggregated($displayedmetrics, $defaultperiod, $maxrecords, $aggregatefreqtime);
 $lastvaluearr = [];
 foreach ($records as $record) {
     foreach ($displayedmetrics as $displayedmetric) {
@@ -151,34 +152,73 @@ foreach ($records as $record) {
         $values[$displayedmetric][] = $value;
     }
 
-    $datelabel = $record->increment_start;
+    $times[] = (int) $record->increment_start;
 
-    // If freq 12hr or greater set to UTC.
-    $timezone = $CFG->timezone;
-    if ($selectedfrequency >= 128) {
-        $timezone = 'UTC';
-    }
-    // If time increment is month display data at start of month.
-    if ($selectedfrequency == 4096) {
-        $datelabel += $aggregatefreqtimes[$selectedfrequency];
-        $labels[] = userdate($datelabel, get_string('strftimemonth', 'cltr_database'), $timezone);
-    } else {
-        $labels[] = userdate($datelabel, get_string('strftimedatetime', 'cltr_database'), $timezone);
-    }
     if (count($displayedmetrics) == 1) {
         $mins[] = (float)$record->min;
         $maxs[] = (float)$record->max;
     }
     $count++;
 }
-$chartseries = new chart_series($metriclabels[$displayedmetrics[0]], $values);
+
+if ($count) {
+    // Insert padding at the end to get the chart to display the full time period.
+    $latesttime = time();
+    $currenttime = end($times) + $aggregatefreqtime;
+    while ($currenttime <= $latesttime && $count < $maxrecords) {
+        $times[] = $currenttime;
+        foreach ($displayedmetrics as $displayedmetric) {
+            $values[$displayedmetric][] = null;
+        }
+        if (count($displayedmetrics) == 1) {
+            $mins[] = null;
+            $maxs[] = null;
+        }
+        $currenttime += $aggregatefreqtime;
+        ++$count;
+    }
+
+    // Insert padding at the beginning to get the chart to display the full time period.
+    $earliesttime = time() - $defaultperiod;
+    $currenttime = $times[0] - $aggregatefreqtime;
+    while ($currenttime >= $earliesttime && $count < $maxrecords) {
+        array_unshift($times, $currenttime);
+        foreach ($displayedmetrics as $displayedmetric) {
+            array_unshift($values[$displayedmetric], null);
+        }
+        if (count($displayedmetrics) == 1) {
+            array_unshift($mins, null);
+            array_unshift($maxs, null);
+        }
+        $currenttime -= $aggregatefreqtime;
+        ++$count;
+    }
+
+    // Make human readable labels for the times.
+
+    // If freq 12hr or greater set to UTC.
+    $timezone = $CFG->timezone;
+    if ($selectedfrequency >= 128) {
+        $timezone = 'UTC';
+    }
+
+    foreach ($times as $time) {
+        if ($selectedfrequency == 4096) {
+            // If time increment is month display data at start of month.
+            $labels[] = userdate($time + $aggregatefreqtime, get_string('strftimemonth', 'cltr_database'), $timezone);
+        } else {
+            $labels[] = userdate($time, get_string('strftimedatetime', 'cltr_database'), $timezone);
+        }
+    }
+}
 
 foreach ($displayedmetrics as $displayedmetric) {
     $chartseries = new chart_series($metriclabels[$displayedmetric], $values[$displayedmetric] ?? null);
     $chartseries->set_color($metrics[$displayedmetric]->get_colour());
     $chart->add_series($chartseries);
-    $chart->set_labels($labels);
 }
+
+$chart->set_labels($labels);
 
 if (count($displayedmetrics) == 1) {
     $minseries = new chart_series('Minimum '.$metriclabels[$displayedmetrics[0]], $mins);

@@ -3,10 +3,10 @@
         <TABLE NAME="cltr_database_metrics" COMMENT="Local store for metrics data.">
             <FIELDS>
                 <FIELD NAME="id" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="true"/>
-                <FIELD NAME="name" TYPE="char" LENGTH="255" SEQUENCE="false" COMMENT="Name fo metric"/>
+                <FIELD NAME="name" TYPE="char" LENGTH="255" NOTNULL="false" SEQUENCE="false" COMMENT="Name fo metric"/>
                 <FIELD NAME="date" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" COMMENT="Date of metric"/>
                 <FIELD NAME="time" TYPE="int" LENGTH="11" NOTNULL="true" SEQUENCE="false" COMMENT="Timestamp of metric"/>
-                <FIELD NAME="value" TYPE="text" SEQUENCE="false" COMMENT="Value of metric"/>
+                <FIELD NAME="value" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="Value of metric"/>
             </FIELDS>
             <KEYS>
                 <KEY NAME="primary" TYPE="primary" FIELDS="id"/>

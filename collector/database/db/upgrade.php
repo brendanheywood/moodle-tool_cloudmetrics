@@ -61,5 +61,30 @@ function xmldb_cltr_database_upgrade($oldversion) {
         // Savepoint reached.
         upgrade_plugin_savepoint(true, 2022082400, 'cltr', 'database');
     }
+
+    if ($oldversion < 2022082900) {
+        $table = new xmldb_table('cltr_database_metrics');
+
+        $index = new xmldb_index('dateindex', XMLDB_INDEX_NOTUNIQUE, ['date']);
+
+        // If the index exists, then the database was created directly from the XML. No changes necessary.
+        if (!$dbman->index_exists($table, $index)) {
+            $field = new xmldb_field('date', XMLDB_TYPE_INTEGER, 11, null, XMLDB_NOTNULL, null, null, 'name');
+
+            // Fix null problem.
+            $dbman->change_field_notnull($table, $field);
+
+            $dbman->add_index($table, $index);
+
+            // Conditionally launch add index timeindex.
+            $index = new xmldb_index('timeindex', XMLDB_INDEX_NOTUNIQUE, ['time']);
+            if (!$dbman->index_exists($table, $index)) {
+                $dbman->add_index($table, $index);
+            }
+        }
+
+        // Savepoint reached.
+        upgrade_plugin_savepoint(true, 2022082900, 'cltr', 'database');
+    }
     return true;
 }

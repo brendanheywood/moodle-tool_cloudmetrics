@@ -84,7 +84,6 @@ abstract class base {
      * Set frequency of the metric's sampling.
      *
      * @param int $freq
-     * @return int
      */
     public function set_frequency(int $freq) {
         set_config($this->get_name() . '_frequency', $freq, 'tool_cloudmetrics');
@@ -222,5 +221,14 @@ abstract class base {
         $sql = 'SELECT max(timecreated) AS "max", min(timecreated) AS "min"
                   FROM {logstore_standard_log}';
         return $DB->get_record_sql($sql);
+    }
+
+    /**
+     * Returns true if frequency cannot be changed.
+     *
+     * @return bool
+     */
+    public function is_frequency_fixed(): bool {
+        return false;
     }
 }

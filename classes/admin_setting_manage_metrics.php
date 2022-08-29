@@ -152,23 +152,28 @@ class admin_setting_manage_metrics extends \admin_setting {
             $intid = hexdec(substr(md5($metric->get_name()), 0, 8));
 
             $options = manager::get_frequency_labels();
-            $editable = new inplace_editable(
-                'tool_cloudmetrics',
-                'metrics_freq',
-                $intid,
-                true,
-                null,
-                $metric->get_frequency(),
-                get_string('change_frequency', 'tool_cloudmetrics'),
-                $txt->frequency
-            );
-            $editable->set_type_select($options);
+            if ($metric->is_frequency_fixed()) {
+                $freq = $options[$metric->get_frequency()];
+            } else {
+                $editable = new inplace_editable(
+                    'tool_cloudmetrics',
+                    'metrics_freq',
+                    $intid,
+                    true,
+                    null,
+                    $metric->get_frequency(),
+                    get_string('change_frequency', 'tool_cloudmetrics'),
+                    $txt->frequency
+                );
+                $editable->set_type_select($options);
+                $freq = $OUTPUT->render($editable);
+            }
 
             $row = new \html_table_row([
                 $metric->get_plugin_name(),
                 $swatch . ' ' . $displayname,
                 $description,
-                $OUTPUT->render($editable),
+                $freq,
                 $hideshow . $settingslink . $chartlink,
                 $backfilllink,
             ]);

@@ -147,6 +147,7 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
                     'new_users_metric' => [manager::FREQ_15MIN, 'midnight +20 minutes'],
                     'online_users_metric' => [manager::FREQ_5MIN, 'midnight +75 minutes'],
                     'active_users_metric' => [manager::FREQ_HOUR, 'midnight'],
+                    'daily_users_metric' => [manager::FREQ_DAY, 'midnight'],
                 ],
                 ['activeusers', 'newusers'],
             ],
@@ -156,6 +157,7 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
                     'new_users_metric' => [manager::FREQ_HOUR, '2020-03-01T00:00:00'],
                     'online_users_metric' => [manager::FREQ_DAY, '2020-03-01T00:00:00'],
                     'active_users_metric' => [manager::FREQ_MONTH, '2020-03-01T00:00:00'],
+                    'daily_users_metric' => [manager::FREQ_DAY, '2020-03-01T00:00:00'],
                 ],
                 [],
             ],
@@ -165,8 +167,9 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
                     'new_users_metric' => [manager::FREQ_HOUR, '2020-02-01T00:00:00'],
                     'online_users_metric' => [manager::FREQ_DAY, '2020-02-01T00:00:00'],
                     'active_users_metric' => [manager::FREQ_MONTH, '2020-02-01T00:00:00'],
+                    'daily_users_metric' => [manager::FREQ_DAY, '2020-02-01T00:00:00'],
                 ],
-                ['activeusers', 'newusers', 'onlineusers'],
+                ['activeusers', 'dailyusers', 'newusers', 'onlineusers'],
             ],
             [
                 '2020-02-02T00:02:00',
@@ -174,13 +177,14 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
                     'new_users_metric' => [manager::FREQ_5MIN, '2020-02-01T00:00:00'],
                     'online_users_metric' => [manager::FREQ_DAY, '2020-02-01T00:00:00'],
                     'active_users_metric' => [manager::FREQ_MONTH, '2020-02-01T00:00:00'],
+                    'daily_users_metric' => [manager::FREQ_DAY, '2020-02-01T00:00:00'],
                 ],
-                ['newusers', 'onlineusers'],
+                ['dailyusers', 'newusers', 'onlineusers'],
             ],
             [
                 '2020-02-02T00:03:00',
                 ['new_users_metric' => [manager::FREQ_5MIN, null]],
-                ['activeusers', 'newusers', 'onlineusers'],
+                ['activeusers', 'dailyusers', 'newusers', 'onlineusers'],
             ],
         ];
     }

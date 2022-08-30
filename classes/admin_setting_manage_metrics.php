@@ -79,13 +79,16 @@ class admin_setting_manage_metrics extends \admin_setting {
         global $OUTPUT;
 
         $metrics = manager::get_metrics(false);
+        // Sort by group.
+        usort($metrics, function ($metric1, $metric2) {
+            return $metric1->group <=> $metric2->group;
+        });
 
-        $txt = get_strings(array('plugin', 'settings', 'name', 'description', 'enable', 'disable', 'default', 'show', 'actions', 'report'));
+        $txt = get_strings(array('plugin', 'settings', 'name', 'group', 'description', 'enable', 'disable', 'default', 'show', 'actions', 'report'));
         $txt->frequency = get_string('frequency', 'tool_cloudmetrics');
         $txt->colour = get_string('colour', 'tool_cloudmetrics');
-
         $table = new \html_table();
-        $table->head  = array($txt->plugin, $txt->name, $txt->description, $txt->frequency, $txt->actions, get_string('backfillable', 'tool_cloudmetrics'));
+        $table->head  = array($txt->plugin, $txt->name, $txt->group, $txt->description, $txt->frequency, $txt->actions, get_string('backfillable', 'tool_cloudmetrics'));
         $table->align = array('left', 'left', 'left', 'left');
         $table->attributes['class'] = 'manageformattable generaltable admintable w-auto';
         $table->data  = array();
@@ -95,6 +98,7 @@ class admin_setting_manage_metrics extends \admin_setting {
                 array('sesskey' => sesskey(), 'name' => $metric->get_name()));
             $displayname = $metric->get_label();
             $description = $metric->get_description();
+            $group = !empty($metric->group) ? get_string($metric->group, 'tool_cloudmetrics') : '';
 
             // Colour.
             $colour = $metric->get_colour();
@@ -167,6 +171,7 @@ class admin_setting_manage_metrics extends \admin_setting {
             $row = new \html_table_row([
                 $metric->get_plugin_name(),
                 $swatch . ' ' . $displayname,
+                $group,
                 $description,
                 $OUTPUT->render($editable),
                 $hideshow . $settingslink . $chartlink,

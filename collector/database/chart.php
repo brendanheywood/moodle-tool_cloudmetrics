@@ -170,6 +170,7 @@ $values = [];
 $labels = [];
 $mins = [];
 $maxs = [];
+$diffs = [];
 $count = 0;
 $times = [];
 $chart = new chart_line();
@@ -198,6 +199,7 @@ foreach ($records as $record) {
     if (count($displayedmetrics) == 1) {
         $mins[] = (float)$record->min;
         $maxs[] = (float)$record->max;
+        $diffs[] = (float)$record->max - (float)$record->min;
     }
     $count++;
 }
@@ -257,19 +259,37 @@ if ($count) {
 foreach ($displayedmetrics as $displayedmetric) {
     $chartseries = new chart_series($metriclabels[$displayedmetric], $values[$displayedmetric] ?? null);
     $chartseries->set_color($metrics[$displayedmetric]->get_colour());
-    $chart->add_series($chartseries);
+    if (count($displayedmetrics) > 1) {
+        $chart->add_series($chartseries);
+    }
 }
 
 $chart->set_labels($labels);
 
 if (count($displayedmetrics) == 1) {
+    $displayaggregates = true;
+    // Calculate threshold for displaying aggregation or not.
+    if (count($diffs) > 0) {
+        $avgdiff = array_sum($diffs) / count($diffs);
+        // If the ratio between the average(MAX-MIN) and the number of total data points is below 0.25 only display the default aggregate.
+        if ($avgdiff / $count < 0.25) {
+            $displayaggregates = false;
+        }
+    }
     $minseries = new chart_series('Minimum '.$metriclabels[$displayedmetrics[0]], $mins);
     $color = $metrics[$displayedmetrics[0]]->get_colour();
     $minseries->set_color($metrics[$displayedmetrics[0]]->get_colour());
     $maxseries = new chart_series('Maximum '.$metriclabels[$displayedmetrics[0]], $maxs);
     $maxseries->set_color($metrics[$displayedmetrics[0]]->get_colour());
-    $chart->add_series($minseries);
-    $chart->add_series($maxseries);
+    if ($displayaggregates || ($metrics[$displayedmetrics[0]]->aggregatedefault == 'AVG')) {
+        $chart->add_series($chartseries);
+    }
+    if ($displayaggregates || ($metrics[$displayedmetrics[0]]->aggregatedefault == 'MIN')) {
+        $chart->add_series($minseries);
+    }
+    if ($displayaggregates || ($metrics[$displayedmetrics[0]]->aggregatedefault == 'MAX')) {
+        $chart->add_series($maxseries);
+    }
     $context['backfillable'] = $metrics[$displayedmetrics[0]]->is_backfillable();
     $context['metriclabel'] = $metrics[$displayedmetrics[0]]->get_label();
     $context['metricdescription'] = $metrics[$displayedmetrics[0]]->get_description();

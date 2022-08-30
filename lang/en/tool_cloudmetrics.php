@@ -73,6 +73,8 @@ $string['onlineusers'] = 'Online users';
 $string['onlineusers_desc'] = 'Users that are currently online.';
 $string['newusers'] = 'New users';
 $string['newusers_desc'] = 'Users who have signed up recently.';
+$string['dailyusers'] = 'Daily users';
+$string['dailyusers_desc'] = 'Unique users over a day (fixed frequency).';
 
 // User selection labels.
 $string['data_empty'] = 'Your database for this metric is empty.';

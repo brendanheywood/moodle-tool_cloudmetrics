@@ -16,6 +16,8 @@
 
 namespace tool_cloudmetrics;
 
+use tool_cloudmetrics\metric\manager;
+
 /**
  * Library for functions that don't belong anywhere else.
  *
@@ -28,27 +30,27 @@ class lib {
 
     /** @var array A mapping of FREQ_ constants to actual times in seconds. */
     public const FREQ_TIMES = [
-        metric\manager::FREQ_MIN => MINSECS,
-        metric\manager::FREQ_5MIN => MINSECS * 5,
-        metric\manager::FREQ_15MIN => MINSECS * 15,
-        metric\manager::FREQ_30MIN => MINSECS * 30,
-        metric\manager::FREQ_HOUR => MINSECS * 60,
-        metric\manager::FREQ_3HOUR => MINSECS * 180,
-        metric\manager::FREQ_12HOUR => MINSECS * 720,
-        metric\manager::FREQ_DAY => MINSECS * 1440,
-        metric\manager::FREQ_WEEK => MINSECS * 10080,
+        manager::FREQ_MIN => MINSECS,
+        manager::FREQ_5MIN => MINSECS * 5,
+        manager::FREQ_15MIN => MINSECS * 15,
+        manager::FREQ_30MIN => MINSECS * 30,
+        manager::FREQ_HOUR => MINSECS * 60,
+        manager::FREQ_3HOUR => MINSECS * 180,
+        manager::FREQ_12HOUR => MINSECS * 720,
+        manager::FREQ_DAY => MINSECS * 1440,
+        manager::FREQ_WEEK => MINSECS * 10080,
     ];
 
     /**
      * Get the time which is one 'frequency' unit before the given time.
      *
      * @param int $timestamp
-     * @param int $freq FREQ_ constant as given in metric\manager.
+     * @param int $freq FREQ_ constant as given in manager.
      * @return int
      * @throws \Exception
      */
     public static function get_previous_time(int $timestamp, int $freq): int {
-        if ($freq == metric\manager::FREQ_MONTH) {
+        if ($freq == manager::FREQ_MONTH) {
             $tz = \core_date::get_server_timezone_object();
             // Special handling for months because it is not a consistant value.
             return (new \DateTime('', $tz))
@@ -64,12 +66,12 @@ class lib {
      * Get the time which is one 'frequency' unit after the given time.
      *
      * @param int $timestamp
-     * @param int $freq FREQ_ constant as given in metric\manager.
+     * @param int $freq FREQ_ constant as given in manager.
      * @return int
      * @throws \Exception
      */
     public static function get_next_time(int $timestamp, int $freq): int {
-        if ($freq == metric\manager::FREQ_MONTH) {
+        if ($freq == manager::FREQ_MONTH) {
             $tz = \core_date::get_server_timezone_object();
             // Special handling for months because it is not a consistant value.
             return (new \DateTime('', $tz))
@@ -86,7 +88,7 @@ class lib {
      * For example, with FREQ_5MIN, we want 5, 10, 15, 20, etc past the hour.
      *
      * @param int $timestamp
-     * @param int $freq FREQ_ constant as given in metric\manager.
+     * @param int $freq FREQ_ constant as given in manager.
      * @return int
      * @throws \Exception
      */
@@ -97,7 +99,7 @@ class lib {
         $dt = new \DateTime('', $tz);
         $dt->setTimestamp($timestamp);
 
-        if ($freq == metric\manager::FREQ_MONTH) {
+        if ($freq == manager::FREQ_MONTH) {
             // Special handling for months because it is not a consistant value.
             $dt = new \DateTime($dt->format('Y-m-01\T00:00:00'), $tz);
             return $dt->getTimestamp();
@@ -105,6 +107,38 @@ class lib {
             $dt->modify('midnight last Sunday');
             $reftime = $dt->getTimestamp();
             return $timestamp - ($timestamp - $reftime) % self::FREQ_TIMES[$freq];
+        }
+    }
+
+    /**
+     * Given a particular frequency, returns the next frequency up the scale.
+     *
+     * @param int $freq
+     * @return false|int The next higher frequency, or false if it cannot.
+     */
+    public static function next_frequency(int $freq) {
+        // Use a switch statment to simplify and future proof the process.
+        switch ($freq) {
+            case manager::FREQ_MIN:
+                return manager::FREQ_5MIN;
+            case manager::FREQ_5MIN:
+                return manager::FREQ_15MIN;
+            case manager::FREQ_15MIN:
+                return manager::FREQ_30MIN;
+            case manager::FREQ_30MIN:
+                return manager::FREQ_HOUR;
+            case manager::FREQ_HOUR:
+                return manager::FREQ_3HOUR;
+            case manager::FREQ_3HOUR:
+                return manager::FREQ_12HOUR;
+            case manager::FREQ_12HOUR:
+                return manager::FREQ_DAY;
+            case manager::FREQ_DAY:
+                return manager::FREQ_WEEK;
+            case manager::FREQ_WEEK:
+                return manager::FREQ_MONTH;
+            default:
+                return false;
         }
     }
 }

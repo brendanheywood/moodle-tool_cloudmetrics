@@ -59,7 +59,13 @@ $string['no_metrics_enabled'] = 'No metrics enabled';
 $string['maxrecords'] = 'There are more than {$a} data points for this graph, it is currently only displaying the first {$a} records. Please change either the time scale or the time resolution';
 
 // Data aggregated.
-$string['aggregated'] = 'Selected time frequency differs from the data collected. Each data point is aggregated over time periods of {$a} and also displays the min and max for that period.';
+$string['aggregated'] = 'Displayed time frequency differs from the data collected. Each data point is aggregated over time periods of {$a} and also displays the min and max for that period.';
 
 // No records.
 $string['norecords'] = 'No data collected for the selected time period.';
+
+// Displayed records.
+$string['displaying_records'] = 'Displaying {$a->count} data points at intervals of {$a->freq}.';
+
+// Time scale frequency changed.
+$string['different_frequency'] = 'The frequency of the data points has been altered to {$a->to} from {$a->from} to limit the number of displayed points.';

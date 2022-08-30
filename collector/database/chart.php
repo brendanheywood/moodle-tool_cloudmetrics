@@ -42,7 +42,7 @@ $PAGE->set_context($context);
 $PAGE->set_url($url);
 
 $defaultperiod = optional_param('graphperiod', -1, PARAM_INT);
-
+$metricgroup = optional_param('groupselect', '', PARAM_ALPHANUMEXT);
 $metrics = metric\manager::get_metrics(true);
 if (empty($metrics)) {
     // Error management if no metrics enabled.
@@ -53,16 +53,24 @@ $metriclabels = [];
 $checkboxes = [];
 $displayedmetrics = [];
 $notifications = [];
+$groups = [];
 
 foreach ($metrics as $m) {
     $metriclabels[$m->get_name()] = $m->get_label();
 
     $metricparam = optional_param($m->get_name(), 0, PARAM_INT);
-    if ($metricparam) {
+    $displayed = false;
+    if ($metricparam || ($metricgroup == $m->group)) {
         $displayedmetrics[] = $m->get_name();
+        $displayed = true;
     }
-    $checkboxes[] = ['checkbox' => html_writer::checkbox($m->get_name(), 1, $metricparam, $m->get_label(),
+
+    $checkboxes[] = ['checkbox' => html_writer::checkbox($m->get_name(), 1, $displayed, $m->get_label(),
         ['onchange' => 'this.form.submit()'])];
+
+    if (!in_array($m->group, $groups) && !empty($m->group)) {
+        $groups += [$m->group => get_string($m->group, 'tool_cloudmetrics')];
+    }
 }
 
 if (empty($displayedmetrics)) {
@@ -105,12 +113,22 @@ $selectedfrequency = optional_param('graphfrequency', $configfrequency ?? 1, PAR
 // Create a new URL object to avoid poisoning the existing one.
 $url = clone $url;
 
+$groupurl = clone $url;
+$groupurl->param('graphfrequency', $selectedfrequency);
+
 foreach ($displayedmetrics as $displayedmetric) {
     $url->param($displayedmetric, 1);
 }
 
 $periodurl = clone $url;
 $periodurl->param('graphfrequency', $selectedfrequency);
+
+$groupselect = new \single_select(
+    $groupurl,
+    'groupselect',
+    $groups,
+    $metricgroup
+);
 
 $periodselect = new \single_select(
     $periodurl,
@@ -128,6 +146,8 @@ $freqselect = new \single_select(
 );
 
 $backfillurl = new moodle_url('/admin/tool/cloudmetrics/collector/database/backfill.php', ['metric' => $displayedmetrics[0]]);
+
+$groupselect->set_label(get_string('select_group', 'cltr_database'));
 
 $periodselect->set_label(get_string('select_graph_period', 'cltr_database'));
 
@@ -240,6 +260,7 @@ if (count($displayedmetrics) == 1) {
 }
 
 $context['chart'] = $OUTPUT->render($chart);
+$context['groupselect'] = $OUTPUT->render($groupselect);
 $context['periodselect'] = $OUTPUT->render($periodselect);
 $context['freqselect'] = $OUTPUT->render($freqselect);
 $context['backfillurl'] = $backfillurl;

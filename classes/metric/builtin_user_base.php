@@ -26,6 +26,9 @@ namespace tool_cloudmetrics\metric;
  */
 abstract class builtin_user_base extends builtin_base {
 
+    /** @var string Group the metric belongs to */
+    public $group = 'user_activity';
+
     /** @var string The DB field the metric accesses. */
     protected $dbfield = '';
 

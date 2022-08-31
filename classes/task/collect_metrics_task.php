@@ -107,6 +107,7 @@ class collect_metrics_task extends \core\task\scheduled_task {
                 mtrace(sprintf('Generated metric \'%s\' at %s', $item->value, userdate($item->time, '%e %b %Y, %H:%M')));
                 $items[] = $item;
                 $metrictype->set_last_generate_time($item->time);
+                set_config($item->name . '_last_value', $item->value, 'tool_cloudmetrics');
             }
         }
 

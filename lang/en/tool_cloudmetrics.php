@@ -85,6 +85,7 @@ $string['different_freq'] = 'Caution - frequency has been changed, new data will
 $string['period_select'] = 'Select period to retrieve data from: ';
 $string['return_to_backfill'] = 'Backfill {$a} period';
 $string['return_to_chart'] = 'Return to {$a} chart';
+$string['view_chart'] = 'View {$a} chart';
 $string['same_freq'] = 'Backfilling to a further date in the past will complete already present data.';
 
 // Frequency labels.
@@ -108,11 +109,13 @@ $string['two_year'] = '2 years'; // Chart length only.
 
 // Error and status messages.
 $string['backfill_not_supported'] = 'Metric \'{$a}\' does not support backfilling';
+$string['metric_enabled'] = 'Metric \'{$a}\' enabled';
 $string['metric_not_enabled'] = 'Metric \'{$a}\' not enabled';
 $string['metric_not_found'] = 'Metric \'{$a}\' not found';
 $string['collector_failed'] = 'Collector \'{$a->name}\' failed {$a->time}';
 $string['collector_passed'] = 'Collector \'{$a->name}\' succeeded since {$a->time}';
 $string['collector_never'] = 'Collector \'{$a}\' has never executed';
+$string['collector_frequency'] = 'Data collected every {$a}.';
 $string['no_collectors'] = 'No active collectors';
 $string['checkcollectorcheck'] = 'Cloudmetrics collector status';
 $string['managelink'] = 'Manage collectors';

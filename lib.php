@@ -23,6 +23,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+use tool_cloudmetrics\metric\active_users_metric;
 use tool_cloudmetrics\metric\manager;
 use \core\output\inplace_editable;
 
@@ -82,4 +83,18 @@ function tool_cloudmetrics_inplace_editable(string $itemtype, int $itemid, strin
  */
 function tool_cloudmetrics_status_checks() {
     return [new tool_cloudmetrics\check\collectorcheck()];
+}
+
+/**
+ * Returns cloumetrics performance checks
+ *
+ * @return array
+ */
+function tool_cloudmetrics_performance_checks() {
+    $checks = [];
+    $metrics = manager::get_metrics(false);
+    foreach ($metrics as $metric) {
+        $checks[] = new tool_cloudmetrics\check\metriccheck($metric);
+    }
+    return $checks;
 }

@@ -82,7 +82,7 @@ class collector extends base {
      *
      * @param array $items
      */
-    public function record_metrics(array $items) {
+    public function record_metrics(array $items, \progress_bar $progress = null) {
         $metricdata = [];
         foreach ($items as $item) {
             $metricdata[] = $this->make_metric_data_entry($item);

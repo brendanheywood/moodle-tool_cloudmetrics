@@ -81,6 +81,8 @@ class collector extends base {
      * Record an array of metric data
      *
      * @param array $items
+     * @param \progress_bar|null $progress
+     * @return mixed
      */
     public function record_metrics(array $items, \progress_bar $progress = null) {
         $metricdata = [];

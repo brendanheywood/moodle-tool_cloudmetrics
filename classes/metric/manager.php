@@ -102,7 +102,7 @@ class manager {
         ];
 
         // Find metrics from plugins.
-        $more = get_plugins_with_function('_metrics', 'lib.php');
+        $more = get_plugins_with_function('metrics', 'lib.php');
         foreach ($more as $plugins) {
             foreach ($plugins as $pluginfunction) {
                 $result = $pluginfunction();

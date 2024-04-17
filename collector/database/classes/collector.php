@@ -131,7 +131,7 @@ class collector extends base {
         }
         list ($clause, $params) = $DB->get_in_or_equal($metricnames);
         if (count($metricnames) == 1) {
-            $sql = "SELECT AVG(" . $DB->sql_cast_char2int('value', true) . ") as $metricnames[0],
+            $sql = "SELECT AVG(" . $DB->sql_cast_char2int('value', true) . ") as \"$metricnames[0]\",
                 MIN(" . $DB->sql_cast_char2int('value', true) . ") as min,
                 MAX(" . $DB->sql_cast_char2int('value', true) . ") as max,
                 $incrementstart
@@ -143,7 +143,7 @@ class collector extends base {
         } else {
             $metricselect = '';
             foreach ($params as $param) {
-                $metricselect .= "AVG(CASE name WHEN '$param' THEN" . $DB->sql_cast_char2int('value', true) . "END) $param,";
+                $metricselect .= "AVG(CASE name WHEN '$param' THEN" . $DB->sql_cast_char2int('value', true) . "END) \"$param\",";
             }
             $metricselect = rtrim($metricselect, ',');
             $sql = "SELECT $incrementstart,

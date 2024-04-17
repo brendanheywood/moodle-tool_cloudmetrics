@@ -126,11 +126,30 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
         $mock->expects($this->once())
             ->method('receive')
             ->with($expected);
+
+        $this->disable_custom_metrics();
         $task = new helper_collect_metrics_task($mock);
         $task->set_time($time);
         ob_start();
         $task->execute();
         ob_end_clean();
+    }
+
+    /**
+     * This method gets all metrics available and disable those out of the builtin metrics.
+     *
+     * @return void
+     */
+    private function disable_custom_metrics(): void {
+        // Get builtin metrics from default setting frequency.
+        $builtinmetrics = array_keys(manager::FREQ_DEFAULTS);
+        $metrics = metric\manager::get_metrics(true);
+
+        foreach ($metrics as $metric) {
+            if (!in_array($metric->get_name(), $builtinmetrics)) {
+                $metric->set_enabled(false);
+            }
+        }
     }
 
     /**

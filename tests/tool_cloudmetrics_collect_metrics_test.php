@@ -25,6 +25,8 @@
 
 namespace tool_cloudmetrics;
 
+use DateTime;
+use Exception;
 use tool_cloudmetrics\metric\manager;
 use tool_cloudmetrics\task\collect_metrics_task;
 
@@ -104,30 +106,29 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
      * @param string $timestr The 'current' time to be used.
      * @param array $meta List of [<frequency>, <last_generate_time>].
      * @param array $expected The metrics that are expected to be in the result set.
-     * @throws \Exception
+     * @covers \tool_cloudmetrics\task\collect_metrics_task
+     * @throws Exception
      */
     public function test_execute(string $timestr, array $meta, array $expected) {
         $tz = \core_date::get_server_timezone_object();
-
+        $this->disable_metrics($expected);
         foreach ($meta as $metric => $data) {
             $classname = '\tool_cloudmetrics\metric\\' . $metric;
             $metric = new $classname();
             $metric->set_frequency($data[0]);
             if (!empty($data[1])) {
-                $metric->set_last_generate_time((new \DateTime($data[1], $tz))->getTimestamp());
+                $metric->set_last_generate_time((new DateTime($data[1], $tz))->getTimestamp());
             } else {
                 $metric->set_last_generate_time(0);
             }
-            $metric->set_enabled(true);
         }
-        $time = (new \DateTime($timestr, $tz))->getTimestamp();
+        $time = (new DateTime($timestr, $tz))->getTimestamp();
 
         $mock = $this->createMock(mock_receiver::class);
         $mock->expects($this->once())
             ->method('receive')
             ->with($expected);
 
-        $this->disable_custom_metrics();
         $task = new helper_collect_metrics_task($mock);
         $task->set_time($time);
         ob_start();
@@ -136,17 +137,13 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
     }
 
     /**
-     * This method gets all metrics available and disable those out of the builtin metrics.
-     *
-     * @return void
+     * This method gets all metrics (except those in sent in the data provider) and sets them into a disable state.
      */
-    private function disable_custom_metrics(): void {
-        // Get builtin metrics from default setting frequency.
-        $builtinmetrics = array_keys(manager::FREQ_DEFAULTS);
+    private function disable_metrics(array $expected): void {
         $metrics = metric\manager::get_metrics(true);
 
         foreach ($metrics as $metric) {
-            if (!in_array($metric->get_name(), $builtinmetrics)) {
+            if (!in_array($metric->get_name(), $expected)) {
                 $metric->set_enabled(false);
             }
         }
@@ -158,7 +155,7 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
      * @return array[] Each element contains a time string, a list of frequency settings,
      *                 and a list of metrics that should be measured.
      */
-    public function execute_provider(): array {
+    public static function execute_provider(): array {
         return [
             [
                 'midnight +75 minutes',

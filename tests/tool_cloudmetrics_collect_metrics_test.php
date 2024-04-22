@@ -138,8 +138,10 @@ class tool_cloudmetrics_collect_metrics_test extends \advanced_testcase {
 
     /**
      * This method gets all metrics (except those in sent in the data provider) and sets them into a disable state.
+     * @param array $expected The expected metrics.
+     *
      */
-    private function disable_metrics(array $expected): void {
+    private function disable_metrics(array $expected) {
         $metrics = metric\manager::get_metrics(true);
 
         foreach ($metrics as $metric) {

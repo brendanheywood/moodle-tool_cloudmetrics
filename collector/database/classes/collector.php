@@ -143,7 +143,7 @@ class collector extends base {
         } else {
             $metricselect = '';
             foreach ($params as $param) {
-                $metricselect .= "AVG(CASE name WHEN '$param' THEN" . $DB->sql_cast_char2int('value', true) . "END) \"$param\",";
+                $metricselect .= "AVG(CASE name WHEN '$param' THEN" . $DB->sql_cast_char2int('value', true) . "END) as \"$param\",";
             }
             $metricselect = rtrim($metricselect, ',');
             $sql = "SELECT $incrementstart,

@@ -125,15 +125,15 @@ class collector extends base {
         }
 
         if ($aggregate == DAYSECS) {
-            $incrementstart = "date as increment_start";
+            $incrementstart = "date AS increment_start";
         } else {
-            $incrementstart = "FLOOR(time/$aggregate) * $aggregate as increment_start";
+            $incrementstart = "FLOOR(time/$aggregate) * $aggregate AS increment_start";
         }
         list ($clause, $params) = $DB->get_in_or_equal($metricnames);
         if (count($metricnames) == 1) {
-            $sql = "SELECT AVG(" . $DB->sql_cast_char2int('value', true) . ") as \"$metricnames[0]\",
-                MIN(" . $DB->sql_cast_char2int('value', true) . ") as min,
-                MAX(" . $DB->sql_cast_char2int('value', true) . ") as max,
+            $sql = "SELECT AVG(" . $DB->sql_cast_char2int('value', true) . ") AS \"$metricnames[0]\",
+                MIN(" . $DB->sql_cast_char2int('value', true) . ") AS min,
+                MAX(" . $DB->sql_cast_char2int('value', true) . ") AS max,
                 $incrementstart
                 FROM {cltr_database_metrics}
                 WHERE name $clause
@@ -143,7 +143,7 @@ class collector extends base {
         } else {
             $metricselect = '';
             foreach ($params as $param) {
-                $metricselect .= "AVG(CASE name WHEN '$param' THEN" . $DB->sql_cast_char2int('value', true) . "END) as \"$param\",";
+                $metricselect .= "AVG(CASE name WHEN '$param' THEN" . $DB->sql_cast_char2int('value', true) . "END) AS \"$param\",";
             }
             $metricselect = rtrim($metricselect, ',');
             $sql = "SELECT $incrementstart,

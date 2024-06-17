@@ -29,7 +29,7 @@ require_once('../../../config.php');
 require_once($CFG->libdir.'/adminlib.php');
 
 $action = required_param('action', PARAM_ALPHANUMEXT);
-$name   = required_param('name', PARAM_PLUGIN);
+$name   = required_param('name', PARAM_ALPHANUMEXT);
 $returnurl = optional_param('returnurl', get_local_referer(false), PARAM_LOCALURL);
 
 $syscontext = context_system::instance();

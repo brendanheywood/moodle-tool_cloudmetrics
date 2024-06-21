@@ -32,14 +32,6 @@ use tool_cloudmetrics\plugininfo\cltr;
 class collectorcheck extends check {
 
     /**
-     * Constructor
-     */
-    public function __construct() {
-        $this->id = 'checkcollectorcheck';
-        $this->name = get_string('checkcollectorcheck', 'tool_cloudmetrics');
-    }
-
-    /**
      * A link to a place to action this
      *
      * @return action_link|null

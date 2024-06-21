@@ -42,8 +42,6 @@ class metriccheck extends check {
      */
     public function __construct($metric) {
         $this->metric = $metric;
-        $this->id = $metric->get_name();
-        $this->name = $metric->get_label();
     }
 
     /**
@@ -52,7 +50,7 @@ class metriccheck extends check {
      * @return string must be unique within a component
      */
     public function get_id(): string {
-        return $this->id;
+        return $this->metric->get_name();
     }
 
     /**

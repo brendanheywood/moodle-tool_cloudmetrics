@@ -27,18 +27,6 @@ namespace cltr_cloudwatch;
 class lib {
     /** @var string AWS version*/
     const AWS_VERSION = '2010-08-01';
-    /** @var int Local AWS version*/
-    const LOCAL_AWS_VERSION = 2022033100;
-
-    /**
-     * Returns if the plugin can be used.
-     *
-     * @return bool
-     */
-    public static function is_plugin_usable() {
-        return (class_exists('\local_aws\local\client_factory') &&
-                class_exists('\local_aws\admin_settings_aws_region'));
-    }
 
     /**
      * Get the configuration values for the plugin, substituting in defaults where

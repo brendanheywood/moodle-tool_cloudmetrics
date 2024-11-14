@@ -27,10 +27,11 @@ In general a metric is any real time value that you might push to another servic
 
 ## Branches
 
-| Moodle version    | Branch           | PHP  |
-|-------------------|------------------|------|
-| Moodle 3.5+       | MOODLE_35_STABLE | 7.1+ |
-| Totara 10+        | MOODLE_35_STABLE | 7.1+ |
+| Moodle version   | Branch            | PHP  |
+|------------------|-------------------|------|
+| Moodle 3.5 - 4.3 | MOODLE_35_STABLE  | 7.1+ |
+| Moodle 4.4+      | MOODLE_404_STABLE | 8.1+ |
+| Totara 10+       | MOODLE_35_STABLE  | 7.1+ |
 
 ## Architecture
 
@@ -106,7 +107,6 @@ Sends metric data to AWS Cloudwatch
 https://docs.aws.amazon.com/cloudwatch/
 
 #### Requires
-- local/aws AWS SDK plugin (https://github.com/catalyst/moodle-local_aws)
 - AWS account
 - IAM user
 

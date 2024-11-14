@@ -16,15 +16,9 @@
 
 namespace cltr_cloudwatch;
 
-use local_aws\local\client_factory;
 use tool_cloudmetrics\collector\base;
 use tool_cloudmetrics\metric\metric_item;
-
-defined('MOODLE_INTERNAL') || die();
-
-require_once($CFG->dirroot . '/local/aws/sdk/aws-autoloader.php');
-
-
+use tool_cloudmetrics\client_factory;
 /**
  * Collector class for AWS Cloudwatch.
  *
@@ -130,6 +124,6 @@ class collector extends base {
             return false;
         }
 
-        return lib::is_plugin_usable() && !is_null(self::$client);
+        return !is_null(self::$client);
     }
 }

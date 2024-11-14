@@ -52,5 +52,3 @@ $string['awssecret_desc'] = 'The secret access key assigned to the IAM user.';
 
 // Missing requirements.
 $string['unsatisfied_requirements'] = 'Unsatisfied Requirements';
-$string['aws:installneeded'] = 'Plugin \'local_aws\' of version {$a} is required.';
-$string['aws:upgradeneeded'] = 'Plugin \'local_aws\' needs to be upgraded to version {$a}.';

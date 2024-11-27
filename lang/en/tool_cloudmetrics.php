@@ -112,6 +112,7 @@ $string['backfill_not_supported'] = 'Metric \'{$a}\' does not support backfillin
 $string['metric_enabled'] = 'Metric \'{$a}\' enabled';
 $string['metric_not_enabled'] = 'Metric \'{$a}\' not enabled';
 $string['metric_not_found'] = 'Metric \'{$a}\' not found';
+$string['clientnotfound'] = 'Client not found';
 $string['collector_failed'] = 'Collector \'{$a->name}\' failed {$a->time}';
 $string['collector_passed'] = 'Collector \'{$a->name}\' succeeded since {$a->time}';
 $string['collector_never'] = 'Collector \'{$a}\' has never executed';

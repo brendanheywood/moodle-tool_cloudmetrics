@@ -29,8 +29,8 @@ In general a metric is any real time value that you might push to another servic
 
 | Moodle version   | Branch            | PHP  |
 |------------------|-------------------|------|
-| Moodle 3.5 - 4.3 | MOODLE_35_STABLE  | 7.1+ |
 | Moodle 4.4+      | MOODLE_404_STABLE | 8.1+ |
+| Moodle 3.5 - 4.3 | MOODLE_35_STABLE  | 7.1+ |
 | Totara 10+       | MOODLE_35_STABLE  | 7.1+ |
 
 ## Architecture
